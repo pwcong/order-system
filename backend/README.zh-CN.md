@@ -1,6 +1,6 @@
-# order-system
+# Order System
 
-
+平板点餐系统。
 
 ## 快速入门
 
