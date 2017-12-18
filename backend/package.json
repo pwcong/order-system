@@ -1,11 +1,17 @@
 {
   "name": "order-system",
   "version": "1.0.0",
-  "description": "",
+  "description": "Order System",
   "private": true,
   "dependencies": {
     "egg": "^2.0.0",
-    "egg-scripts": "^2.1.0"
+    "egg-cors": "^2.0.0",
+    "egg-redis": "^1.0.2",
+    "egg-scripts": "^2.1.0",
+    "egg-sequelize": "^3.1.0",
+    "lodash": "^4.17.4",
+    "moment": "^2.20.0",
+    "mysql2": "^1.5.1"
   },
   "devDependencies": {
     "autod": "^3.0.1",
