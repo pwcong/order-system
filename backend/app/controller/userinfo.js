@@ -3,10 +3,6 @@
 const Controller = require('egg').Controller;
 
 class UserInfoController extends Controller {
-  /**
-   * 添加用户信息
-   */
-  async create() {}
 
   /**
    * 查询用户信息

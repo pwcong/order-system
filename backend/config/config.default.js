@@ -15,10 +15,15 @@ module.exports = appInfo => {
     dir: 'app/public'
   };
 
+  // Token加密密钥
+  config.auth = {
+    secret: 'order_system'
+  };
+
   // 跨域配置
   config.cors = {
     origin: '*',
-    allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH'
+    allowMethods: 'GET,POST'
   };
 
   // 数据库配置
