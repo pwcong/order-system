@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50720
 File Encoding         : 65001
 
-Date: 2017-12-17 23:52:16
+Date: 2017-12-19 22:27:47
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -60,7 +60,7 @@ CREATE TABLE `order` (
   CONSTRAINT `fk_order_bid` FOREIGN KEY (`bid`) REFERENCES `bill` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_order_cid` FOREIGN KEY (`cid`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_order_sid` FOREIGN KEY (`sid`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=880000000001 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of order
@@ -84,7 +84,7 @@ CREATE TABLE `recipe` (
   KEY `fk_recipe_cid` (`cid`),
   CONSTRAINT `fk_recipe_cid` FOREIGN KEY (`cid`) REFERENCES `recipe_category` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_recipe_pid` FOREIGN KEY (`pid`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=880000000001 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of recipe
@@ -137,7 +137,8 @@ CREATE TABLE `recipe_evaluate` (
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `type` int(11) NOT NULL,
+  `type` int(11) NOT NULL COMMENT '用户类型',
+  `pid` bigint(20) NOT NULL DEFAULT '0' COMMENT '用户父级，默认0为无',
   `uid` varchar(255) NOT NULL COMMENT '用户名',
   `pwd` varchar(255) NOT NULL COMMENT '密码',
   `pwd_salt` varchar(255) NOT NULL COMMENT '密码盐',
@@ -151,8 +152,10 @@ CREATE TABLE `user` (
   UNIQUE KEY `uq_user_email` (`email`),
   UNIQUE KEY `uq_user_phone` (`phone`),
   KEY `fk_user_type` (`type`),
+  KEY `fk_user_pid` (`pid`),
+  CONSTRAINT `fk_user_pid` FOREIGN KEY (`pid`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_user_type` FOREIGN KEY (`type`) REFERENCES `user_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10003 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user
@@ -191,6 +194,7 @@ CREATE TABLE `user_type` (
 -- ----------------------------
 -- Records of user_type
 -- ----------------------------
-INSERT INTO `user_type` VALUES ('0', '商家');
-INSERT INTO `user_type` VALUES ('1', '客户');
+INSERT INTO `user_type` VALUES ('0', '企业');
+INSERT INTO `user_type` VALUES ('1', '商户');
+INSERT INTO `user_type` VALUES ('2', '客户');
 INSERT INTO `user_type` VALUES ('9', '管理员');
