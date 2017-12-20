@@ -4,9 +4,19 @@ const Controller = require('egg').Controller;
 
 class UserController extends Controller {
   /**
-   * 注册用户
+   * 注册客户
    */
-  async register() {}
+  async registerCustomer() {}
+
+  /**
+   * 注册商户
+   */
+  async registerBusiness() {}
+
+  /**
+   * 注册企业
+   */
+  async registerEnterprise() {}
 
   /**
    * 登录用户

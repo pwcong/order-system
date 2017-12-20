@@ -1,9 +1,10 @@
 'use strict';
 
 const CODE = {
-  TOKEN_NEEDED: 1001,
-  TOKEN_EXPIRED: 1002,
-  TOKEN_ERROR: 1003
+  STATUS_OK: 1000,
+  TOKEN_NEEDED: 2001,
+  TOKEN_EXPIRED: 2002,
+  TOKEN_ERROR: 2003
 };
 
 module.exports = {

@@ -15,9 +15,11 @@ module.exports = appInfo => {
     dir: 'app/public'
   };
 
-  // Token加密密钥
+  // Token验证设置
   config.auth = {
-    secret: 'order_system'
+    secret: 'order_system',
+    checkExpired: false,
+    expiredTime: 86400
   };
 
   // 跨域配置
@@ -29,9 +31,9 @@ module.exports = appInfo => {
   // 数据库配置
   config.sequelize = {
     dialect: 'mysql',
-    database: 'order_system',
     host: '127.0.0.1',
     port: '3306',
+    database: 'order_system_test',
     username: 'root',
     password: 'root'
   };

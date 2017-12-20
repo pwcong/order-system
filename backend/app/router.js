@@ -6,12 +6,13 @@
 module.exports = app => {
   const { router, controller, middlewares } = app;
 
-  const authTokenMiddleware = app.middlewares.auth.authToken(app.config.auth);
+  const authTokenMiddleware = middlewares.auth.authToken(app.config);
 
   router.post('/user/login', controller.user.login);
-  router.post('/user/register', controller.user.register);
+  router.post('/user/register/customer', controller.user.registerCustomer);
+  router.post('/user/register/business', controller.user.registerBusiness);
+  router.post('/user/register/enterprise', controller.user.registerEnterprise);
 
-  router.get('/userinfo/:id', authTokenMiddleware, controller.userinfo.search);
-  router.post('/userinfo/:id', authTokenMiddleware, controller.userinfo.modify);
-
+  router.get('/userinfo/:id', authTokenMiddleware, controller.userInfo.search);
+  router.post('/userinfo/:id', authTokenMiddleware, controller.userInfo.modify);
 };

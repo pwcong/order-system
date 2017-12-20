@@ -25,9 +25,10 @@ class HomeController extends Controller {
 注意：在 beforeStart 中不建议做太耗时的操作，框架会有启动的超时检测。
 */
 
-module.exports = app => {
-  app.beforeStart(async() => {
-    // 应用会等待下面逻辑执行完成才启动
+'use strict';
 
+module.exports = app => {
+  app.beforeStart(async () => {
+    // 应用会等待下面逻辑执行完成才启动
   });
 };
