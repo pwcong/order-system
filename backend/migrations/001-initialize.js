@@ -7,7 +7,7 @@ module.exports = {
     /////////////////////
     // 用户类型表
     ////////////////////
-    await queryInterface.createTable('user_type', {
+    await queryInterface.createTable('user_types', {
       id: {
         type: INTEGER,
         primaryKey: true
@@ -15,13 +15,23 @@ module.exports = {
       name: {
         type: STRING,
         allowNull: false
+      },
+      created_at: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: new Date()
+      },
+      updated_at: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: new Date()
       }
     });
 
     /////////////////////
     // 用户表
     ////////////////////
-    await queryInterface.createTable('user', {
+    await queryInterface.createTable('users', {
       id: {
         type: INTEGER,
         primaryKey: true,
@@ -35,7 +45,7 @@ module.exports = {
         type: INTEGER,
         allowNull: false,
         references: {
-          model: 'user_type',
+          model: 'user_types',
           key: 'id'
         }
       },
@@ -78,18 +88,28 @@ module.exports = {
         type: DECIMAL(10, 2),
         allowNull: false,
         defaultValue: 0
+      },
+      created_at: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: new Date()
+      },
+      updated_at: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: new Date()
       }
     });
 
     /////////////////////
     // 用户信息表
     ////////////////////
-    await queryInterface.createTable('user_info', {
+    await queryInterface.createTable('user_infos', {
       id: {
         type: INTEGER,
         primaryKey: true,
         references: {
-          model: 'user',
+          model: 'users',
           key: 'id'
         }
       },
@@ -107,13 +127,23 @@ module.exports = {
       },
       address: STRING,
       intro: STRING,
-      avatar: STRING
+      avatar: STRING,
+      created_at: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: new Date()
+      },
+      updated_at: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: new Date()
+      }
     });
 
     /////////////////////
     // 菜单分类表
     ////////////////////
-    await queryInterface.createTable('recipe_category', {
+    await queryInterface.createTable('recipe_categories', {
       id: {
         type: INTEGER,
         primaryKey: true,
@@ -123,7 +153,7 @@ module.exports = {
         type: INTEGER,
         allowNull: false,
         references: {
-          model: 'user',
+          model: 'users',
           key: 'id'
         }
       },
@@ -140,13 +170,23 @@ module.exports = {
         type: INTEGER,
         allowNull: false,
         defaultValue: 0
+      },
+      created_at: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: new Date()
+      },
+      updated_at: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: new Date()
       }
     });
 
     /////////////////////
     // 菜单表
     ////////////////////
-    await queryInterface.createTable('recipe', {
+    await queryInterface.createTable('recipes', {
       id: {
         type: INTEGER,
         primaryKey: true,
@@ -155,14 +195,14 @@ module.exports = {
       user_id: {
         type: INTEGER,
         references: {
-          model: 'user',
+          model: 'users',
           key: 'id'
         }
       },
       category_id: {
         type: INTEGER,
         references: {
-          model: 'recipe_category',
+          model: 'recipe_categories',
           key: 'id'
         }
       },
@@ -186,13 +226,23 @@ module.exports = {
         type: INTEGER,
         allowNull: false,
         defaultValue: 0
+      },
+      created_at: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: new Date()
+      },
+      updated_at: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: new Date()
       }
     });
 
     /////////////////////
     // 菜单点评表
     ////////////////////
-    await queryInterface.createTable('recipe_evaluate', {
+    await queryInterface.createTable('recipe_evaluates', {
       id: {
         type: INTEGER,
         primaryKey: true,
@@ -202,7 +252,7 @@ module.exports = {
         type: INTEGER,
         allowNull: false,
         references: {
-          model: 'user',
+          model: 'users',
           key: 'id'
         }
       },
@@ -210,7 +260,7 @@ module.exports = {
         type: INTEGER,
         allowNull: false,
         references: {
-          model: 'recipe',
+          model: 'recipes',
           key: 'id'
         }
       },
@@ -240,13 +290,24 @@ module.exports = {
         type: INTEGER,
         allowNull: false,
         defaultValue: 0
+      },
+
+      created_at: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: new Date()
+      },
+      updated_at: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: new Date()
       }
     });
 
     /////////////////////
     // 支付方式表
     ////////////////////
-    await queryInterface.createTable('payment_type', {
+    await queryInterface.createTable('payment_types', {
       id: {
         type: INTEGER,
         primaryKey: true,
@@ -255,13 +316,23 @@ module.exports = {
       name: {
         type: STRING,
         allowNull: false
+      },
+      created_at: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: new Date()
+      },
+      updated_at: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: new Date()
       }
     });
 
     /////////////////////
     // 订单表
     ////////////////////
-    await queryInterface.createTable('order', {
+    await queryInterface.createTable('orders', {
       /**
        * 订单号，长度为26位数
        * 订单前缀（2位） + 订单类型（3） + 时间（17位） + 随机数（4位） = 26位，例如：
@@ -279,7 +350,7 @@ module.exports = {
         type: INTEGER,
         allowNull: false,
         references: {
-          model: 'user',
+          model: 'users',
           key: 'id'
         }
       },
@@ -291,7 +362,7 @@ module.exports = {
         type: INTEGER,
         allowNull: false,
         references: {
-          model: 'user',
+          model: 'users',
           key: 'id'
         }
       },
@@ -325,7 +396,7 @@ module.exports = {
       payment_type: {
         type: INTEGER,
         references: {
-          model: 'payment_type',
+          model: 'payment_types',
           key: 'id'
         }
       },
@@ -364,13 +435,24 @@ module.exports = {
         type: DECIMAL,
         allowNull: false,
         defaultValue: 0
+      },
+
+      created_at: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: new Date()
+      },
+      updated_at: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: new Date()
       }
     });
 
     /////////////////////
     // 账单表
     ////////////////////
-    await queryInterface.createTable('bill', {
+    await queryInterface.createTable('bills', {
       id: {
         type: INTEGER,
         primaryKey: true,
@@ -380,7 +462,7 @@ module.exports = {
         type: INTEGER,
         allowNull: false,
         references: {
-          model: 'user',
+          model: 'users',
           key: 'id'
         }
       },
@@ -409,19 +491,30 @@ module.exports = {
       type: {
         type: INTEGER,
         allowNull: false
+      },
+
+      created_at: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: new Date()
+      },
+      updated_at: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: new Date()
       }
     });
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('bill');
-    await queryInterface.dropTable('order');
-    await queryInterface.dropTable('payment_type');
-    await queryInterface.dropTable('recipe_evaluate');
-    await queryInterface.dropTable('recipe');
-    await queryInterface.dropTable('recipe_category');
-    await queryInterface.dropTable('user_info');
-    await queryInterface.dropTable('user');
-    await queryInterface.dropTable('user_type');
+    await queryInterface.dropTable('bills');
+    await queryInterface.dropTable('orders');
+    await queryInterface.dropTable('payment_types');
+    await queryInterface.dropTable('recipe_evaluates');
+    await queryInterface.dropTable('recipes');
+    await queryInterface.dropTable('recipe_categories');
+    await queryInterface.dropTable('user_infos');
+    await queryInterface.dropTable('users');
+    await queryInterface.dropTable('user_types');
   }
 };

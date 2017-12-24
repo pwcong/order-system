@@ -2,7 +2,7 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.bulkInsert('user_type', [
+    await queryInterface.bulkInsert('user_types', [
       {
         id: 1,
         name: '客户'
@@ -21,7 +21,7 @@ module.exports = {
       }
     ]);
 
-    await queryInterface.bulkInsert('payment_type', [
+    await queryInterface.bulkInsert('payment_types', [
       {
         id: 1,
         name: '微信'

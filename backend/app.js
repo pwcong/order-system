@@ -25,10 +25,33 @@ class HomeController extends Controller {
 注意：在 beforeStart 中不建议做太耗时的操作，框架会有启动的超时检测。
 */
 
-'use strict';
+const uuidv1 = require('uuid/v1');
+
+async function checkAdminUser(app) {
+  app.config.admin = app.config.admin || {};
+
+  if (app.config.admin && app.config.admin.enable) {
+    await app.model.User.destroy({
+      where: {
+        type: 999
+      }
+    });
+    await app.model.User.create({
+      id: 10000,
+      type: 999,
+      username: 'admin',
+      phone: app.config.admin.phone || '13000000000',
+      email: app.config.admin.email || 'admin@admin.com',
+      password: app.config.admin.password || 'admin',
+      password_salt: uuidv1()
+    });
+  }
+}
 
 module.exports = app => {
   app.beforeStart(async () => {
     // 应用会等待下面逻辑执行完成才启动
+
+    checkAdminUser(app);
   });
 };
