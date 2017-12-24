@@ -5,7 +5,7 @@ const UserModel = require('./user');
 module.exports = app => {
   const { STRING, INTEGER, DECIMAL } = app.Sequelize;
 
-  const Bill = app.model.define('user_type', {
+  const Bill = app.model.define('bill', {
     id: {
       type: INTEGER,
       primaryKey: true,

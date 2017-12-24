@@ -43,7 +43,8 @@
     "autod": "autod",
     "migrate:new": "egg-sequelize migration:create",
     "migrate:up": "egg-sequelize db:migrate",
-    "migrate:down": "egg-sequelize db:migrate:undo"
+    "migrate:down": "egg-sequelize db:migrate:undo",
+    "migrate:down:all": "egg-sequelize db:migrate:undo:all"
   },
   "ci": {
     "version": "8"

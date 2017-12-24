@@ -18,7 +18,7 @@ module.exports = appInfo => {
   // Token验证设置
   config.auth = {
     secret: 'order_system',
-    checkExpired: false,
+    checkExpired: true,
     expiredTime: 86400
   };
 
@@ -33,7 +33,7 @@ module.exports = appInfo => {
     dialect: 'mysql',
     host: '127.0.0.1',
     port: '3306',
-    database: 'order_system_test',
+    database: 'order_system',
     username: 'root',
     password: 'root'
   };
