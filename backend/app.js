@@ -26,24 +26,28 @@ class HomeController extends Controller {
 */
 
 const uuidv1 = require('uuid/v1');
+const uuidv5 = require('uuid/v5');
 
-async function checkAdminUser(app) {
+async function initAdmin(app) {
   app.config.admin = app.config.admin || {};
 
+  await app.model.User.destroy({
+    where: {
+      type: 999
+    }
+  });
+
   if (app.config.admin && app.config.admin.enable) {
-    await app.model.User.destroy({
-      where: {
-        type: 999
-      }
-    });
+    const salt = uuidv1();
+
     await app.model.User.create({
       id: 10000,
       type: 999,
       username: 'admin',
       phone: app.config.admin.phone || '13000000000',
       email: app.config.admin.email || 'admin@admin.com',
-      password: app.config.admin.password || 'admin',
-      password_salt: uuidv1()
+      password: uuidv5(app.config.admin.password || 'admin', salt),
+      password_salt: salt
     });
   }
 }
@@ -52,6 +56,7 @@ module.exports = app => {
   app.beforeStart(async () => {
     // 应用会等待下面逻辑执行完成才启动
 
-    checkAdminUser(app);
+    // 初始化管理员角色
+    initAdmin(app);
   });
 };

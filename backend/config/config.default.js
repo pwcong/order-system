@@ -14,6 +14,11 @@ module.exports = appInfo => {
     email: 'pwcong@foxmail.com'
   };
 
+  // 安全设置
+  config.security = {
+    csrf: { enable: false }
+  };
+
   // 中间件配置
   config.middleware = [];
 

@@ -2,14 +2,15 @@
 
 const jwt = require('jwt-simple');
 
-exports.authToken = options => {
+exports.authToken = authOptions => {
   return async (ctx, next) => {
     const token = ctx.get('token');
 
     if (!token) {
       ctx.body = {
         success: false,
-        code: ctx.code.TOKEN_NEEDED
+        code: ctx.code.TOKEN_NEEDED,
+        message: 'Token缺失，请登录'
       };
       return;
     }
@@ -18,39 +19,37 @@ exports.authToken = options => {
     if (t.length !== 2 || !t[0] || !t[1]) {
       ctx.body = {
         success: false,
-        code: ctx.code.TOKEN_ERROR
+        code: ctx.code.TOKEN_ERROR,
+        message: '无效的Token，请重新登录'
       };
       return;
     }
 
     const flag = await ctx.app.redis.get(token);
-    const decoded = jwt.decode(t[1], options.auth.secret);
+    const decoded = jwt.decode(t[1], authOptions.secret);
     if (
       !flag ||
       !decoded ||
       decoded.id == null ||
       decoded.id !== parseInt(t[0]) ||
-      decoded.uid == null ||
       decoded.type == null
     ) {
       ctx.body = {
         success: false,
-        code: ctx.code.TOKEN_ERROR
+        code: ctx.code.TOKEN_ERROR,
+        message: '无效的Token，请重新登录'
       };
       return;
     }
     ctx.user = {};
     ctx.user.id = decoded.id;
-    ctx.user.uid = decoded.uid;
     ctx.user.type = decoded.type;
 
-    if (
-      options.checkExpired &&
-      Date.now() - new Date(flag) <= options.auth.expiredTime * 1000
-    ) {
+    if (authOptions.checkExpired && Date.now() - new Date(flag) <= authOptions.expiredTime * 1000) {
       ctx.body = {
         success: false,
-        code: ctx.code.TOKEN_EXPIRED
+        code: ctx.code.TOKEN_EXPIRED,
+        message: 'Token失效，请重新登录'
       };
       return;
     }
@@ -59,8 +58,17 @@ exports.authToken = options => {
   };
 };
 
-exports.authUserType = options => {
+exports.authUserType = types => {
   return async (ctx, next) => {
+    if (!ctx.user || !ctx.user.type || types.indexOf(type) < 0) {
+      ctx.body = {
+        success: false,
+        code: ctx.code.USERTYPE_MISMATCH,
+        message: '当前用户类型没有权限'
+      };
+      return;
+    }
+
     await next();
   };
 };

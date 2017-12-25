@@ -6,7 +6,7 @@
 module.exports = app => {
   const { router, controller, middlewares } = app;
 
-  const authTokenMiddleware = middlewares.auth.authToken(app.config);
+  const authTokenMiddleware = middlewares.auth.authToken(app.config.auth);
 
   router.post('/user/login', controller.user.login);
   router.post('/user/register/customer', controller.user.registerCustomer);
@@ -15,4 +15,5 @@ module.exports = app => {
 
   router.get('/userinfo/:id', authTokenMiddleware, controller.userInfo.search);
   router.post('/userinfo/:id', authTokenMiddleware, controller.userInfo.modify);
+
 };
