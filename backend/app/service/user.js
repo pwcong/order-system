@@ -6,14 +6,12 @@ const uuidv1 = require('uuid/v1');
 const uuidv5 = require('uuid/v5');
 
 class UserService extends Service {
-  async register(username, phone, password, type) {
-    let _user;
+  async register(username, password, phone, type) {
+    const { app } = this;
 
-    _user = await this.app.model.User.findOne({
-      where: {
-        username
-      }
-    });
+    let _user = null;
+
+    _user = await app.model.User.findByUsername(username);
 
     if (_user) {
       return {
@@ -23,11 +21,7 @@ class UserService extends Service {
       };
     }
 
-    _user = await this.app.model.User.findOne({
-      where: {
-        phone
-      }
-    });
+    _user = await app.model.User.findByPhone(phone);
 
     if (_user) {
       return {
@@ -39,7 +33,7 @@ class UserService extends Service {
 
     const salt = uuidv1();
 
-    const user = await this.app.model.User.create({
+    _user = await app.model.User.create({
       username,
       phone,
       password: uuidv5(password, salt),
@@ -47,13 +41,20 @@ class UserService extends Service {
       type
     });
 
+    if (_user) {
+      return {
+        success: true,
+        message: '',
+        payload: {
+          id: _user.id,
+          type
+        }
+      };
+    }
+
     return {
-      success: true,
-      message: '',
-      payload: {
-        id: user.id,
-        type
-      }
+      success: false,
+      message: '未知错误'
     };
   }
 

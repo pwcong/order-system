@@ -8,12 +8,12 @@ module.exports = app => {
 
   const authTokenMiddleware = middlewares.auth.authToken(app.config.auth);
 
+  router.get('/test', controller.test.default);
+  router.post('/test', controller.test.default);
+
   router.post('/user/login', controller.user.login);
-  router.post('/user/register/customer', controller.user.registerCustomer);
-  router.post('/user/register/business', controller.user.registerBusiness);
-  router.post('/user/register/enterprise', controller.user.registerEnterprise);
+  router.post('/user/register/:type', controller.user.register);
 
   router.get('/userinfo/:id', authTokenMiddleware, controller.userInfo.search);
   router.post('/userinfo/:id', authTokenMiddleware, controller.userInfo.modify);
-
 };

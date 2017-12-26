@@ -1,7 +1,5 @@
 'use strict';
 
-const UserModel = require('./user');
-
 module.exports = app => {
   const { STRING, INTEGER, DATE } = app.Sequelize;
 
@@ -10,7 +8,7 @@ module.exports = app => {
       type: INTEGER,
       primaryKey: true,
       references: {
-        model: UserModel(app),
+        model: app.model.User,
         key: 'id'
       }
     },

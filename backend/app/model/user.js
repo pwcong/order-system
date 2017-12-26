@@ -1,7 +1,5 @@
 'use strict';
 
-const UserTypeModel = require('./user_type');
-
 module.exports = app => {
   const { STRING, INTEGER, DECIMAL } = app.Sequelize;
 
@@ -19,7 +17,7 @@ module.exports = app => {
       type: INTEGER,
       allowNull: false,
       references: {
-        model: UserTypeModel(app),
+        model: app.model.UserType,
         key: 'id'
       }
     },
@@ -64,6 +62,22 @@ module.exports = app => {
       defaultValue: 0
     }
   });
+
+  User.findByUsername = function(username) {
+    return this.findOne({
+      where: {
+        username
+      }
+    });
+  };
+
+  User.findByPhone = function(phone) {
+    return this.findOne({ where: { phone } });
+  };
+
+  User.findByEmail = function(email) {
+    return this.findOne({ where: { email } });
+  };
 
   return User;
 };

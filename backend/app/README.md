@@ -7,6 +7,7 @@ Router 主要用来描述请求 URL 和具体承担执行动作的 Controller �
 ## 如何定义 Router
 
 * app/router.js 里面定义 URL 路由规则
+
 ```js
 // app/router.js
 module.exports = app => {
@@ -16,12 +17,13 @@ module.exports = app => {
 ```
 
 * app/controller 目录下面实现 Controller
+
 ```js
 // app/controller/user.js
 class UserController extends Controller {
   async info() {
     this.ctx.body = {
-      name: `hello ${ctx.params.id}`,
+      name: `hello ${ctx.params.id}`
     };
   }
 }
@@ -40,7 +42,7 @@ router.verb('path-match', middleware1, ..., middlewareN, app.controller.action);
 router.verb('router-name', 'path-match', middleware1, ..., middlewareN, app.controller.action);
 ```
 
-路由完整定义主要包括5个主要部分:
+路由完整定义主要包括 5 个主要部分:
 
 * verb - 用户触发动作，支持 get，post 等所有 HTTP 方法，后面会通过示例详细说明。
   * router.head - HEAD
@@ -67,6 +69,7 @@ router.verb('router-name', 'path-match', middleware1, ..., middlewareN, app.cont
 * Controller 支持子目录，在定义路由的时候，可以通过 ${directoryName}.${fileName}.${functionName} 的方式制定对应的 Controller。
 
 下面是一些路由定义的方式：
+
 ```js
 // app/router.js
 module.exports = app => {
@@ -82,6 +85,7 @@ module.exports = app => {
 ## RESTful 风格的 URL 定义
 
 如果想通过 RESTful 的方式来定义路由， 我们提供了 `app.resources('routerName', 'pathMatch', controller)` 快速在一个路径上生成 CRUD 路由结构。
+
 ```js
 // app/router.js
 module.exports = app => {
@@ -93,15 +97,15 @@ module.exports = app => {
 
 上面代码就在 `/posts` 路径上部署了一组 CRUD 路径结构，对应的 Controller 为 `app/controller/posts.js` 接下来， 你只需要在 `posts.js` 里面实现对应的函数就可以了。
 
-|Method	|Path	      |Route Name	|Controller.Action             |
-|-------|-----------|-----------|------------------------------|
-|GET	  |/posts	    |posts      |app.controllers.posts.index   |
-|GET	  |/posts/new	|new_post	  |app.controllers.posts.new     |
-|GET	  |/posts/:id	|post	      |app.controllers.posts.show    |
-|GET	  |/posts/:id/edit|edit_post|	app.controllers.posts.edit |
-|POST	  |/posts	    |posts	    |app.controllers.posts.create  |
-|PUT	  |/posts/:id	|post	      |app.controllers.posts.update  |
-|DELETE	|/posts/:id	|post	      |app.controllers.posts.destroy |
+| Method | Path            | Route Name | Controller.Action             |
+| ------ | --------------- | ---------- | ----------------------------- |
+| GET    | /posts          | posts      | app.controllers.posts.index   |
+| GET    | /posts/new      | new_post   | app.controllers.posts.new     |
+| GET    | /posts/:id      | post       | app.controllers.posts.show    |
+| GET    | /posts/:id/edit | edit_post  | app.controllers.posts.edit    |
+| POST   | /posts          | posts      | app.controllers.posts.create  |
+| PUT    | /posts/:id      | post       | app.controllers.posts.update  |
+| DELETE | /posts/:id      | post       | app.controllers.posts.destroy |
 
 ```js
 // app/controller/posts.js
@@ -129,6 +133,7 @@ exports.destroy = async () => {};
 ### 参数获取
 
 1. Query String 方式
+
 ```js
 // app/router.js
 module.exports = app => {
@@ -143,6 +148,7 @@ exports.index = async ctx => {
 ```
 
 2. 参数命名方式
+
 ```js
 // app/router.js
 module.exports = app => {
@@ -178,6 +184,7 @@ exports.detail = async ctx => {
 ```
 
 ### 表单内容的获取
+
 ```js
 // app/router.js
 module.exports = app => {
@@ -197,13 +204,14 @@ exports.post = async ctx => {
 
 这里直接发起 POST 请求会报错：'secret is missing'。错误信息来自 koa-csrf/index.js#L69 。
 
-**原因：**框架内部针对表单 POST 请求均会验证 CSRF 的值，因此我们在表单提交时，请带上 CSRF key 进行提交，可参考安全威胁csrf的防范
+**原因：**框架内部针对表单 POST 请求均会验证 CSRF 的值，因此我们在表单提交时，请带上 CSRF key 进行提交，可参考安全威胁 csrf 的防范
 
 **注意：**上面的校验是因为框架中内置了安全插件 egg-security，提供了一些默认的安全实践，并且框架的安全插件是默认开启的，如果需要关闭其中一些安全防范，直接设置该项的 enable 属性为 false 即可。
 
 「除非清楚的确认后果，否则不建议擅自关闭安全插件提供的功能。」
 
 这里在写例子的话可临时在 config/config.default.js 中设置
+
 ```js
 exports.security = {
   csrf: false
@@ -211,6 +219,7 @@ exports.security = {
 ```
 
 ### 表单校验
+
 ```js
 // app/router.js
 module.exports = app => {
@@ -220,12 +229,12 @@ module.exports = app => {
 // app/controller/user.js
 const createRule = {
   username: {
-    type: 'email',
+    type: 'email'
   },
   password: {
     type: 'password',
-    compare: 're-password',
-  },
+    compare: 're-password'
+  }
 };
 
 exports.create = async ctx => {
@@ -240,6 +249,7 @@ exports.create = async ctx => {
 ### 重定向
 
 1. 内部重定向
+
 ```js
 // app/router.js
 module.exports = app => {
@@ -256,6 +266,7 @@ exports.index = async ctx => {
 ```
 
 2. 外部重定向
+
 ```js
 // app/router.js
 module.exports = app => {
@@ -298,7 +309,7 @@ module.exports = () => {
 
 // app/router.js
 module.exports = app => {
-  app.router.get('s', '/search', app.middlewares.uppercase(), app.controller.search)
+  app.router.get('s', '/search', app.middlewares.uppercase(), app.controller.search);
 };
 
 // curl http://localhost:7001/search2?name=egg

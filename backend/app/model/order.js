@@ -1,8 +1,5 @@
 'use strict';
 
-const UserModel = require('./user');
-const PaymentTypeModel = require('./payment_type');
-
 module.exports = app => {
   const { STRING, INTEGER, TEXT, BOOLEAN, DECIMAL } = app.Sequelize;
 
@@ -24,7 +21,7 @@ module.exports = app => {
       type: INTEGER,
       allowNull: false,
       references: {
-        model: UserModel(app),
+        model: app.model.User,
         key: 'id'
       }
     },
@@ -36,7 +33,7 @@ module.exports = app => {
       type: INTEGER,
       allowNull: false,
       references: {
-        model: UserModel(app),
+        model: app.model.User,
         key: 'id'
       }
     },
@@ -70,7 +67,7 @@ module.exports = app => {
     payment_type: {
       type: INTEGER,
       references: {
-        model: PaymentTypeModel(app),
+        model: app.model.PaymentType,
         key: 'id'
       }
     },

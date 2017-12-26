@@ -1,8 +1,5 @@
 'use strict';
 
-const UserModel = require('./user');
-const RecipeModel = require('./recipe');
-
 module.exports = app => {
   const { STRING, INTEGER } = app.Sequelize;
 
@@ -16,7 +13,7 @@ module.exports = app => {
       type: INTEGER,
       allowNull: false,
       references: {
-        model: UserModel(app),
+        model: app.model.User,
         key: 'id'
       }
     },
@@ -24,7 +21,7 @@ module.exports = app => {
       type: INTEGER,
       allowNull: false,
       references: {
-        model: RecipeModel(app),
+        model: app.model.Recipe,
         key: 'id'
       }
     },

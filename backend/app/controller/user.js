@@ -6,20 +6,52 @@ const jwt = require('jwt-simple');
 
 class UserController extends Controller {
   /**
-   * 注册客户
+   * 注册
    */
-  async registerCustomer() {
-    const { username, phone, password } = this.ctx.request.body;
+  async register() {
+    const { app, ctx, service, config } = this;
 
-    if (!username || !phone || !password) {
-      this.ctx.body = {
-        success: false,
-        message: '缺失参数',
-        code: this.ctx.code.SERVICE_ERROR
-      };
+    let type = null;
+
+    switch (ctx.params.type) {
+      case 'customer':
+        type = 1;
+        break;
+      case 'business':
+        type = 2;
+        break;
+      case 'enterprise':
+        type = 3;
+        break;
+      default:
+        break;
     }
 
-    const res = await this.service.user.register(username, phone, password, 1);
+    if (!type) {
+      ctx.body = {
+        success: false,
+        message: '参数有误',
+        code: this.ctx.code.SERVICE_ERROR
+      };
+      return;
+    }
+
+    const { username, password, phone } = ctx.request.body;
+
+    if (!username || !password || !phone) {
+      ctx.body = {
+        success: false,
+        message: '参数不足',
+        code: this.ctx.code.SERVICE_ERROR
+      };
+      return;
+    }
+
+    // Todo 校验参数
+
+    const res = await service.user.register(username, password, phone, type);
+
+    console.log(res);
 
     if (res.success) {
       const { id, type } = res.payload;
@@ -29,44 +61,46 @@ class UserController extends Controller {
           id,
           type
         },
-        this.config.auth.secret
+        config.auth.secret
       );
 
       const token = id + ':' + _token;
 
-      await this.app.redis.set(token, new Date());
+      await app.redis.set(token, new Date());
 
-      this.ctx.body = {
+      ctx.body = {
         success: true,
         message: '注册成功',
-        code: this.ctx.code.STATUS_OK,
+        code: ctx.code.STATUS_OK,
         payload: {
           token
         }
       };
-    } else {
-      this.ctx.body = {
-        success: false,
-        message: res.message,
-        code: this.ctx.code.SERVICE_ERROR
-      };
+      return;
     }
+
+    ctx.body = {
+      success: false,
+      message: res.message,
+      code: ctx.code.SERVICE_ERROR
+    };
   }
-
-  /**
-   * 注册商户
-   */
-  async registerBusiness() {}
-
-  /**
-   * 注册企业
-   */
-  async registerEnterprise() {}
 
   /**
    * 登录用户
    */
-  async login() {}
+  async login() {
+    const { upe, password } = this.ctx.request.body;
+
+    if (!upe || !password) {
+      this.ctx.body = {
+        success: false,
+        message: '参数不足',
+        code: this.ctx.code.SERVICE_ERROR
+      };
+      return;
+    }
+  }
 
   /**
    * 锁定用户
