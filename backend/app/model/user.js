@@ -63,6 +63,14 @@ module.exports = app => {
     }
   });
 
+  User.findByUPE = function(upe) {
+    return this.findOne({
+      where: {
+        [app.model.Op.or]: [{ username: upe }, { phone: upe }, { email: upe }]
+      }
+    });
+  };
+
   User.findByUsername = function(username) {
     return this.findOne({
       where: {

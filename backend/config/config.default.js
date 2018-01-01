@@ -6,17 +6,17 @@ module.exports = appInfo => {
   // Cookie签名密钥
   config.keys = appInfo.name + '_powered_by_pwcong';
 
+  // 安全设置
+  config.security = {
+    csrf: { enable: false }
+  };
+
   // 启用超级管理员
   config.admin = {
     enable: true,
     password: '123456',
     phone: '13000000000',
     email: 'pwcong@foxmail.com'
-  };
-
-  // 安全设置
-  config.security = {
-    csrf: { enable: false }
   };
 
   // 中间件配置
