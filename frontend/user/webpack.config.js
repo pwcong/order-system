@@ -52,7 +52,7 @@ module.exports = {
   devtool: 'inline-source-map',
   devServer: {
     historyApiFallback: true,
-    port: 3000,
+    port: 6001,
     contentBase: ['./'],
     inline: true,
     publicPath: '/'
@@ -60,7 +60,7 @@ module.exports = {
   plugins: [
     new HTMLWebpackPlugin({
       title: '平板点餐系统 | 用户',
-      template: './src/index.ejs',
+      template: 'index.ejs',
       minify: {
         collapseWhitespace: true
       }

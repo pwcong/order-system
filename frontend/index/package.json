@@ -1,7 +1,7 @@
 {
-  "name": "vue-start",
+  "name": "order-system-fe-index",
   "version": "1.0.0",
-  "description": "A Vue Start demo.",
+  "description": "Order System",
   "main": "./src/app.js",
   "scripts": {
     "clean": "rimraf ./dist",
@@ -9,8 +9,7 @@
     "build": "npm run clean & cross-env NODE_ENV=production webpack --progress"
   },
   "keywords": [
-    "Vue",
-    "Start"
+    "Vue"
   ],
   "author": "pwcong@foxmail.com",
   "license": "ISC",

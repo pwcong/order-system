@@ -1,5 +1,5 @@
 {
-  "name": "order-system-fe",
+  "name": "order-system-fe-user",
   "version": "1.0.0",
   "description": "Order System",
   "main": "./src/app.js",
