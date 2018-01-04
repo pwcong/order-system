@@ -12,7 +12,7 @@ module.exports = app => {
   router.post('/test', controller.test.default);
 
   router.post('/user/login', controller.user.login);
-  router.post('/user/register/:type', controller.user.register);
+  router.post('/user/register', controller.user.register);
 
   router.get('/userinfo/:id', authTokenMiddleware, controller.userInfo.search);
   router.post('/userinfo/:id', authTokenMiddleware, controller.userInfo.modify);

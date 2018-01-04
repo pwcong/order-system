@@ -1,6 +1,7 @@
 <template>
-  <div :class="{modal: true, active: visible}">
-    <slot name="modal-main"></slot>
+
+  <div class="modal">
+      <slot name="modal-main"></slot>
   </div>
 </template>
 <style lang="scss">
@@ -11,7 +12,6 @@
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  background-color: rgba(0, 0, 0, 0.8);
 
   display: flex;
   flex-flow: row nowrap;
@@ -19,27 +19,10 @@
   align-items: flex-start;
 
   padding: 32px 24px;
-
-  visibility: hidden;
-  opacity: 0;
-
-  transition: opacity 0.2s;
-
-  &.active {
-    visibility: visible;
-    opacity: 1;
-  }
 }
 </style>
 
 <script>
-export default {
-  props: {
-    visible: {
-      default: false,
-      type: Boolean
-    }
-  }
-};
+export default {};
 </script>
 

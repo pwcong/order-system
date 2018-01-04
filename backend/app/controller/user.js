@@ -12,38 +12,22 @@ class UserController extends Controller {
   async register() {
     const { app, ctx, service, config } = this;
 
-    let type = null;
+    const { username, password, phone, type } = ctx.request.body;
 
-    switch (ctx.params.type) {
-      case 'customer':
-        type = 1;
-        break;
-      case 'business':
-        type = 2;
-        break;
-      case 'enterprise':
-        type = 3;
-        break;
-      default:
-        break;
-    }
-
-    if (!type) {
+    if (!username || !password || !phone || !type) {
       ctx.body = {
         success: false,
-        message: '参数有误',
-        code: this.ctx.code.SERVICE_ERROR
+        message: '参数不足',
+        code: this.ctx.code.STATUS_ERROR
       };
       return;
     }
 
-    const { username, password, phone } = ctx.request.body;
-
-    if (!username || !password || !phone) {
+    if ([1, 2, 3].indexOf(type) < 0) {
       ctx.body = {
         success: false,
-        message: '参数不足',
-        code: this.ctx.code.SERVICE_ERROR
+        message: '参数有误',
+        code: this.ctx.code.STATUS_ERROR
       };
       return;
     }
@@ -80,7 +64,7 @@ class UserController extends Controller {
       ctx.body = {
         success: false,
         message: err.message,
-        code: ctx.code.SERVICE_ERROR
+        code: ctx.code.STATUS_ERROR
       };
     }
   }
@@ -97,7 +81,7 @@ class UserController extends Controller {
       this.ctx.body = {
         success: false,
         message: '参数不足',
-        code: this.ctx.code.SERVICE_ERROR
+        code: this.ctx.code.STATUS_ERROR
       };
       return;
     }
@@ -131,7 +115,7 @@ class UserController extends Controller {
       ctx.body = {
         success: false,
         message: err.message,
-        code: ctx.code.SERVICE_ERROR
+        code: ctx.code.STATUS_ERROR
       };
     }
   }

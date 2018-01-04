@@ -8,9 +8,9 @@ const api = {
       data: (upe, password) => ({ upe, password })
     },
     register: {
-      url: type => API_BASE + 'user/register' + type,
+      url: type => API_BASE + 'user/register',
       method: 'POST',
-      data: (username, phone, password) => ({ username, phone, password })
+      data: (username, phone, password, type) => ({ username, phone, password, type })
     }
   }
 };

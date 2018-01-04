@@ -33,6 +33,7 @@
     "webpack-dev-server": "^2.9.3"
   },
   "dependencies": {
+    "animate.css": "^3.5.2",
     "axios": "^0.17.1",
     "cross-env": "^5.1.0",
     "mint-ui": "^2.2.13",
