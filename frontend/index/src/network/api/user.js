@@ -6,7 +6,7 @@ function login(upe, password) {
   return request(api.user.login.url(), api.user.login.method, api.user.login.data(upe, password));
 }
 
-function register(username, password, phone, type) {
+function register(username, phone, password, type) {
   return request(
     api.user.register.url(),
     api.user.register.method,

@@ -7,13 +7,13 @@
 
       <div class="entries">
 
-        <a href="#" class="entry" style="background-color: #F64561">
+        <a :href="adminIndexUrl" class="entry" style="background-color: #F64561">
           <div>我是店家</div>
         </a>
-        <a href="#" class="entry" style="background-color: #3EBCC8">
+        <a :href="userIndexUrl" class="entry" style="background-color: #3EBCC8">
           <div>我是客户</div>
         </a>
-        <a href="#" class="entry" style="background-color: #744E37">
+        <a :href="adminIndexUrl" class="entry" style="background-color: #744E37">
           <div>我是企业</div>
         </a>
 
@@ -30,8 +30,10 @@
       @ 2017-{{new Date().getUTCFullYear()}} 平板点餐系统 POWERED BY Pwcong
     </div>
 
-    <div class="mask" v-if="registerModalVisible">
-    </div>
+    <transition :duration="200" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+      <div class="mask" v-if="registerModalVisible">
+      </div>
+    </transition>
 
     <transition enter-active-class="animated bounceIn" leave-active-class="animated bounceOut">
       <modal v-if="registerModalVisible">
@@ -284,6 +286,7 @@ body {
       text-align: center;
 
       button {
+        outline: none;
         margin: 0 8px;
         cursor: pointer;
         border: none;
@@ -291,6 +294,15 @@ body {
         padding: 8px 32px;
 
         color: white;
+
+        transition: transform 0.2s;
+
+        &:hover {
+          transform: scale(1.1);
+        }
+        &:active {
+          transform: scale(1);
+        }
 
         &.register-btn-submit {
           background-color: #6bc233;
@@ -323,6 +335,8 @@ import bg from '../assets/imgs/bg.jpg';
 
 import userApi from '../network/api/user';
 
+import CONFIG from '../const/config';
+
 export default {
   data() {
     return {
@@ -333,7 +347,9 @@ export default {
       password2: '',
       phone: '',
       type: '',
-      passwordError: false
+      passwordError: false,
+      adminIndexUrl: CONFIG.URL_INDEX_ADMIN,
+      userIndexUrl: CONFIG.URL_INDEX_USER
     };
   },
   components: {
@@ -370,8 +386,11 @@ export default {
         spinnerType: 'fading-circle'
       });
 
+      console.log(this.$data);
+
       try {
         const res = await userApi.register(this.username, this.phone, this.password1, parseInt(this.type));
+        Indicator.close();
         Toast('注册成功');
         this.resetRegisterForm();
         this.registerModalVisible = false;
