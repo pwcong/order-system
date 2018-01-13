@@ -7,7 +7,7 @@ const _import = require('./_import_' + process.env.NODE_ENV);
 Vue.use(Router);
 
 /* Layout */
-import Layout from '../views/layout/Layout';
+import Layout from '@/views/layout/Layout';
 
 /**
 * hidden: true                   if `hidden:true` will not show in the sidebar(default is false)

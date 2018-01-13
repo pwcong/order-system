@@ -31,7 +31,6 @@ const user = {
   actions: {
     // 登录
     Login({ commit }, userInfo) {
-      console.log(userInfo);
       return new Promise((resolve, reject) => {
         login(userInfo.username.trim(), userInfo.password)
           .then(response => {
@@ -44,7 +43,6 @@ const user = {
             resolve(response);
           })
           .catch(error => {
-            console.log(error);
             reject(error);
           });
       });
