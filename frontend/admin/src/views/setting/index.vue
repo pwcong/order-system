@@ -1,6 +1,5 @@
 <template>
   <div class="dashboard-container">
-    设置
   </div>
 </template>
 
