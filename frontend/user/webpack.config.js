@@ -52,7 +52,7 @@ module.exports = {
   devtool: 'inline-source-map',
   devServer: {
     historyApiFallback: true,
-    port: 6001,
+    port: 6002,
     contentBase: ['./'],
     inline: true,
     publicPath: '/'

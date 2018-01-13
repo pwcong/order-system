@@ -19,11 +19,12 @@ class UpdateCache extends Subscription {
 
     keys.forEach(async key => {
       const timestamp = await app.redis.get(key);
+
       if (
         !timestamp ||
         !parseInt(timestamp) ||
         (config.auth.checkExpired &&
-          Date.parse(new Date()) - parseInt(timestamp) >= config.auth.expiredTime * 1000)
+          new Date().getTime() - parseInt(timestamp) >= config.auth.expiredTime * 1000)
       ) {
         await app.redis.del(key);
       }

@@ -4,7 +4,7 @@ const jwt = require('jwt-simple');
 
 exports.authToken = authOptions => {
   return async (ctx, next) => {
-    const token = ctx.get('token');
+    const token = ctx.get('X-Token');
 
     if (!token) {
       ctx.body = {
@@ -27,13 +27,7 @@ exports.authToken = authOptions => {
 
     const flag = await ctx.app.redis.get(token);
     const decoded = jwt.decode(t[1], authOptions.secret);
-    if (
-      !flag ||
-      !decoded ||
-      decoded.id == null ||
-      decoded.id !== parseInt(t[0]) ||
-      decoded.type == null
-    ) {
+    if (!flag || !decoded || decoded.id == null || decoded.id !== parseInt(t[0]) || decoded.type == null) {
       ctx.body = {
         success: false,
         code: ctx.code.TOKEN_ERROR,

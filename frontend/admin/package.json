@@ -5,7 +5,7 @@
   "description": "Order System",
   "author": "Pwcong <pwcong@foxmail.com>",
   "scripts": {
-    "dev": "cross-env PORT=6002 webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "dev": "cross-env PORT=6003 webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "build": "node build/build.js",
     "build:report": "npm_config_report=true node build/build.js",
@@ -15,6 +15,7 @@
   "dependencies": {
     "axios": "0.17.1",
     "element-ui": "2.0.8",
+    "identicon.js": "^2.3.1",
     "js-cookie": "2.2.0",
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",

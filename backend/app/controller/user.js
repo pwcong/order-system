@@ -43,21 +43,23 @@ class UserController extends Controller {
         {
           id,
           type,
-          timestamp: Date.now()
+          timestamp: new Date().getTime()
         },
         config.auth.secret
       );
 
       const token = id + ':' + _token;
 
-      await app.redis.set(token, new Date());
+      await app.redis.set(token, new Date().getTime());
 
       ctx.body = {
         success: true,
         message: '注册成功',
         code: ctx.code.STATUS_OK,
         payload: {
-          token
+          token,
+          id,
+          type
         }
       };
     } catch (err) {
@@ -75,9 +77,9 @@ class UserController extends Controller {
   async login() {
     const { app, ctx, service, config } = this;
 
-    const { upe, pwd } = this.ctx.request.body;
+    const { upe, password } = this.ctx.request.body;
 
-    if (!upe || !pwd) {
+    if (!upe || !password) {
       this.ctx.body = {
         success: false,
         message: '参数不足',
@@ -87,28 +89,30 @@ class UserController extends Controller {
     }
 
     try {
-      const res = await service.user.login(upe, pwd);
+      const res = await service.user.login(upe, password);
 
       const { id, type } = res;
 
       const content = {
         id,
         type,
-        timestamp: Date.now()
+        timestamp: new Date().getTime()
       };
 
       const _token = jwt.encode(content, config.auth.secret);
 
       const token = id + ':' + _token;
 
-      await app.redis.set(token, new Date());
+      await app.redis.set(token, new Date().getTime());
 
       ctx.body = {
         success: true,
         message: '登录成功',
         code: ctx.code.STATUS_OK,
         payload: {
-          token
+          token,
+          id,
+          type
         }
       };
     } catch (err) {
@@ -118,6 +122,25 @@ class UserController extends Controller {
         code: ctx.code.STATUS_ERROR
       };
     }
+  }
+
+  /**
+   * 验证Token
+   */
+  async check() {
+    const { ctx } = this;
+
+    const { id, type } = ctx.user;
+
+    ctx.body = {
+      success: true,
+      code: ctx.code.STATUS_OK,
+      message: '验证成功',
+      payload: {
+        id,
+        type
+      }
+    };
   }
 
   /**

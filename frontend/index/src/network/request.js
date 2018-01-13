@@ -11,7 +11,7 @@ export default function(url, method = 'GET', data = {}, headers = {}) {
       headers: Object.assign({}, HEADERS, headers)
     })
       .then(res => {
-        if (res.status === 200 && res.data && res.data.code === 200) {
+        if (res.status === 200 && res.data && res.data.code === 20000) {
           resolve(res);
         } else {
           reject(res.msg || (res.data && res.data.message));

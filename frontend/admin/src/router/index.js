@@ -26,47 +26,61 @@ export const constantRouterMap = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
-    name: 'Dashboard',
     hidden: true,
     children: [
       {
         path: 'dashboard',
+        name: 'Dashboard',
         component: _import('dashboard/index')
       }
     ]
   },
 
   {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'example' },
-    children: [
-      {
-        path: 'table',
-        name: 'Table',
-        component: _import('table/index'),
-        meta: { title: 'Table', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: _import('tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
-      }
-    ]
-  },
-
-  {
-    path: '/form',
+    path: '/order',
     component: Layout,
     children: [
       {
         path: 'index',
-        name: 'Form',
-        component: _import('form/index'),
-        meta: { title: 'Form', icon: 'form' }
+        name: 'Order',
+        component: _import('order/index'),
+        meta: { title: '订单', icon: 'buycar' }
+      }
+    ]
+  },
+  {
+    path: '/recipe',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Recipe',
+        component: _import('recipe/index'),
+        meta: { title: '菜单', icon: 'food' }
+      }
+    ]
+  },
+  {
+    path: '/bill',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Bill',
+        component: _import('bill/index'),
+        meta: { title: '账单', icon: 'bill' }
+      }
+    ]
+  },
+  {
+    path: '/setting',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Setting',
+        component: _import('setting/index'),
+        meta: { title: '设置', icon: 'setting' }
       }
     ]
   },

@@ -6,27 +6,42 @@ import { Message } from 'element-ui';
 import { getToken } from '@/utils/auth'; // 验权
 
 const whiteList = ['/login']; // 不重定向白名单
+
+/**
+ * 校验用户类型
+ * @param {int} type
+ * @param {function} next
+ */
+function checkType(type, next) {
+  if ([2, 3, 999].indexOf(type) < 0) {
+    store.dispatch('FedLogOut').then(() => {
+      Message.error('用户类型不匹配');
+      next({ path: '/login' });
+    });
+  } else {
+    next();
+  }
+}
+
 router.beforeEach((to, from, next) => {
   NProgress.start();
   if (getToken()) {
-    if (to.path === '/login') {
-      next({ path: '/' });
+    if (!store.getters.type || !store.getters.id) {
+      store
+        .dispatch('Check')
+        .then(res => {
+          const { type } = res;
+          checkType(type, next);
+        })
+        .catch(err => {
+          Message.error(err);
+          next({ path: '/login' });
+        });
     } else {
-      if (store.getters.roles.length === 0) {
-        store
-          .dispatch('GetInfo')
-          .then(res => {
-            // 拉取用户信息
-            next();
-          })
-          .catch(() => {
-            store.dispatch('FedLogOut').then(() => {
-              Message.error('验证失败,请重新登录');
-              next({ path: '/login' });
-            });
-          });
+      if (to.path === '/login') {
+        next({ path: '/' });
       } else {
-        next();
+        checkType(store.getters.type, next);
       }
     }
   } else {

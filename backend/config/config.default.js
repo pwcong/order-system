@@ -15,7 +15,7 @@ module.exports = appInfo => {
   config.admin = {
     enable: true,
     password: '123456',
-    phone: '13000000000',
+    phone: '13800138000',
     email: 'pwcong@foxmail.com'
   };
 

@@ -1,11 +1,12 @@
 <template>
   <div class="dashboard-container">
+    设置
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Dashboard',
+  name: 'Setting',
   computed: {}
 };
 </script>

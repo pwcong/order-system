@@ -1,40 +1,64 @@
-import { login, logout, getInfo } from '@/api/login';
+import { login, logout, getInfo, check } from '@/api/user';
 import { getToken, setToken, removeToken } from '@/utils/auth';
 
 const user = {
   state: {
     token: getToken(),
-    name: '',
-    avatar: '',
-    roles: []
+    id: 0,
+    type: 0,
+    nickname: '',
+    avatar: ''
   },
 
   mutations: {
     SET_TOKEN: (state, token) => {
       state.token = token;
     },
-    SET_NAME: (state, name) => {
-      state.name = name;
+    SET_NICKNAME: (state, nickname) => {
+      state.nickname = nickname;
     },
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar;
     },
-    SET_ROLES: (state, roles) => {
-      state.roles = roles;
+    SET_ID: (state, id) => {
+      state.id = id;
+    },
+    SET_TYPE: (state, type) => {
+      state.type = type;
     }
   },
 
   actions: {
     // 登录
     Login({ commit }, userInfo) {
-      const username = userInfo.username.trim();
+      console.log(userInfo);
       return new Promise((resolve, reject) => {
-        login(username, userInfo.password)
+        login(userInfo.username.trim(), userInfo.password)
           .then(response => {
-            const data = response.data;
+            const data = response.payload;
             setToken(data.token);
+
             commit('SET_TOKEN', data.token);
-            resolve();
+            commit('SET_TYPE', data.type);
+            commit('SET_ID', data.id);
+            resolve(response);
+          })
+          .catch(error => {
+            console.log(error);
+            reject(error);
+          });
+      });
+    },
+
+    // 获取用户信息
+    GetInfo({ commit, state }, id) {
+      return new Promise((resolve, reject) => {
+        getInfo(id || state.id)
+          .then(response => {
+            const data = response.payload;
+            commit('SET_NICKNAME', data.nicknickname);
+            commit('SET_AVATAR', data.avatar);
+            resolve(response);
           })
           .catch(error => {
             reject(error);
@@ -42,16 +66,16 @@ const user = {
       });
     },
 
-    // 获取用户信息
-    GetInfo({ commit, state }) {
+    // 检测登录状态
+    Check({ commit, state }) {
       return new Promise((resolve, reject) => {
-        getInfo(state.token)
+        check()
           .then(response => {
-            const data = response.data;
-            commit('SET_ROLES', data.role);
-            commit('SET_NAME', data.name);
-            commit('SET_AVATAR', data.avatar);
-            resolve(response);
+            const data = response.payload;
+            commit('SET_TYPE', data.type);
+            commit('SET_ID', data.id);
+
+            resolve(data);
           })
           .catch(error => {
             reject(error);
@@ -65,7 +89,8 @@ const user = {
         logout(state.token)
           .then(() => {
             commit('SET_TOKEN', '');
-            commit('SET_ROLES', []);
+            commit('SET_TYPE', 0);
+            commit('SET_ID', 0);
             removeToken();
             resolve();
           })

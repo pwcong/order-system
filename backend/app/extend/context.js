@@ -2,8 +2,8 @@
 
 const CODE = {
   // 一般http状态码
-  STATUS_OK: 200,
-  STATUS_ERROR: 400,
+  STATUS_OK: 20000,
+  STATUS_ERROR: 40000,
   // 一般错误状态码
   TOKEN_NEEDED: 40001,
   TOKEN_EXPIRED: 40002,

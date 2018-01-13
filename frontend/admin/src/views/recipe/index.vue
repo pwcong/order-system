@@ -1,11 +1,12 @@
 <template>
   <div class="dashboard-container">
+    菜单管理
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Dashboard',
+  name: 'Recipe',
   computed: {}
 };
 </script>
