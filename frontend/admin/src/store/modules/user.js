@@ -78,6 +78,10 @@ const user = {
             resolve(data);
           })
           .catch(error => {
+            commit('SET_TOKEN', '');
+            commit('SET_TYPE', 0);
+            commit('SET_ID', 0);
+            removeToken();
             reject(error);
           });
       });
@@ -104,6 +108,8 @@ const user = {
     FedLogOut({ commit }) {
       return new Promise(resolve => {
         commit('SET_TOKEN', '');
+        commit('SET_TYPE', 0);
+        commit('SET_ID', 0);
         removeToken();
         resolve();
       });

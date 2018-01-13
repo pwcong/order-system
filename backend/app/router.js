@@ -13,7 +13,8 @@ module.exports = app => {
 
   router.post('/user/login', controller.user.login);
   router.post('/user/register', controller.user.register);
-  router.get('/user/check', authTokenMiddleware, controller.user.check);
+  router.post('/user/check', authTokenMiddleware, controller.user.check);
+  router.post('/user/logout', controller.user.logout);
 
   router.get('/user/info/:id', controller.userInfo.search);
   router.post('/user/info/:id', authTokenMiddleware, controller.userInfo.modify);

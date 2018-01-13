@@ -125,6 +125,25 @@ class UserController extends Controller {
   }
 
   /**
+   * 用户退出
+   */
+  async logout() {
+    const { ctx, app } = this;
+
+    const token = ctx.get('X-Token');
+
+    try {
+      await app.redis.del(token);
+    } catch (err) {}
+
+    ctx.body = {
+      success: true,
+      message: '登出成功',
+      code: ctx.code.STATUS_OK
+    };
+  }
+
+  /**
    * 验证Token
    */
   async check() {

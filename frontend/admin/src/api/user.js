@@ -21,7 +21,7 @@ export function getInfo(id) {
 export function check() {
   return request({
     url: `/user/check`,
-    method: 'get'
+    method: 'post'
   });
 }
 
