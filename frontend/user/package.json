@@ -47,6 +47,7 @@
     "webpack-dev-server": "^2.9.7"
   },
   "dependencies": {
+    "amfe-flexible": "^2.2.1",
     "axios": "^0.17.1",
     "cross-env": "^5.1.1",
     "mint-ui": "^2.2.13",
