@@ -18,7 +18,7 @@ class UserController extends Controller {
       ctx.body = {
         success: false,
         message: '参数不足',
-        code: this.ctx.code.STATUS_ERROR
+        code: ctx.code.STATUS_ERROR
       };
       return;
     }
@@ -27,7 +27,7 @@ class UserController extends Controller {
       ctx.body = {
         success: false,
         message: '参数有误',
-        code: this.ctx.code.STATUS_ERROR
+        code: ctx.code.STATUS_ERROR
       };
       return;
     }
@@ -38,19 +38,20 @@ class UserController extends Controller {
       const res = await service.user.register(username, password, phone, type);
 
       const { id } = res;
+      const timestamp = new Date().getTime();
 
       const _token = jwt.encode(
         {
           id,
           type,
-          timestamp: new Date().getTime()
+          timestamp
         },
         config.auth.secret
       );
 
       const token = id + ':' + _token;
 
-      await app.redis.set(token, new Date().getTime());
+      await app.redis.set(token, timestamp);
 
       ctx.body = {
         success: true,
@@ -59,7 +60,8 @@ class UserController extends Controller {
         payload: {
           token,
           id,
-          type
+          type,
+          timestamp
         }
       };
     } catch (err) {
@@ -77,13 +79,13 @@ class UserController extends Controller {
   async login() {
     const { app, ctx, service, config } = this;
 
-    const { upe, password } = this.ctx.request.body;
+    const { upe, password } = ctx.request.body;
 
     if (!upe || !password) {
-      this.ctx.body = {
+      ctx.body = {
         success: false,
         message: '参数不足',
-        code: this.ctx.code.STATUS_ERROR
+        code: ctx.code.STATUS_ERROR
       };
       return;
     }
@@ -92,18 +94,19 @@ class UserController extends Controller {
       const res = await service.user.login(upe, password);
 
       const { id, type } = res;
+      const timestamp = new Date().getTime();
 
       const content = {
         id,
         type,
-        timestamp: new Date().getTime()
+        timestamp
       };
 
       const _token = jwt.encode(content, config.auth.secret);
 
       const token = id + ':' + _token;
 
-      await app.redis.set(token, new Date().getTime());
+      await app.redis.set(token, timestamp);
 
       ctx.body = {
         success: true,
@@ -112,7 +115,8 @@ class UserController extends Controller {
         payload: {
           token,
           id,
-          type
+          type,
+          timestamp
         }
       };
     } catch (err) {
@@ -149,7 +153,7 @@ class UserController extends Controller {
   async check() {
     const { ctx } = this;
 
-    const { id, type } = ctx.user;
+    const { id, type, timestamp } = ctx.user;
 
     ctx.body = {
       success: true,
@@ -157,7 +161,8 @@ class UserController extends Controller {
       message: '验证成功',
       payload: {
         id,
-        type
+        type,
+        timestamp
       }
     };
   }
@@ -165,11 +170,106 @@ class UserController extends Controller {
   /**
    * 锁定用户
    */
-  async lock() {}
+  async lock() {
+    const { ctx, service } = this;
+
+    const { id } = ctx.request.body;
+
+    if (!id) {
+      ctx.body = {
+        success: false,
+        message: '缺少参数',
+        code: ctx.code.STATUS_ERROR
+      };
+      return;
+    }
+
+    try {
+      await service.user.lock(id);
+      ctx.body = {
+        success: true,
+        message: '锁定成功',
+        code: ctx.code.STATUS_OK,
+        payload: {
+          id
+        }
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
 
   /**
    * 解锁用户
    */
-  async unlock() {}
+  async unlock() {
+    const { ctx, service } = this;
+
+    const { id } = ctx.request.body;
+
+    if (!id) {
+      ctx.body = {
+        success: false,
+        message: '缺少参数',
+        code: ctx.code.STATUS_ERROR
+      };
+      return;
+    }
+
+    try {
+      await service.user.unlock(id);
+      ctx.body = {
+        success: true,
+        message: '解锁成功',
+        code: ctx.code.STATUS_OK,
+        payload: {
+          id
+        }
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
+
+  async remove() {
+    const { ctx, service } = this;
+
+    const { id } = ctx.request.body;
+
+    if (!id) {
+      ctx.body = {
+        success: false,
+        message: '缺少参数',
+        code: ctx.code.STATUS_ERROR
+      };
+      return;
+    }
+
+    try {
+      await service.user.remove(id);
+      ctx.body = {
+        success: true,
+        message: '删除成功',
+        code: ctx.code.STATUS_OK,
+        payload: {
+          id
+        }
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
 }
 module.exports = UserController;

@@ -56,13 +56,6 @@ class UserService extends Service {
           });
         });
 
-        if (!userInfo) {
-          reject({
-            message: '未知错误'
-          });
-          return;
-        }
-
         resolve({
           id: userInfo.id
         });
@@ -96,10 +89,71 @@ class UserService extends Service {
         return;
       }
 
+      if (_user.status !== 0) {
+        let message = null;
+
+        switch (_user.status) {
+          case 1:
+            message = '该账户已被锁定';
+            break;
+          case 2:
+            message = '该账户已被注销';
+            break;
+          default:
+            message = '该账户不可用';
+            break;
+        }
+
+        reject({
+          message
+        });
+        return;
+      }
+
       resolve({
         id: _user.id,
         type: _user.type
       });
+    });
+  }
+
+  async lock(id) {
+    return this.changeStatus(id, 1);
+  }
+
+  async unlock(id) {
+    return this.changeStatus(id, 0);
+  }
+
+  async remove(id) {
+    return this.changeStatus(id, 2);
+  }
+
+  async changeStatus(id, status) {
+    const { app } = this;
+
+    return new Promise(async (resolve, reject) => {
+      let _user = null;
+
+      _user = await app.model.User.findById(id);
+
+      if (!_user) {
+        reject({
+          message: '用户不存在'
+        });
+        return;
+      }
+
+      _user.status = status;
+
+      try {
+        await _user.save();
+        resolve();
+      } catch (err) {
+        reject({
+          message: '操作失败'
+        });
+      }
     });
   }
 }

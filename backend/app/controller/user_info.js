@@ -9,7 +9,16 @@ class UserInfoController extends Controller {
   async search() {
     const { app, ctx, service, config } = this;
 
-    const { id } = this.ctx.params;
+    const id = ctx.params.id || ctx.user.id;
+
+    if (!id) {
+      ctx.body = {
+        success: false,
+        message: '缺少参数',
+        code: ctx.code.STATUS_ERROR
+      };
+      return;
+    }
 
     try {
       const res = await service.userInfo.get(id);
@@ -20,9 +29,7 @@ class UserInfoController extends Controller {
         success: true,
         message: '获取成功',
         code: ctx.code.STATUS_OK,
-        payload: {
-          userInfo
-        }
+        payload: userInfo
       };
     } catch (err) {
       ctx.body = {
