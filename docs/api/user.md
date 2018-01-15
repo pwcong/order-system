@@ -6,9 +6,9 @@
 * 用户登录
 * 用户登出
 * 验证令牌
-* 锁定用户
-* 解锁用户
-* 注销用户
+* 锁定用户（需管理员权限）
+* 解锁用户（需管理员权限）
+* 注销用户（需管理员权限）
 
 #### 用户注册
 
@@ -157,27 +157,20 @@ curl -X POST \
 
 #### 锁定用户（需管理员权限）
 
-路径：`/user/lock`
+路径：`/user/lock/:id`
 方法：`POST`
 
 请求头：
 
 * X-Token: 用户令牌
 
-请求参数：
-
-* id: 用户 ID
-
 请求示例：
 
 ```shell
 curl -X POST \
-  $API_BASE/user/lock \
+  $API_BASE/user/lock/10001 \
   -H 'X-Token: 10000:xxxxxxxxxxxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "id": 10001
-  }'
+  -H 'Content-Type: application/json'
 ```
 
 返回值：
@@ -197,27 +190,20 @@ curl -X POST \
 
 #### 解锁用户（需管理员权限）
 
-路径：`/user/unlock`
+路径：`/user/unlock/:id`
 方法：`POST`
 
 请求头：
 
 * X-Token: 用户令牌
 
-请求参数：
-
-* id: 用户 ID
-
 请求示例：
 
 ```shell
 curl -X POST \
-  $API_BASE/user/unlock \
+  $API_BASE/user/unlock/10001 \
   -H 'X-Token: 10000:xxxxxxxxxxxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "id": 10001
-  }'
+  -H 'Content-Type: application/json'
 ```
 
 返回值：
@@ -237,27 +223,20 @@ curl -X POST \
 
 #### 注销用户（需管理员权限）
 
-路径：`/user/remove`
+路径：`/user/remove/:id`
 方法：`POST`
 
 请求头：
 
 * X-Token: 用户令牌
 
-请求参数：
-
-* id: 用户 ID
-
 请求示例：
 
 ```shell
 curl -X POST \
-  $API_BASE/user/remove \
+  $API_BASE/user/remove/10001 \
   -H 'X-Token: 10000:xxxxxxxxxxxxx' \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "id": 10001
-  }'
+  -H 'Content-Type: application/json'
 ```
 
 返回值：

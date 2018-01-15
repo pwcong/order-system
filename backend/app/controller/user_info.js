@@ -46,9 +46,9 @@ class UserInfoController extends Controller {
   async modifySelf() {
     const { app, ctx, service, config } = this;
 
-    const { userInfo } = ctx.request.body;
+    const newUserInfo = ctx.request.body;
 
-    if (!userInfo) {
+    if (!newUserInfo) {
       ctx.body = {
         success: false,
         message: '缺少参数',
@@ -60,7 +60,7 @@ class UserInfoController extends Controller {
     const id = ctx.user.id;
 
     try {
-      const res = await service.userInfo.modifySelf(id, userInfo);
+      const res = await service.userInfo.modifySelf(id, newUserInfo);
 
       ctx.body = {
         success: true,

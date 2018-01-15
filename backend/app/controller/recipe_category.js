@@ -23,13 +23,13 @@ class RecipeCategoryController extends Controller {
     const { id } = ctx.user;
 
     try {
-      const recipeCategory = await service.recipeCategory.create(id, name);
+      const res = await service.recipeCategory.create(id, name);
 
       ctx.body = {
-        success: false,
+        success: true,
         message: '创建成功',
         code: ctx.code.STATUS_OK,
-        payload: recipeCategory
+        payload: res.recipeCategory
       };
     } catch (err) {
       ctx.body = {
@@ -43,19 +43,45 @@ class RecipeCategoryController extends Controller {
   /**
    * 查询菜单分类
    */
-  async search() {
+  async searchByUserId() {
     const { ctx, service } = this;
 
-    const { id } = ctx.user;
+    const { user_id } = ctx.params;
 
     try {
-      const res = await service.recipeCategory.findByUserId(id);
+      const res = await service.recipeCategory.findByUserId(user_id);
 
       ctx.body = {
-        success: false,
+        success: true,
         message: '获取成功',
         code: ctx.code.STATUS_OK,
         payload: res.recipeCategories
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
+
+  /**
+   * 查询菜单信息
+   */
+  async searchById() {
+    const { ctx, service } = this;
+
+    const { id } = ctx.params;
+
+    try {
+      const res = await service.recipeCategory.findById(id);
+
+      ctx.body = {
+        success: true,
+        message: '获取成功',
+        code: ctx.code.STATUS_OK,
+        payload: res.recipeCategory
       };
     } catch (err) {
       ctx.body = {
@@ -72,9 +98,10 @@ class RecipeCategoryController extends Controller {
   async modify() {
     const { ctx, service } = this;
 
-    const { id, name } = ctx.request.body;
+    const { id } = ctx.params;
+    const { name } = ctx.request.body;
 
-    if (!id || !name) {
+    if (!name) {
       ctx.body = {
         success: false,
         message: '缺少参数',
@@ -83,16 +110,16 @@ class RecipeCategoryController extends Controller {
       return;
     }
 
-    const userId = ctx.user.id;
+    const user_id = ctx.user.id;
 
     try {
-      const recipeCategories = await service.recipeCategory.modify(userId, id, name);
+      const res = await service.recipeCategory.modify(user_id, id, name);
 
       ctx.body = {
-        success: false,
+        success: true,
         message: '修改成功',
         code: ctx.code.STATUS_OK,
-        payload: recipeCategories
+        payload: res.recipeCategory
       };
     } catch (err) {
       ctx.body = {
@@ -109,27 +136,19 @@ class RecipeCategoryController extends Controller {
   async remove() {
     const { ctx, service } = this;
 
-    const { id } = ctx.request.body;
-
-    if (!id) {
-      ctx.body = {
-        success: false,
-        message: '缺少参数',
-        code: ctx.fcode.STATUS_ERROR
-      };
-      return;
-    }
-
-    const userId = ctx.user.id;
+    const { id } = ctx.params;
+    const user_id = ctx.user.id;
 
     try {
-      const recipeCategories = await service.recipeCategory.remove(userId, id);
+      const res = await service.recipeCategory.remove(user_id, id);
 
       ctx.body = {
-        success: false,
+        success: true,
         message: '删除成功',
         code: ctx.code.STATUS_OK,
-        payload: recipeCategories
+        payload: {
+          id
+        }
       };
     } catch (err) {
       ctx.body = {

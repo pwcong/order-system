@@ -173,16 +173,7 @@ class UserController extends Controller {
   async lock() {
     const { ctx, service } = this;
 
-    const { id } = ctx.request.body;
-
-    if (!id) {
-      ctx.body = {
-        success: false,
-        message: '缺少参数',
-        code: ctx.code.STATUS_ERROR
-      };
-      return;
-    }
+    const { id } = ctx.params;
 
     try {
       await service.user.lock(id);
@@ -209,16 +200,7 @@ class UserController extends Controller {
   async unlock() {
     const { ctx, service } = this;
 
-    const { id } = ctx.request.body;
-
-    if (!id) {
-      ctx.body = {
-        success: false,
-        message: '缺少参数',
-        code: ctx.code.STATUS_ERROR
-      };
-      return;
-    }
+    const { id } = ctx.params;
 
     try {
       await service.user.unlock(id);
@@ -245,16 +227,7 @@ class UserController extends Controller {
   async remove() {
     const { ctx, service } = this;
 
-    const { id } = ctx.request.body;
-
-    if (!id) {
-      ctx.body = {
-        success: false,
-        message: '缺少参数',
-        code: ctx.code.STATUS_ERROR
-      };
-      return;
-    }
+    const { id } = ctx.params;
 
     try {
       await service.user.remove(id);

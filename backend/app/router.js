@@ -19,39 +19,43 @@ module.exports = app => {
 
   router.post('/user/check', authTokenMiddleware, controller.user.check);
 
-  router.post('/user/lock', authTokenMiddleware, authUserTypeMiddleware([999]), controller.user.lock);
-  router.post('/user/unlock', authTokenMiddleware, authUserTypeMiddleware([999]), controller.user.unlock);
-  router.post('/user/remove', authTokenMiddleware, authUserTypeMiddleware([999]), controller.user.remove);
+  router.post('/user/lock/:id', authTokenMiddleware, authUserTypeMiddleware([999]), controller.user.lock);
+  router.post('/user/unlock/:id', authTokenMiddleware, authUserTypeMiddleware([999]), controller.user.unlock);
+  router.post('/user/remove/:id', authTokenMiddleware, authUserTypeMiddleware([999]), controller.user.remove);
 
   router.get('/user/info', authTokenMiddleware, controller.userInfo.search);
   router.get('/user/info/:id', authTokenMiddleware, controller.userInfo.search);
   router.post('/user/info', authTokenMiddleware, controller.userInfo.modifySelf);
-  router.post('/user/info/:id', authTokenMiddleware, controller.userInfo.modifyOther);
+  // router.post(
+  //   '/user/info/:id',
+  //   authTokenMiddleware,
+  //   authUserTypeMiddleware([999]),
+  //   controller.userInfo.modifyOther
+  // );
 
-  router.get(
-    '/recipe_category',
-    authTokenMiddleware,
-    authUserTypeMiddleware([2]),
-    controller.recipeCategory.search
-  );
   router.post(
-    '/recipe_category',
+    '/recipe_category/create',
     authTokenMiddleware,
     authUserTypeMiddleware([2]),
     controller.recipeCategory.create
   );
 
+  router.get('/recipe_category/:id', controller.recipeCategory.searchById);
+  router.get('/recipe_categories/:user_id', controller.recipeCategory.searchByUserId);
+
   router.post(
-    '/recipe_category/modify',
+    '/recipe_category/:id',
     authTokenMiddleware,
     authUserTypeMiddleware([2]),
     controller.recipeCategory.modify
   );
 
   router.post(
-    '/recipe_category/remove',
+    '/recipe_category/remove/:id',
     authTokenMiddleware,
     authUserTypeMiddleware([2]),
     controller.recipeCategory.remove
   );
+
+  router.post('/recipe', authTokenMiddleware, authUserTypeMiddleware([2]), controller.recipe.create);
 };

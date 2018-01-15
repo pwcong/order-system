@@ -44,7 +44,9 @@ class RecipeService extends Service {
     return new Promise(async (resolve, reject) => {
       try {
         const _recipes = await app.model.Recipe.findAll({
-          user_id,
+          where: {
+            user_id
+          },
           limit: pageSize,
           offset: pageSize * (pageNo - 1)
         });
@@ -172,7 +174,7 @@ class RecipeService extends Service {
         }
 
         _recipe.status = status;
-        
+
         await _recipe.save();
 
         resolve();

@@ -19,6 +19,25 @@ class RecipeController extends Controller {
       };
       return;
     }
+
+    const user_id = ctx.user.id;
+
+    try {
+      const res = await service.recipe.create(user_id, category_id, name, price, avatar, content);
+
+      ctx.body = {
+        success: true,
+        message: '创建成功',
+        code: ctx.code.STATUS_OK,
+        payload: res.recipe
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
   }
 
   /**

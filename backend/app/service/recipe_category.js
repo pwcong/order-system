@@ -24,8 +24,32 @@ class RecipeCategoryService extends Service {
         }
 
         resolve({
-          id: _recipeCategory.id,
-          name
+          recipeCategory: _recipeCategory
+        });
+      } catch (err) {
+        reject({
+          message: err
+        });
+      }
+    });
+  }
+
+  async findById(id) {
+    const { app } = this;
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        const _recipeCategory = await app.model.RecipeCategory.findById(id);
+
+        if (!_recipeCategory || _recipeCategory.status !== 0) {
+          reject({
+            message: '分类不存在'
+          });
+          return;
+        }
+
+        resolve({
+          recipeCategory: _recipeCategory
         });
       } catch (err) {
         reject({
@@ -38,10 +62,14 @@ class RecipeCategoryService extends Service {
   async findByUserId(user_id) {
     const { app } = this;
 
+    console.log(user_id);
+
     return new Promise(async (resolve, reject) => {
       try {
         const _recipeCategories = await app.model.RecipeCategory.findAll({
-          user_id
+          where: {
+            user_id
+          }
         });
 
         resolve({
@@ -79,7 +107,9 @@ class RecipeCategoryService extends Service {
         _recipeCategory.name = newName;
         await _recipeCategory.save();
 
-        resolve();
+        resolve({
+          recipeCategory: _recipeCategory
+        });
       } catch (err) {
         reject({
           message: err
