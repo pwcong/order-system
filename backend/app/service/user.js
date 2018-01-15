@@ -61,7 +61,7 @@ class UserService extends Service {
         });
       } catch (err) {
         reject({
-          message: '未知错误'
+          message: err
         });
       }
     });

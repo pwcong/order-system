@@ -239,6 +239,9 @@ class UserController extends Controller {
     }
   }
 
+  /**
+   * 注销用户
+   */
   async remove() {
     const { ctx, service } = this;
 
@@ -257,7 +260,7 @@ class UserController extends Controller {
       await service.user.remove(id);
       ctx.body = {
         success: true,
-        message: '删除成功',
+        message: '注销成功',
         code: ctx.code.STATUS_OK,
         payload: {
           id

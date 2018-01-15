@@ -5,7 +5,7 @@ const Service = require('egg').Service;
 const uuidv1 = require('uuid/v1');
 const uuidv5 = require('uuid/v5');
 
-class UserService extends Service {
+class RecipeCategoryService extends Service {
   async create(user_id, name) {
     const { app } = this;
 
@@ -16,13 +16,20 @@ class UserService extends Service {
           name
         });
 
+        if (!_recipeCategory) {
+          reject({
+            message: '创建失败'
+          });
+          return;
+        }
+
         resolve({
           id: _recipeCategory.id,
           name
         });
       } catch (err) {
         reject({
-          message: '未知错误'
+          message: err
         });
       }
     });
@@ -38,11 +45,44 @@ class UserService extends Service {
         });
 
         resolve({
-          recipeCategories: _recipeCategories
+          recipeCategories: _recipeCategories.filter(item => item.status === 0)
         });
       } catch (err) {
         reject({
-          message: '未知错误'
+          message: err
+        });
+      }
+    });
+  }
+
+  async modify(user_id, id, newName) {
+    const { app } = this;
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        const _recipeCategory = await app.model.RecipeCategory.findById(id);
+
+        if (!_recipeCategory || _recipeCategory.status !== 0) {
+          reject({
+            message: '分类不存在'
+          });
+          return;
+        }
+
+        if (_recipeCategory.user_id !== user_id) {
+          reject({
+            message: '没有权限'
+          });
+          return;
+        }
+
+        _recipeCategory.name = newName;
+        await _recipeCategory.save();
+
+        resolve();
+      } catch (err) {
+        reject({
+          message: err
         });
       }
     });
@@ -55,7 +95,7 @@ class UserService extends Service {
       try {
         const _recipeCategory = await app.model.RecipeCategory.findById(id);
 
-        if (!_recipeCategory) {
+        if (!_recipeCategory || _recipeCategory.status !== 0) {
           reject({
             message: '分类不存在'
           });
@@ -75,11 +115,11 @@ class UserService extends Service {
         resolve();
       } catch (err) {
         reject({
-          message: '删除失败'
+          message: err
         });
       }
     });
   }
 }
 
-module.exports = UserService;
+module.exports = RecipeCategoryService;

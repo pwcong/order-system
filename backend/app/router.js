@@ -25,7 +25,8 @@ module.exports = app => {
 
   router.get('/user/info', authTokenMiddleware, controller.userInfo.search);
   router.get('/user/info/:id', authTokenMiddleware, controller.userInfo.search);
-  router.post('/user/info', authTokenMiddleware, controller.userInfo.modify);
+  router.post('/user/info', authTokenMiddleware, controller.userInfo.modifySelf);
+  router.post('/user/info/:id', authTokenMiddleware, controller.userInfo.modifyOther);
 
   router.get(
     '/recipe_category',
@@ -38,6 +39,13 @@ module.exports = app => {
     authTokenMiddleware,
     authUserTypeMiddleware([2]),
     controller.recipeCategory.create
+  );
+
+  router.post(
+    '/recipe_category/modify',
+    authTokenMiddleware,
+    authUserTypeMiddleware([2]),
+    controller.recipeCategory.modify
   );
 
   router.post(

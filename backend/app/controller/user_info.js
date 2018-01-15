@@ -43,6 +43,43 @@ class UserInfoController extends Controller {
   /**
    * 修改用户信息
    */
-  async modify() {}
+  async modifySelf() {
+    const { app, ctx, service, config } = this;
+
+    const { userInfo } = ctx.request.body;
+
+    if (!userInfo) {
+      ctx.body = {
+        success: false,
+        message: '缺少参数',
+        code: ctx.code.STATUS_ERROR
+      };
+      return;
+    }
+
+    const id = ctx.user.id;
+
+    try {
+      const res = await service.userInfo.modifySelf(id, userInfo);
+
+      ctx.body = {
+        success: true,
+        message: '修改成功',
+        code: ctx.code.STATUS_OK,
+        payload: res.userInfo
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
+
+  /**
+   * 修改用户信息
+   */
+  async modifyOther() {}
 }
 module.exports = UserInfoController;

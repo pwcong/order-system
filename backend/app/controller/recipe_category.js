@@ -69,7 +69,39 @@ class RecipeCategoryController extends Controller {
   /**
    * 修改菜单分类
    */
-  async modify() {}
+  async modify() {
+    const { ctx, service } = this;
+
+    const { id, name } = ctx.request.body;
+
+    if (!id || !name) {
+      ctx.body = {
+        success: false,
+        message: '缺少参数',
+        code: ctx.code.STATUS_ERROR
+      };
+      return;
+    }
+
+    const userId = ctx.user.id;
+
+    try {
+      const recipeCategories = await service.recipeCategory.modify(userId, id, name);
+
+      ctx.body = {
+        success: false,
+        message: '修改成功',
+        code: ctx.code.STATUS_OK,
+        payload: recipeCategories
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
 
   /**
    * 删除菜单分类
