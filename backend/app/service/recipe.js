@@ -160,46 +160,16 @@ class RecipeService extends Service {
     });
   }
 
-  async remove(user_id, id) {
-    const { app } = this;
-
-    return new Promise(async (resolve, reject) => {
-      try {
-        const _recipe = await app.model.Recipe.findById(id);
-
-        if (!_recipe || [0, 1].indexOf(_recipe.status) < 0) {
-          reject({
-            message: '菜单不存在'
-          });
-          return;
-        }
-
-        if (_recipe.user_id !== user_id) {
-          reject({
-            message: '没有权限'
-          });
-          return;
-        }
-
-        _recipe.status = 2;
-
-        await _recipe.save();
-
-        resolve();
-      } catch (err) {
-        reject({
-          message: err
-        });
-      }
-    });
-  }
-
   async online(user_id, id) {
     return this.changeStatus(user_id, id, 0);
   }
 
   async offline(user_id, id) {
     return this.changeStatus(user_id, id, 1);
+  }
+
+  async remove(user_id, id) {
+    return this.changeStatus(user_id, id, 2);
   }
 
   async changeStatus(user_id, id, status) {

@@ -70,6 +70,20 @@ module.exports = app => {
   router.post('/recipe/create', authTokenMiddleware, authUserTypeMiddleware([2]), controller.recipe.create);
 
   router.get('/recipe/:id', controller.recipe.searchById);
+  router.post('/recipe/:id', authTokenMiddleware, authUserTypeMiddleware([2]), controller.recipe.modify);
+  router.post(
+    '/recipe/remove/:id',
+    authTokenMiddleware,
+    authUserTypeMiddleware([2]),
+    controller.recipe.remove
+  );
+  router.post('/recipe/up/:id', authTokenMiddleware, authUserTypeMiddleware([2]), controller.recipe.online);
+  router.post(
+    '/recipe/down/:id',
+    authTokenMiddleware,
+    authUserTypeMiddleware([2]),
+    controller.recipe.offline
+  );
   router.get('/recipes/:user_id', controller.recipe.searchByUserId);
   router.get('/recipes/:user_id/:category_id', controller.recipe.searchByUserIdWithCategoryId);
 };
