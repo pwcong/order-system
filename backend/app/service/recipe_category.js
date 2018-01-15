@@ -62,8 +62,6 @@ class RecipeCategoryService extends Service {
   async findByUserId(user_id) {
     const { app } = this;
 
-    console.log(user_id);
-
     return new Promise(async (resolve, reject) => {
       try {
         const _recipeCategories = await app.model.RecipeCategory.findAll({

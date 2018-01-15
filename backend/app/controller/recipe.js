@@ -41,9 +41,85 @@ class RecipeController extends Controller {
   }
 
   /**
-   * 查询菜单信息
+   * 查询菜单列表
    */
-  async search() {}
+  async searchByUserId() {
+    const { ctx, service } = this;
+
+    const { user_id } = ctx.params;
+
+    const { pageSize, pageNo } = ctx.queries;
+
+    try {
+      const res = await service.recipe.findByUserId(user_id, pageSize, pageNo);
+
+      ctx.body = {
+        success: true,
+        message: '获取成功',
+        code: ctx.code.STATUS_OK,
+        payload: res.recipes
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
+  /**
+   * 查询菜单列表
+   */
+  async searchByUserIdWithCategoryId() {
+    const { ctx, service } = this;
+
+    const { user_id, category_id } = ctx.params;
+
+    const { pageSize, pageNo } = ctx.queries;
+
+    try {
+      const res = await service.recipe.findByUserIdWithCategoryId(user_id, category_id, pageSize, pageNo);
+
+      ctx.body = {
+        success: true,
+        message: '获取成功',
+        code: ctx.code.STATUS_OK,
+        payload: res.recipes
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
+
+  /**
+   * 获取菜单信息
+   */
+  async searchById() {
+    const { ctx, service } = this;
+
+    const { id } = ctx.params;
+
+    try {
+      const res = await service.recipe.findById(id);
+
+      ctx.body = {
+        success: true,
+        message: '获取成功',
+        code: ctx.code.STATUS_OK,
+        payload: res.recipe
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
 
   /**
    * 修改菜单信息

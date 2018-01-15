@@ -20,8 +20,18 @@ module.exports = app => {
   router.post('/user/check', authTokenMiddleware, controller.user.check);
 
   router.post('/user/lock/:id', authTokenMiddleware, authUserTypeMiddleware([999]), controller.user.lock);
-  router.post('/user/unlock/:id', authTokenMiddleware, authUserTypeMiddleware([999]), controller.user.unlock);
-  router.post('/user/remove/:id', authTokenMiddleware, authUserTypeMiddleware([999]), controller.user.remove);
+  router.post(
+    '/user/unlock/:id',
+    authTokenMiddleware,
+    authUserTypeMiddleware([999]),
+    controller.user.unlock
+  );
+  router.post(
+    '/user/remove/:id',
+    authTokenMiddleware,
+    authUserTypeMiddleware([999]),
+    controller.user.remove
+  );
 
   router.get('/user/info', authTokenMiddleware, controller.userInfo.search);
   router.get('/user/info/:id', authTokenMiddleware, controller.userInfo.search);
@@ -57,5 +67,9 @@ module.exports = app => {
     controller.recipeCategory.remove
   );
 
-  router.post('/recipe', authTokenMiddleware, authUserTypeMiddleware([2]), controller.recipe.create);
+  router.post('/recipe/create', authTokenMiddleware, authUserTypeMiddleware([2]), controller.recipe.create);
+
+  router.get('/recipe/:id', controller.recipe.searchById);
+  router.get('/recipes/:user_id', controller.recipe.searchByUserId);
+  router.get('/recipes/:user_id/:category_id', controller.recipe.searchByUserIdWithCategoryId);
 };

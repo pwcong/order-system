@@ -38,6 +38,31 @@ class RecipeService extends Service {
     });
   }
 
+  async findByUserIdWithCategoryId(user_id, category_id, pageSize = 50, pageNo = 1) {
+    const { app } = this;
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        const _recipes = await app.model.Recipe.findAll({
+          where: {
+            user_id,
+            category_id
+          },
+          limit: pageSize,
+          offset: pageSize * (pageNo - 1)
+        });
+
+        resolve({
+          recipes: _recipes.filter(item => [0, 1].indexOf(item.status) >= 0)
+        });
+      } catch (err) {
+        reject({
+          message: err
+        });
+      }
+    });
+  }
+
   async findByUserId(user_id, pageSize = 50, pageNo = 1) {
     const { app } = this;
 
@@ -52,7 +77,32 @@ class RecipeService extends Service {
         });
 
         resolve({
-          recipes: _recipes.filter(item => [0, 1].indexOf(item.status) > 0)
+          recipes: _recipes.filter(item => [0, 1].indexOf(item.status) >= 0)
+        });
+      } catch (err) {
+        reject({
+          message: err
+        });
+      }
+    });
+  }
+
+  async findById(id) {
+    const { app } = this;
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        const _recipe = await app.model.Recipe.findById(id);
+
+        if (!_recipe || [0, 1].indexOf(_recipe.status) < 0) {
+          reject({
+            message: '菜单不存在'
+          });
+          return;
+        }
+
+        resolve({
+          recipe: _recipe
         });
       } catch (err) {
         reject({
