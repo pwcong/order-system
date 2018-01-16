@@ -2,6 +2,8 @@
 
 const Subscription = require('egg').Subscription;
 
+const jwt = require('jwt-simple');
+
 class UpdateCache extends Subscription {
   // 通过 schedule 属性来设置定时任务的执行间隔等配置
   static get schedule() {
@@ -18,14 +20,20 @@ class UpdateCache extends Subscription {
     const keys = await app.redis.keys('*');
 
     keys.forEach(async key => {
-      const timestamp = await app.redis.get(key);
+      const value = await app.redis.get(key);
 
-      if (
-        !timestamp ||
-        !parseInt(timestamp) ||
-        (config.auth.checkExpired &&
-          new Date().getTime() - parseInt(timestamp) >= config.auth.expiredTime * 1000)
-      ) {
+      try {
+        const content = jwt.decode(value, config.auth.secret);
+        const { timestamp } = content;
+        if (
+          !timestamp ||
+          !parseInt(timestamp) ||
+          (config.auth.checkExpired &&
+            new Date().getTime() - parseInt(timestamp) >= (config.auth.expiredTime * 1000 || 86400000))
+        ) {
+          await app.redis.del(key);
+        }
+      } catch (err) {
         await app.redis.del(key);
       }
     });

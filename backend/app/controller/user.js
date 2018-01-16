@@ -5,6 +5,8 @@ const Controller = require('egg').Controller;
 const moment = require('moment');
 const jwt = require('jwt-simple');
 
+const uuidv1 = require('uuid/v1');
+
 class UserController extends Controller {
   /**
    * 注册
@@ -40,7 +42,9 @@ class UserController extends Controller {
       const { id } = res;
       const timestamp = new Date().getTime();
 
-      const _token = jwt.encode(
+      const _token = uuidv1();
+
+      const content = jwt.encode(
         {
           id,
           type,
@@ -51,7 +55,7 @@ class UserController extends Controller {
 
       const token = id + ':' + _token;
 
-      await app.redis.set(token, timestamp);
+      await app.redis.set(token, content);
 
       ctx.body = {
         success: true,
@@ -96,17 +100,20 @@ class UserController extends Controller {
       const { id, type } = res;
       const timestamp = new Date().getTime();
 
-      const content = {
-        id,
-        type,
-        timestamp
-      };
+      const _token = uuidv1();
 
-      const _token = jwt.encode(content, config.auth.secret);
+      const content = jwt.encode(
+        {
+          id,
+          type,
+          timestamp
+        },
+        config.auth.secret
+      );
 
       const token = id + ':' + _token;
 
-      await app.redis.set(token, timestamp);
+      await app.redis.set(token, content);
 
       ctx.body = {
         success: true,

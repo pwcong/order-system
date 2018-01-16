@@ -4,9 +4,9 @@ const TYPES = [1, 2, 3, 999];
 
 /**
  * 校验用户token
- * @param {object} authOptions
+ * @param {object} options
  */
-exports.authToken = authOptions => {
+exports.authToken = options => {
   return async (ctx, next) => {
     const token = ctx.get('X-Token');
 
@@ -14,64 +14,59 @@ exports.authToken = authOptions => {
       ctx.body = {
         success: false,
         code: ctx.code.TOKEN_NEEDED,
-        message: 'Token缺失，请登录'
+        message: '用户令牌缺失，请登录'
       };
       return;
     }
-
-    const t = token.split(':');
-    if (t.length !== 2 || !t[0] || !t[1]) {
-      ctx.body = {
-        success: false,
-        code: ctx.code.TOKEN_ERROR,
-        message: 'Token无效，请重新登录'
-      };
-      return;
-    }
-
-    const flag = await ctx.app.redis.get(token);
 
     try {
-      const decoded = jwt.decode(t[1], authOptions.secret);
+      const value = await ctx.app.redis.get(token);
 
-      if (
-        !flag ||
-        !parseInt(decoded.id) ||
-        parseInt(decoded.id) !== parseInt(t[0]) ||
-        !parseInt(decoded.type) ||
-        TYPES.indexOf(parseInt(decoded.type)) < 0
-      ) {
+      if (!value) {
+        ctx.body = {
+          success: false,
+          code: ctx.code.TOKEN_EXPIRED,
+          message: '用户令牌失效，请重新登录'
+        };
+        return;
+      }
+
+      const content = jwt.decode(value, options.secret);
+
+      const { id, type, timestamp } = content;
+
+      if (!id || !type || !timestamp) {
         ctx.body = {
           success: false,
           code: ctx.code.TOKEN_ERROR,
-          message: 'Token无效，请重新登录'
+          message: '用户令牌无效，请重新登录'
         };
         return;
       }
 
       if (
-        authOptions.checkExpired &&
-        new Date().getTime() - parseInt(flag) >= authOptions.expiredTime * 1000
+        options.checkExpired &&
+        new Date().getTime() - parseInt(timestamp) >= (options.expiredTime * 1000 || 86400000)
       ) {
         ctx.body = {
           success: false,
           code: ctx.code.TOKEN_EXPIRED,
-          message: 'Token失效，请重新登录'
+          message: '用户令牌失效，请重新登录'
         };
         return;
       }
 
       ctx.user = {};
-      ctx.user.id = decoded.id;
-      ctx.user.type = decoded.type;
-      ctx.user.timestamp = decoded.timestamp;
+      ctx.user.id = id;
+      ctx.user.type = type;
+      ctx.user.timestamp = timestamp;
 
       await next();
     } catch (err) {
       ctx.body = {
         success: false,
         code: ctx.code.TOKEN_ERROR,
-        message: 'Token无效，请重新登录'
+        message: '用户令牌无效，请登录'
       };
     }
   };
