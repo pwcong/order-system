@@ -64,10 +64,16 @@ module.exports = appInfo => {
   config.io = {
     init: {},
     namespace: {
-      '/': {
+      '/notice': {
         connectionMiddleware: [],
         packetMiddleware: []
       }
+    },
+    redis: {
+      host: '127.0.0.1',
+      port: 6379,
+      password: '',
+      db: 1
     }
   };
 
