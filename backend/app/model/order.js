@@ -68,12 +68,13 @@ module.exports = app => {
       defaultValue: 0
     },
 
-    payment_type: {
-      type: INTEGER,
-      references: {
-        model: app.model.PaymentType,
-        key: 'id'
-      }
+    /**
+     * 是否支付订单
+     */
+    has_payed: {
+      type: BOOLEAN,
+      allowNull: false,
+      defaultValue: 0
     },
 
     /**
@@ -107,7 +108,7 @@ module.exports = app => {
      * 订单金额
      */
     amount: {
-      type: DECIMAL,
+      type: DECIMAL(10, 2),
       allowNull: false,
       defaultValue: 0
     }

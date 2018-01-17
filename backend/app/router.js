@@ -108,12 +108,26 @@ module.exports = app => {
     authUserTypeMiddleware([1]),
     controller.order.getSendedList
   );
+  router.post('/order/pay/:id', authTokenMiddleware, authUserTypeMiddleware([1]), controller.order.pay);
+  router.post(
+    '/order/cancel/:id',
+    authTokenMiddleware,
+    authUserTypeMiddleware([1]),
+    controller.order.cancel
+  );
+  router.post(
+    '/order/finish/:id',
+    authTokenMiddleware,
+    authUserTypeMiddleware([1]),
+    controller.order.finish
+  );
   router.post(
     '/orders/received',
     authTokenMiddleware,
     authUserTypeMiddleware([2]),
     controller.order.getReceivedList
   );
+  router.post('/order/close/:id', authTokenMiddleware, authUserTypeMiddleware([2]), controller.order.close);
 
   router.get('/system/time', controller.system.time);
 

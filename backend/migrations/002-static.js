@@ -24,10 +24,14 @@ module.exports = {
     await queryInterface.bulkInsert('payment_types', [
       {
         id: 1,
-        name: '微信'
+        name: '余额'
       },
       {
         id: 2,
+        name: '微信'
+      },
+      {
+        id: 3,
         name: '支付宝'
       }
     ]);

@@ -55,7 +55,6 @@ class OrderService extends Service {
           order: _order
         });
       } catch (err) {
-        console.log(err);
         reject({
           message: err.message
         });
@@ -80,8 +79,6 @@ class OrderService extends Service {
         }
 
         const _orders = await app.model.Order.findAll(condition);
-
-        console.log(_orders);
 
         resolve({
           orders: _orders.filter((item, idx) => status.indexOf(item.status) >= 0)
@@ -123,12 +120,111 @@ class OrderService extends Service {
     });
   }
 
+  async pay(id, sender_id, payment_type) {
+    const { app } = this;
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        ///////////////////
+        // 查询订单
+        ///////////////////
+        const _order = await app.model.Order.findOne({
+          where: {
+            id,
+            sender_id
+          }
+        });
+
+        if (!_order || _order.sender_id !== sender_id || _order.status !== 0) {
+          throw new Error('订单无效');
+        }
+
+        ///////////////////
+        // 查询收款方
+        ///////////////////
+        const receiver_id = _order.receiver_id;
+
+        const _receiver = await app.model.User.findById(receiver_id);
+        if (!_receiver || _receiver.status !== 0) {
+          throw new Error('收款方账户无效');
+        }
+
+        ///////////////////
+        // 查询付款方
+        ///////////////////
+
+        const _sender = await app.model.User.findById(sender_id);
+        if (!_sender || _sender.status !== 0) {
+          throw new Error('付款方账户无效');
+        }
+
+        ///////////////////
+        // 更新付款方账户
+        ///////////////////
+
+        const orderAmount = parseFloat(_order.amount);
+
+        const senderBalance = parseFloat(_sender.balance);
+
+        if (payment_type === 1) {
+          if (senderBalance < orderAmount) {
+            throw new Error('余额不足');
+          } else {
+            _sender.balance = senderBalance - orderAmount;
+            await _sender.save();
+          }
+        }
+
+        ///////////////////
+        // 更新收款方账户
+        ///////////////////
+
+        const receiverBalance = parseFloat(_receiver.balance);
+        _receiver.balance = receiverBalance + orderAmount;
+        await _receiver.save();
+
+        ///////////////////
+        // 更新账单状态
+        ///////////////////
+        _order.status = 1;
+        _order.has_payed = true;
+        await _order.save();
+
+        ///////////////////
+        // 新建收款付款账单
+        ///////////////////
+        await app.model.Bill.create({
+          user_id: receiver_id,
+          name: '收款',
+          amount: orderAmount,
+          type: 0
+        });
+
+        await app.model.Bill.create({
+          user_id: sender_id,
+          name: '付款',
+          amount: orderAmount,
+          payment_type,
+          type: 1
+        });
+
+        resolve({
+          order: _order
+        });
+      } catch (err) {
+        reject({
+          message: err.message
+        });
+      }
+    });
+  }
+
   async cancel(id, sender_id) {
     const { app } = this;
 
     return new Promise(async (resolve, reject) => {
       try {
-        const _order = await app.model.Order.findAll({
+        const _order = await app.model.Order.findOne({
           where: {
             id,
             sender_id
@@ -139,7 +235,20 @@ class OrderService extends Service {
           throw new Error('订单无效');
         }
 
-        _order.status = 3;
+        switch (_order.status) {
+          case 0:
+            _order.status = 4;
+            _order.has_refunded = true;
+
+            break;
+          case 1:
+            _order.status = 3;
+
+            break;
+          default:
+            break;
+        }
+
         await _order.save();
 
         resolve({
@@ -158,7 +267,7 @@ class OrderService extends Service {
 
     return new Promise(async (resolve, reject) => {
       try {
-        const _order = await app.model.Order.findAll({
+        const _order = await app.model.Order.findOne({
           where: {
             id,
             sender_id
@@ -170,6 +279,7 @@ class OrderService extends Service {
         }
 
         _order.status = 2;
+        _order.has_finished = true;
         await _order.save();
 
         resolve({
@@ -188,7 +298,10 @@ class OrderService extends Service {
 
     return new Promise(async (resolve, reject) => {
       try {
-        const _order = await app.model.Order.findAll({
+        ///////////////////
+        // 查询订单
+        ///////////////////
+        const _order = await app.model.Order.findOne({
           where: {
             id,
             receiver_id
@@ -199,8 +312,53 @@ class OrderService extends Service {
           throw new Error('无效的订单');
         }
 
+        ///////////////////
+        // 查询付款方
+        ///////////////////
+        const _receiver = await app.model.User.findById(receiver_id);
+        if (!_receiver || _receiver.status !== 0) {
+          throw new Error('付款方账户无效');
+        }
+
+        ///////////////////
+        // 查询退款方
+        ///////////////////
+        const sender_id = _order.sender_id;
+        const _sender = await app.model.User.findById(sender_id);
+        if (!_sender || _sender.status !== 0) {
+          throw new Error('退款方账户无效');
+        }
+
+        const orderAmount = parseFloat(_order.amount);
+        const senderBalance = parseFloat(_sender.balance);
+
+        _sender.balance = senderBalance + orderAmount;
+        await _sender.save();
+
+        const receiverBalance = parseFloat(_receiver.balance);
+        _receiver.balance = receiverBalance - orderAmount;
+        await _receiver.save();
+
         _order.status = 4;
+        _order.has_refunded = true;
         await _order.save();
+
+        ///////////////////
+        // 新建收款付款账单
+        ///////////////////
+        await app.model.Bill.create({
+          user_id: sender_id,
+          name: '退款',
+          amount: orderAmount,
+          type: 0
+        });
+
+        await app.model.Bill.create({
+          user_id: receiver_id,
+          name: '付款',
+          amount: orderAmount,
+          type: 1
+        });
 
         resolve({
           order: _order

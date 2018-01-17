@@ -115,18 +115,111 @@ class OrderController extends Controller {
   }
 
   /**
+   * 确认订单（余额付款）
+   */
+  async pay() {
+    const { ctx, service } = this;
+
+    try {
+      const { id } = ctx.params;
+      const sender_id = ctx.user.id;
+
+      const res = await service.order.pay(id, sender_id, 1);
+
+      ctx.body = {
+        success: true,
+        message: '支付订单',
+        code: ctx.code.STATUS_OK,
+        payload: res.order
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
+
+  /**
    * 完成订单
    */
-  async finish() {}
+  async finish() {
+    const { ctx, service } = this;
+
+    try {
+      const { id } = ctx.params;
+      const sender_id = ctx.user.id;
+
+      const res = await service.order.finish(id, sender_id);
+
+      ctx.body = {
+        success: true,
+        message: '完成订单',
+        code: ctx.code.STATUS_OK,
+        payload: res.order
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
 
   /**
    * 取消订单
    */
-  async cancel() {}
+  async cancel() {
+    const { ctx, service } = this;
+
+    try {
+      const { id } = ctx.params;
+      const sender_id = ctx.user.id;
+
+      const res = await service.order.cancel(id, sender_id);
+
+      ctx.body = {
+        success: true,
+        message: '取消订单',
+        code: ctx.code.STATUS_OK,
+        payload: res.order
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
 
   /**
    * 关闭订单
    */
-  async close() {}
+  async close() {
+    const { ctx, service } = this;
+
+    try {
+      const { id } = ctx.params;
+      const receiver_id = ctx.user.id;
+
+      const res = await service.order.close(id, receiver_id);
+
+      ctx.body = {
+        success: true,
+        message: '关闭订单',
+        code: ctx.code.STATUS_OK,
+        payload: res.order
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
 }
 module.exports = OrderController;

@@ -398,12 +398,10 @@ module.exports = {
         defaultValue: 0
       },
 
-      payment_type: {
-        type: INTEGER,
-        references: {
-          model: 'payment_types',
-          key: 'id'
-        }
+      has_payed: {
+        type: BOOLEAN,
+        allowNull: false,
+        defaultValue: 0
       },
 
       /**
@@ -437,7 +435,7 @@ module.exports = {
        * 订单金额
        */
       amount: {
-        type: DECIMAL,
+        type: DECIMAL(10, 2),
         allowNull: false,
         defaultValue: 0
       },
@@ -476,17 +474,16 @@ module.exports = {
         allowNull: false
       },
       amount: {
-        type: DECIMAL,
+        type: DECIMAL(10, 2),
         allowNull: false,
         defaultValue: 0
       },
-      balance_before: {
-        type: DECIMAL,
-        allowNull: false
-      },
-      balance_after: {
-        type: DECIMAL,
-        allowNull: false
+      payment_type: {
+        type: INTEGER,
+        references: {
+          model: 'payment_types',
+          key: 'id'
+        }
       },
 
       /**

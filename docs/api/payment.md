@@ -24,7 +24,7 @@ curl -X GET $API_BASE/payment/support
   "code": 20000,
   "payload": [
     {
-      "id": 1,
+      "id": 2,
       "name": "微信",
       "status": 0,
       "created_at": "2018-01-01T00:00:00.000Z",
