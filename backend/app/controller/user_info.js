@@ -9,19 +9,14 @@ class UserInfoController extends Controller {
   async search() {
     const { app, ctx, service, config } = this;
 
-    const id = ctx.params.id || ctx.user.id;
-
-    if (!id) {
-      ctx.body = {
-        success: false,
-        message: '缺少参数',
-        code: ctx.code.STATUS_ERROR
-      };
-      return;
-    }
-
     try {
-      const res = await service.userInfo.get(id);
+      const id = ctx.params.id || ctx.user.id;
+
+      if (!id) {
+        throw new Error('参数不足');
+      }
+
+      const res = await service.userInfo.queryById(id);
 
       const { userInfo } = res;
 
@@ -46,20 +41,15 @@ class UserInfoController extends Controller {
   async modifySelf() {
     const { app, ctx, service, config } = this;
 
-    const newUserInfo = ctx.request.body;
-
-    if (!newUserInfo) {
-      ctx.body = {
-        success: false,
-        message: '缺少参数',
-        code: ctx.code.STATUS_ERROR
-      };
-      return;
-    }
-
-    const id = ctx.user.id;
-
     try {
+      const newUserInfo = ctx.request.body;
+
+      if (!newUserInfo) {
+        throw new Error('参数不足');
+      }
+
+      const id = ctx.user.id;
+
       const res = await service.userInfo.modifySelf(id, newUserInfo);
 
       ctx.body = {

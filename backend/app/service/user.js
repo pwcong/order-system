@@ -10,27 +10,21 @@ class UserService extends Service {
     const { app } = this;
 
     return new Promise(async (resolve, reject) => {
-      let _user = null;
-
-      _user = await app.model.User.findByUsername(username);
-
-      if (_user) {
-        reject({
-          message: '用户已存在'
-        });
-        return;
-      }
-
-      _user = await app.model.User.findByPhone(phone);
-
-      if (_user) {
-        reject({
-          message: '手机号已存在'
-        });
-        return;
-      }
-
       try {
+        let _user = null;
+
+        _user = await app.model.User.findByUsername(username);
+
+        if (_user) {
+          throw new Error('用户已存在');
+        }
+
+        _user = await app.model.User.findByPhone(phone);
+
+        if (_user) {
+          throw new Error('手机号已存在');
+        }
+
         const userInfo = await app.model.transaction(t => {
           const salt = uuidv1();
           return app.model.User.create(
@@ -61,7 +55,7 @@ class UserService extends Service {
         });
       } catch (err) {
         reject({
-          message: err
+          message: err.message
         });
       }
     });
@@ -71,49 +65,45 @@ class UserService extends Service {
     const { app } = this;
 
     return new Promise(async (resolve, reject) => {
-      let _user = null;
+      try {
+        let _user = null;
 
-      _user = await app.model.User.findByUPE(upe);
+        _user = await app.model.User.findByUPE(upe);
 
-      if (!_user) {
-        reject({
-          message: '用户不存在'
-        });
-        return;
-      }
-
-      if (uuidv5(pwd, _user['password_salt']) != _user['password']) {
-        reject({
-          message: '密码错误'
-        });
-        return;
-      }
-
-      if (_user.status !== 0) {
-        let message = null;
-
-        switch (_user.status) {
-          case 1:
-            message = '该账户已被锁定';
-            break;
-          case 2:
-            message = '该账户已被注销';
-            break;
-          default:
-            message = '该账户不可用';
-            break;
+        if (!_user) {
+          throw new Error('用户不存在');
         }
 
-        reject({
-          message
-        });
-        return;
-      }
+        if (uuidv5(pwd, _user['password_salt']) != _user['password']) {
+          throw new Error('密码错误');
+        }
 
-      resolve({
-        id: _user.id,
-        type: _user.type
-      });
+        if (_user.status !== 0) {
+          let message = null;
+
+          switch (_user.status) {
+            case 1:
+              message = '该账户已被锁定';
+              break;
+            case 2:
+              message = '该账户已被注销';
+              break;
+            default:
+              message = '该账户不可用';
+              break;
+          }
+          throw new Error(message);
+        }
+
+        resolve({
+          id: _user.id,
+          type: _user.type
+        });
+      } catch (err) {
+        reject({
+          message: err.message
+        });
+      }
     });
   }
 
@@ -133,25 +123,22 @@ class UserService extends Service {
     const { app } = this;
 
     return new Promise(async (resolve, reject) => {
-      let _user = null;
-
-      _user = await app.model.User.findById(id);
-
-      if (!_user) {
-        reject({
-          message: '用户不存在'
-        });
-        return;
-      }
-
-      _user.status = status;
-
       try {
+        let _user = null;
+
+        _user = await app.model.User.findById(id);
+
+        if (!_user) {
+          throw new Error('用户不存在');
+        }
+
+        _user.status = status;
+
         await _user.save();
         resolve();
       } catch (err) {
         reject({
-          message: '操作失败'
+          message: err.message
         });
       }
     });

@@ -7,22 +7,25 @@ class UserInfoService extends Service {
    * 获取用户信息
    * @param {int} id 用户ID
    */
-  async get(id) {
+  async queryById(id) {
     const { app } = this;
 
     return new Promise(async (resolve, reject) => {
-      let _userInfo = null;
+      try {
+        let _userInfo = null;
 
-      _userInfo = await app.model.UserInfo.findById(id);
+        _userInfo = await app.model.UserInfo.findById(id);
 
-      if (!_userInfo) {
+        if (!_userInfo) {
+          throw new Error('用户信息不存在');
+        }
+
+        resolve({ userInfo: _userInfo });
+      } catch (err) {
         reject({
-          message: '用户信息不存在'
+          message: err.message
         });
-        return;
       }
-
-      resolve({ userInfo: _userInfo });
     });
   }
 
@@ -41,10 +44,7 @@ class UserInfoService extends Service {
         _userInfo = await app.model.UserInfo.findById(id);
 
         if (!_userInfo) {
-          reject({
-            message: '用户信息不存在'
-          });
-          return;
+          throw new Error('用户信息不存在');
         }
 
         const editable = {
@@ -67,7 +67,7 @@ class UserInfoService extends Service {
         resolve({ userInfo: _userInfo });
       } catch (err) {
         reject({
-          message: '修改失败'
+          message: err.message
         });
       }
     });

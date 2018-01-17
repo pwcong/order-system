@@ -9,20 +9,15 @@ class RecipeCategoryController extends Controller {
   async create() {
     const { ctx, service } = this;
 
-    const { name } = ctx.request.body;
-
-    if (!name) {
-      ctx.body = {
-        success: false,
-        message: '缺少参数',
-        code: ctx.code.STATUS_ERROR
-      };
-      return;
-    }
-
-    const { id } = ctx.user;
-
     try {
+      const { name } = ctx.request.body;
+
+      if (!name) {
+        throw new Error('参数不足');
+      }
+
+      const { id } = ctx.user;
+
       const res = await service.recipeCategory.create(id, name);
 
       ctx.body = {
@@ -46,9 +41,9 @@ class RecipeCategoryController extends Controller {
   async searchByUserId() {
     const { ctx, service } = this;
 
-    const { user_id } = ctx.params;
-
     try {
+      const { user_id } = ctx.params;
+
       const res = await service.recipeCategory.findByUserId(user_id);
 
       ctx.body = {
@@ -72,9 +67,9 @@ class RecipeCategoryController extends Controller {
   async searchById() {
     const { ctx, service } = this;
 
-    const { id } = ctx.params;
-
     try {
+      const { id } = ctx.params;
+
       const res = await service.recipeCategory.findById(id);
 
       ctx.body = {
@@ -98,21 +93,16 @@ class RecipeCategoryController extends Controller {
   async modify() {
     const { ctx, service } = this;
 
-    const { id } = ctx.params;
-    const { name } = ctx.request.body;
-
-    if (!name) {
-      ctx.body = {
-        success: false,
-        message: '缺少参数',
-        code: ctx.code.STATUS_ERROR
-      };
-      return;
-    }
-
-    const user_id = ctx.user.id;
-
     try {
+      const { id } = ctx.params;
+      const { name } = ctx.request.body;
+
+      if (!name) {
+        throw new Error('参数不足');
+      }
+
+      const user_id = ctx.user.id;
+
       const res = await service.recipeCategory.modify(user_id, id, name);
 
       ctx.body = {
@@ -136,10 +126,10 @@ class RecipeCategoryController extends Controller {
   async remove() {
     const { ctx, service } = this;
 
-    const { id } = ctx.params;
-    const user_id = ctx.user.id;
-
     try {
+      const { id } = ctx.params;
+      const user_id = ctx.user.id;
+
       const res = await service.recipeCategory.remove(user_id, id);
 
       ctx.body = {

@@ -17,10 +17,7 @@ class RecipeCategoryService extends Service {
         });
 
         if (!_recipeCategory) {
-          reject({
-            message: '创建失败'
-          });
-          return;
+          throw new Error('创建失败');
         }
 
         resolve({
@@ -28,7 +25,7 @@ class RecipeCategoryService extends Service {
         });
       } catch (err) {
         reject({
-          message: err
+          message: err.message
         });
       }
     });
@@ -42,10 +39,7 @@ class RecipeCategoryService extends Service {
         const _recipeCategory = await app.model.RecipeCategory.findById(id);
 
         if (!_recipeCategory || _recipeCategory.status !== 0) {
-          reject({
-            message: '分类不存在'
-          });
-          return;
+          throw new Error('分类不存在');
         }
 
         resolve({
@@ -53,7 +47,7 @@ class RecipeCategoryService extends Service {
         });
       } catch (err) {
         reject({
-          message: err
+          message: err.message
         });
       }
     });
@@ -75,7 +69,7 @@ class RecipeCategoryService extends Service {
         });
       } catch (err) {
         reject({
-          message: err
+          message: err.message
         });
       }
     });
@@ -89,17 +83,11 @@ class RecipeCategoryService extends Service {
         const _recipeCategory = await app.model.RecipeCategory.findById(id);
 
         if (!_recipeCategory || _recipeCategory.status !== 0) {
-          reject({
-            message: '分类不存在'
-          });
-          return;
+          throw new Error('分类不存在');
         }
 
         if (_recipeCategory.user_id !== user_id) {
-          reject({
-            message: '没有权限'
-          });
-          return;
+          throw new Error('没有权限');
         }
 
         _recipeCategory.name = newName;
@@ -110,7 +98,7 @@ class RecipeCategoryService extends Service {
         });
       } catch (err) {
         reject({
-          message: err
+          message: err.message
         });
       }
     });
@@ -124,17 +112,11 @@ class RecipeCategoryService extends Service {
         const _recipeCategory = await app.model.RecipeCategory.findById(id);
 
         if (!_recipeCategory || _recipeCategory.status !== 0) {
-          reject({
-            message: '分类不存在'
-          });
-          return;
+          throw new Error('分类不存在');
         }
 
         if (_recipeCategory.user_id !== user_id) {
-          reject({
-            message: '删除失败'
-          });
-          return;
+          throw new Error('没有权限');
         }
 
         _recipeCategory.status = 1;
@@ -143,7 +125,7 @@ class RecipeCategoryService extends Service {
         resolve();
       } catch (err) {
         reject({
-          message: err
+          message: err.message
         });
       }
     });

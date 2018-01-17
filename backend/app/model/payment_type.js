@@ -12,6 +12,15 @@ module.exports = app => {
     name: {
       type: STRING,
       allowNull: false
+    },
+
+    /**
+     * 状态：0可用、1不可用
+     */
+    status: {
+      type: INTEGER,
+      allowNull: false,
+      defaultValue: 0
     }
   });
 

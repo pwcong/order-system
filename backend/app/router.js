@@ -87,5 +87,7 @@ module.exports = app => {
   router.get('/recipes/:user_id', controller.recipe.searchByUserId);
   router.get('/recipes/:user_id/:category_id', controller.recipe.searchByUserIdWithCategoryId);
 
+  router.get('/payment/support', controller.payment.support);
+
   app.io.of('/notice').route('test', app.io.controller.notice.test);
 };

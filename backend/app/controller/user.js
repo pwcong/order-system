@@ -6,6 +6,7 @@ const moment = require('moment');
 const jwt = require('jwt-simple');
 
 const uuidv1 = require('uuid/v1');
+const uuidv5 = require('uuid/v5');
 
 class UserController extends Controller {
   /**
@@ -14,35 +15,26 @@ class UserController extends Controller {
   async register() {
     const { app, ctx, service, config } = this;
 
-    const { username, password, phone, type } = ctx.request.body;
-
-    if (!username || !password || !phone || !type) {
-      ctx.body = {
-        success: false,
-        message: '参数不足',
-        code: ctx.code.STATUS_ERROR
-      };
-      return;
-    }
-
-    if ([1, 2, 3].indexOf(type) < 0) {
-      ctx.body = {
-        success: false,
-        message: '参数有误',
-        code: ctx.code.STATUS_ERROR
-      };
-      return;
-    }
-
-    // Todo 校验参数
-
     try {
+      const { username, password, phone, type } = ctx.request.body;
+
+      if (!username || !password || !phone || !type) {
+        throw new Error('参数不足');
+      }
+
+      if ([1, 2, 3].indexOf(type) < 0) {
+        throw new Error('参数有误');
+      }
+
+      // Todo 校验参数
+
       const res = await service.user.register(username, password, phone, type);
 
       const { id } = res;
       const timestamp = new Date().getTime();
 
-      const _token = uuidv1();
+      const salt = uuidv1();
+      const _token = uuidv5(id + ':' + type, salt);
 
       const content = jwt.encode(
         {
@@ -83,24 +75,20 @@ class UserController extends Controller {
   async login() {
     const { app, ctx, service, config } = this;
 
-    const { upe, password } = ctx.request.body;
-
-    if (!upe || !password) {
-      ctx.body = {
-        success: false,
-        message: '参数不足',
-        code: ctx.code.STATUS_ERROR
-      };
-      return;
-    }
-
     try {
+      const { upe, password } = ctx.request.body;
+
+      if (!upe || !password) {
+        throw new Error('参数不足');
+      }
+
       const res = await service.user.login(upe, password);
 
       const { id, type } = res;
       const timestamp = new Date().getTime();
 
-      const _token = uuidv1();
+      const salt = uuidv1();
+      const _token = uuidv5(id + ':' + type, salt);
 
       const content = jwt.encode(
         {

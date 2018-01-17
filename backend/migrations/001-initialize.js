@@ -317,6 +317,11 @@ module.exports = {
         type: STRING,
         allowNull: false
       },
+      status: {
+        type: INTEGER,
+        allowNull: false,
+        defaultValue: 0
+      },
       created_at: {
         type: DATE,
         allowNull: false,

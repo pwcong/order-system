@@ -9,20 +9,15 @@ class RecipeController extends Controller {
   async create() {
     const { ctx, service } = this;
 
-    const { category_id, name, price, avatar, content } = ctx.request.body;
-
-    if (!category_id || !name || !price || !avatar || !content) {
-      ctx.body = {
-        success: false,
-        message: '缺少参数',
-        code: ctx.code.STATUS_ERROR
-      };
-      return;
-    }
-
-    const user_id = ctx.user.id;
-
     try {
+      const { category_id, name, price, avatar, content } = ctx.request.body;
+
+      if (!category_id || !name || !price || !avatar || !content) {
+        throw new Error('参数不足');
+      }
+
+      const user_id = ctx.user.id;
+
       const res = await service.recipe.create(user_id, category_id, name, price, avatar, content);
 
       ctx.body = {
@@ -46,11 +41,10 @@ class RecipeController extends Controller {
   async searchByUserId() {
     const { ctx, service } = this;
 
-    const { user_id } = ctx.params;
-
-    const { pageSize, pageNo } = ctx.queries;
-
     try {
+      const { user_id } = ctx.params;
+      const { pageSize, pageNo } = ctx.queries;
+
       const res = await service.recipe.findByUserId(user_id, pageSize, pageNo);
 
       ctx.body = {
@@ -73,11 +67,11 @@ class RecipeController extends Controller {
   async searchByUserIdWithCategoryId() {
     const { ctx, service } = this;
 
-    const { user_id, category_id } = ctx.params;
-
-    const { pageSize, pageNo } = ctx.queries;
-
     try {
+      const { user_id, category_id } = ctx.params;
+
+      const { pageSize, pageNo } = ctx.queries;
+
       const res = await service.recipe.findByUserIdWithCategoryId(user_id, category_id, pageSize, pageNo);
 
       ctx.body = {
@@ -101,9 +95,9 @@ class RecipeController extends Controller {
   async searchById() {
     const { ctx, service } = this;
 
-    const { id } = ctx.params;
-
     try {
+      const { id } = ctx.params;
+
       const res = await service.recipe.findById(id);
 
       ctx.body = {
@@ -127,21 +121,16 @@ class RecipeController extends Controller {
   async modify() {
     const { ctx, service } = this;
 
-    const newRecipeInfo = ctx.request.body;
-
-    if (!newRecipeInfo) {
-      ctx.body = {
-        success: false,
-        message: '参数不足',
-        code: ctx.code.STATUS_ERROR
-      };
-      return;
-    }
-
-    const { id } = ctx.params;
-    const user_id = ctx.user.id;
-
     try {
+      const newRecipeInfo = ctx.request.body;
+
+      if (!newRecipeInfo) {
+        throw new Error('参数不足');
+      }
+
+      const { id } = ctx.params;
+      const user_id = ctx.user.id;
+
       const res = await service.recipe.modify(user_id, id, newRecipeInfo);
 
       ctx.body = {
@@ -165,10 +154,10 @@ class RecipeController extends Controller {
   async remove() {
     const { ctx, service } = this;
 
-    const { id } = ctx.params;
-    const user_id = ctx.user.id;
-
     try {
+      const { id } = ctx.params;
+      const user_id = ctx.user.id;
+
       const res = await service.recipe.remove(user_id, id);
 
       ctx.body = {
@@ -194,10 +183,10 @@ class RecipeController extends Controller {
   async online() {
     const { ctx, service } = this;
 
-    const { id } = ctx.params;
-    const user_id = ctx.user.id;
-
     try {
+      const { id } = ctx.params;
+      const user_id = ctx.user.id;
+
       const res = await service.recipe.online(user_id, id);
 
       ctx.body = {
@@ -223,10 +212,10 @@ class RecipeController extends Controller {
   async offline() {
     const { ctx, service } = this;
 
-    const { id } = ctx.params;
-    const user_id = ctx.user.id;
-
     try {
+      const { id } = ctx.params;
+      const user_id = ctx.user.id;
+
       const res = await service.recipe.offline(user_id, id);
 
       ctx.body = {

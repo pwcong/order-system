@@ -21,10 +21,7 @@ class RecipeService extends Service {
         });
 
         if (!_recipe) {
-          reject({
-            message: '创建失败'
-          });
-          return;
+          throw new Error('创建失败');
         }
 
         resolve({
@@ -32,7 +29,7 @@ class RecipeService extends Service {
         });
       } catch (err) {
         reject({
-          message: err
+          message: err.message
         });
       }
     });
@@ -57,7 +54,7 @@ class RecipeService extends Service {
         });
       } catch (err) {
         reject({
-          message: err
+          message: err.message
         });
       }
     });
@@ -81,7 +78,7 @@ class RecipeService extends Service {
         });
       } catch (err) {
         reject({
-          message: err
+          message: err.message
         });
       }
     });
@@ -95,10 +92,7 @@ class RecipeService extends Service {
         const _recipe = await app.model.Recipe.findById(id);
 
         if (!_recipe || [0, 1].indexOf(_recipe.status) < 0) {
-          reject({
-            message: '菜单不存在'
-          });
-          return;
+          throw new Error('菜单不存在');
         }
 
         resolve({
@@ -106,7 +100,7 @@ class RecipeService extends Service {
         });
       } catch (err) {
         reject({
-          message: err
+          message: err.message
         });
       }
     });
@@ -120,17 +114,11 @@ class RecipeService extends Service {
         const _recipe = await app.model.Recipe.findById(id);
 
         if (!_recipe || [0, 1].indexOf(_recipe.status) < 0) {
-          reject({
-            message: '菜单不存在'
-          });
-          return;
+          throw new Error('菜单不存在');
         }
 
         if (_recipe.user_id !== user_id) {
-          reject({
-            message: '没有权限'
-          });
-          return;
+          throw new Error('没有权限');
         }
 
         const editable = {
@@ -154,7 +142,7 @@ class RecipeService extends Service {
         });
       } catch (err) {
         reject({
-          message: err
+          message: err.message
         });
       }
     });
@@ -180,17 +168,11 @@ class RecipeService extends Service {
         const _recipe = await app.model.Recipe.findById(id);
 
         if (!_recipe || [0, 1].indexOf(_recipe.status) < 0) {
-          reject({
-            message: '菜单不存在'
-          });
-          return;
+          throw new Error('菜单不存在');
         }
 
         if (_recipe.user_id !== user_id) {
-          reject({
-            message: '没有权限'
-          });
-          return;
+          throw new Error('没有权限');
         }
 
         _recipe.status = status;
@@ -199,7 +181,7 @@ class RecipeService extends Service {
 
         resolve();
       } catch (err) {
-        reject({ message: err });
+        reject({ message: err.message });
       }
     });
   }
