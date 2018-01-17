@@ -43,9 +43,10 @@ class RecipeController extends Controller {
 
     try {
       const { user_id } = ctx.params;
-      const { pageSize, pageNo } = ctx.queries;
 
-      const res = await service.recipe.findByUserId(user_id, pageSize, pageNo);
+      const { pageSize, pageNo } = ctx.query;
+
+      const res = await service.recipe.findByUserId(user_id, parseInt(pageSize), parseInt(pageNo));
 
       ctx.body = {
         success: true,
@@ -70,9 +71,14 @@ class RecipeController extends Controller {
     try {
       const { user_id, category_id } = ctx.params;
 
-      const { pageSize, pageNo } = ctx.queries;
+      const { pageSize, pageNo } = ctx.query;
 
-      const res = await service.recipe.findByUserIdWithCategoryId(user_id, category_id, pageSize, pageNo);
+      const res = await service.recipe.findByUserIdWithCategoryId(
+        user_id,
+        category_id,
+        parseInt(pageSize),
+        parseInt(pageNo)
+      );
 
       ctx.body = {
         success: true,

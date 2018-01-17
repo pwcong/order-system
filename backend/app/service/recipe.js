@@ -40,14 +40,19 @@ class RecipeService extends Service {
 
     return new Promise(async (resolve, reject) => {
       try {
-        const _recipes = await app.model.Recipe.findAll({
+        const condition = {
           where: {
             user_id,
             category_id
-          },
-          limit: pageSize,
-          offset: pageSize * (pageNo - 1)
-        });
+          }
+        };
+
+        if (pageSize || pageNo) {
+          condition.limit = pageSize || 50;
+          condition.offset = (pageSize || 50) * (pageNo ? pageNo - 1 : 0);
+        }
+
+        const _recipes = await app.model.Recipe.findAll(condition);
 
         resolve({
           recipes: _recipes.filter(item => [0, 1].indexOf(item.status) >= 0)
@@ -60,18 +65,25 @@ class RecipeService extends Service {
     });
   }
 
-  async findByUserId(user_id, pageSize = 50, pageNo = 1) {
+  async findByUserId(user_id, pageSize, pageNo) {
     const { app } = this;
 
     return new Promise(async (resolve, reject) => {
       try {
-        const _recipes = await app.model.Recipe.findAll({
+        const condition = {
           where: {
             user_id
-          },
-          limit: pageSize,
-          offset: pageSize * (pageNo - 1)
-        });
+          }
+        };
+
+        if (pageSize || pageNo) {
+          condition.limit = pageSize || 50;
+          condition.offset = (pageSize || 50) * (pageNo ? pageNo - 1 : 0);
+        }
+
+        console.log(condition);
+
+        const _recipes = await app.model.Recipe.findAll(condition);
 
         resolve({
           recipes: _recipes.filter(item => [0, 1].indexOf(item.status) >= 0)

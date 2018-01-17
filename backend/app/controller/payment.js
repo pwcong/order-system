@@ -23,5 +23,53 @@ class PaymentController extends Controller {
       };
     }
   }
+
+  async up() {
+    const { ctx, service } = this;
+
+    try {
+      const { id } = ctx.params;
+
+      const res = await service.paymentType.up(id);
+
+      ctx.body = {
+        success: true,
+        message: '上线成功',
+        code: ctx.code.STATUS_OK,
+        payload: {
+          id
+        }
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
+  async down() {
+    const { ctx, service } = this;
+
+    try {
+      const { id } = ctx.params;
+      const res = await service.paymentType.down(id);
+
+      ctx.body = {
+        success: true,
+        message: '下线成功',
+        code: ctx.code.STATUS_OK,
+        payload: {
+          id
+        }
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
 }
 module.exports = PaymentController;

@@ -88,6 +88,34 @@ module.exports = app => {
   router.get('/recipes/:user_id/:category_id', controller.recipe.searchByUserIdWithCategoryId);
 
   router.get('/payment/support', controller.payment.support);
+  router.post('/payment/up/:id', authTokenMiddleware, authUserTypeMiddleware([999]), controller.payment.up);
+  router.post(
+    '/payment/down/:id',
+    authTokenMiddleware,
+    authUserTypeMiddleware([999]),
+    controller.payment.down
+  );
+
+  router.post(
+    '/order/create/:id',
+    authTokenMiddleware,
+    authUserTypeMiddleware([1]),
+    controller.order.create
+  );
+  router.post(
+    '/orders/sended',
+    authTokenMiddleware,
+    authUserTypeMiddleware([1]),
+    controller.order.getSendedList
+  );
+  router.post(
+    '/orders/received',
+    authTokenMiddleware,
+    authUserTypeMiddleware([2]),
+    controller.order.getReceivedList
+  );
+
+  router.get('/system/time', controller.system.time);
 
   app.io.of('/notice').route('test', app.io.controller.notice.test);
 };

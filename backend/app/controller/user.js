@@ -34,7 +34,7 @@ class UserController extends Controller {
       const timestamp = new Date().getTime();
 
       const salt = uuidv1();
-      const _token = uuidv5(id + ':' + type, salt);
+      const _token = uuidv5(id + ':' + type + ':' + timestamp, salt);
 
       const content = jwt.encode(
         {
@@ -88,7 +88,7 @@ class UserController extends Controller {
       const timestamp = new Date().getTime();
 
       const salt = uuidv1();
-      const _token = uuidv5(id + ':' + type, salt);
+      const _token = uuidv5(id + ':' + type + ':' + timestamp, salt);
 
       const content = jwt.encode(
         {

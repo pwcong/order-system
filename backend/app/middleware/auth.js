@@ -81,8 +81,8 @@ exports.authUserType = types => {
     if (!ctx.user || !ctx.user.type || types.indexOf(ctx.user.type) < 0) {
       ctx.body = {
         success: false,
-        code: ctx.code.USERTYPE_MISMATCH,
-        message: '用户类型不匹配'
+        code: ctx.code.STATUS_ERROR,
+        message: '没有权限'
       };
       return;
     }
