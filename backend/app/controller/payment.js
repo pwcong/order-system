@@ -30,7 +30,7 @@ class PaymentController extends Controller {
     try {
       const { id } = ctx.params;
 
-      const res = await service.paymentType.up(id);
+      await service.paymentType.up(id);
 
       ctx.body = {
         success: true,
@@ -53,7 +53,8 @@ class PaymentController extends Controller {
 
     try {
       const { id } = ctx.params;
-      const res = await service.paymentType.down(id);
+
+      await service.paymentType.down(id);
 
       ctx.body = {
         success: true,

@@ -74,7 +74,7 @@ class UserService extends Service {
           throw new Error('用户不存在');
         }
 
-        if (uuidv5(pwd, _user['password_salt']) != _user['password']) {
+        if (uuidv5(pwd, _user.password_salt) !== _user.password) {
           throw new Error('密码错误');
         }
 

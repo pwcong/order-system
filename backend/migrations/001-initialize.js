@@ -4,9 +4,9 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     const { STRING, INTEGER, BOOLEAN, DECIMAL, DATE, TEXT } = Sequelize;
 
-    /////////////////////
+    // ///////////////////
     // 用户类型表
-    ////////////////////
+    // //////////////////
     await queryInterface.createTable('user_types', {
       id: {
         type: INTEGER,
@@ -28,9 +28,9 @@ module.exports = {
       }
     });
 
-    /////////////////////
+    // ///////////////////
     // 用户表
-    ////////////////////
+    // //////////////////
     await queryInterface.createTable('users', {
       id: {
         type: INTEGER,
@@ -101,9 +101,9 @@ module.exports = {
       }
     });
 
-    /////////////////////
+    // ///////////////////
     // 用户信息表
-    ////////////////////
+    // //////////////////
     await queryInterface.createTable('user_infos', {
       id: {
         type: INTEGER,
@@ -140,9 +140,9 @@ module.exports = {
       }
     });
 
-    /////////////////////
+    // ///////////////////
     // 菜单分类表
-    ////////////////////
+    // //////////////////
     await queryInterface.createTable('recipe_categories', {
       id: {
         type: INTEGER,
@@ -183,9 +183,9 @@ module.exports = {
       }
     });
 
-    /////////////////////
+    // ///////////////////
     // 菜单表
-    ////////////////////
+    // //////////////////
     await queryInterface.createTable('recipes', {
       id: {
         type: INTEGER,
@@ -239,9 +239,9 @@ module.exports = {
       }
     });
 
-    /////////////////////
+    // ///////////////////
     // 菜单点评表
-    ////////////////////
+    // //////////////////
     await queryInterface.createTable('recipe_evaluates', {
       id: {
         type: INTEGER,
@@ -304,9 +304,9 @@ module.exports = {
       }
     });
 
-    /////////////////////
+    // ///////////////////
     // 支付方式表
-    ////////////////////
+    // //////////////////
     await queryInterface.createTable('payment_types', {
       id: {
         type: INTEGER,
@@ -334,9 +334,9 @@ module.exports = {
       }
     });
 
-    /////////////////////
+    // ///////////////////
     // 订单表
-    ////////////////////
+    // //////////////////
     await queryInterface.createTable('orders', {
       /**
        * 订单号，长度为26位数
@@ -452,9 +452,9 @@ module.exports = {
       }
     });
 
-    /////////////////////
+    // ///////////////////
     // 账单表
-    ////////////////////
+    // //////////////////
     await queryInterface.createTable('bills', {
       id: {
         type: INTEGER,

@@ -55,7 +55,7 @@ class RecipeService extends Service {
         const _recipes = await app.model.Recipe.findAll(condition);
 
         resolve({
-          recipes: _recipes.filter(item => [0, 1].indexOf(item.status) >= 0)
+          recipes: _recipes.filter(item => [ 0, 1 ].indexOf(item.status) >= 0)
         });
       } catch (err) {
         reject({
@@ -86,7 +86,7 @@ class RecipeService extends Service {
         const _recipes = await app.model.Recipe.findAll(condition);
 
         resolve({
-          recipes: _recipes.filter(item => [0, 1].indexOf(item.status) >= 0)
+          recipes: _recipes.filter(item => [ 0, 1 ].indexOf(item.status) >= 0)
         });
       } catch (err) {
         reject({
@@ -103,7 +103,7 @@ class RecipeService extends Service {
       try {
         const _recipe = await app.model.Recipe.findById(id);
 
-        if (!_recipe || [0, 1].indexOf(_recipe.status) < 0) {
+        if (!_recipe || [ 0, 1 ].indexOf(_recipe.status) < 0) {
           throw new Error('菜单不存在');
         }
 
@@ -125,7 +125,7 @@ class RecipeService extends Service {
       try {
         const _recipe = await app.model.Recipe.findById(id);
 
-        if (!_recipe || [0, 1].indexOf(_recipe.status) < 0) {
+        if (!_recipe || [ 0, 1 ].indexOf(_recipe.status) < 0) {
           throw new Error('菜单不存在');
         }
 
@@ -179,7 +179,7 @@ class RecipeService extends Service {
       try {
         const _recipe = await app.model.Recipe.findById(id);
 
-        if (!_recipe || [0, 1].indexOf(_recipe.status) < 0) {
+        if (!_recipe || [ 0, 1 ].indexOf(_recipe.status) < 0) {
           throw new Error('菜单不存在');
         }
 

@@ -24,6 +24,7 @@ class HomeController extends Controller {
 }
 注意：在 beforeStart 中不建议做太耗时的操作，框架会有启动的超时检测。
 */
+'use strict';
 
 const uuidv1 = require('uuid/v1');
 const uuidv5 = require('uuid/v5');

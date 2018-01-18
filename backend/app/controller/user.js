@@ -2,7 +2,6 @@
 
 const Controller = require('egg').Controller;
 
-const moment = require('moment');
 const jwt = require('jwt-simple');
 
 const uuidv1 = require('uuid/v1');
@@ -22,7 +21,7 @@ class UserController extends Controller {
         throw new Error('参数不足');
       }
 
-      if ([1, 2, 3].indexOf(type) < 0) {
+      if ([ 1, 2, 3 ].indexOf(type) < 0) {
         throw new Error('参数有误');
       }
 

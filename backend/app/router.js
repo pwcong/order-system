@@ -19,17 +19,17 @@ module.exports = app => {
 
   router.post('/user/check', authTokenMiddleware, controller.user.check);
 
-  router.post('/user/lock/:id', authTokenMiddleware, authUserTypeMiddleware([999]), controller.user.lock);
+  router.post('/user/lock/:id', authTokenMiddleware, authUserTypeMiddleware([ 999 ]), controller.user.lock);
   router.post(
     '/user/unlock/:id',
     authTokenMiddleware,
-    authUserTypeMiddleware([999]),
+    authUserTypeMiddleware([ 999 ]),
     controller.user.unlock
   );
   router.post(
     '/user/remove/:id',
     authTokenMiddleware,
-    authUserTypeMiddleware([999]),
+    authUserTypeMiddleware([ 999 ]),
     controller.user.remove
   );
 
@@ -46,7 +46,7 @@ module.exports = app => {
   router.post(
     '/recipe_category/create',
     authTokenMiddleware,
-    authUserTypeMiddleware([2]),
+    authUserTypeMiddleware([ 2 ]),
     controller.recipeCategory.create
   );
 
@@ -56,78 +56,78 @@ module.exports = app => {
   router.post(
     '/recipe_category/:id',
     authTokenMiddleware,
-    authUserTypeMiddleware([2]),
+    authUserTypeMiddleware([ 2 ]),
     controller.recipeCategory.modify
   );
 
   router.post(
     '/recipe_category/remove/:id',
     authTokenMiddleware,
-    authUserTypeMiddleware([2]),
+    authUserTypeMiddleware([ 2 ]),
     controller.recipeCategory.remove
   );
 
-  router.post('/recipe/create', authTokenMiddleware, authUserTypeMiddleware([2]), controller.recipe.create);
+  router.post('/recipe/create', authTokenMiddleware, authUserTypeMiddleware([ 2 ]), controller.recipe.create);
 
   router.get('/recipe/:id', controller.recipe.searchById);
-  router.post('/recipe/:id', authTokenMiddleware, authUserTypeMiddleware([2]), controller.recipe.modify);
+  router.post('/recipe/:id', authTokenMiddleware, authUserTypeMiddleware([ 2 ]), controller.recipe.modify);
   router.post(
     '/recipe/remove/:id',
     authTokenMiddleware,
-    authUserTypeMiddleware([2]),
+    authUserTypeMiddleware([ 2 ]),
     controller.recipe.remove
   );
-  router.post('/recipe/up/:id', authTokenMiddleware, authUserTypeMiddleware([2]), controller.recipe.online);
+  router.post('/recipe/up/:id', authTokenMiddleware, authUserTypeMiddleware([ 2 ]), controller.recipe.online);
   router.post(
     '/recipe/down/:id',
     authTokenMiddleware,
-    authUserTypeMiddleware([2]),
+    authUserTypeMiddleware([ 2 ]),
     controller.recipe.offline
   );
   router.get('/recipes/:user_id', controller.recipe.searchByUserId);
   router.get('/recipes/:user_id/:category_id', controller.recipe.searchByUserIdWithCategoryId);
 
   router.get('/payment/support', controller.payment.support);
-  router.post('/payment/up/:id', authTokenMiddleware, authUserTypeMiddleware([999]), controller.payment.up);
+  router.post('/payment/up/:id', authTokenMiddleware, authUserTypeMiddleware([ 999 ]), controller.payment.up);
   router.post(
     '/payment/down/:id',
     authTokenMiddleware,
-    authUserTypeMiddleware([999]),
+    authUserTypeMiddleware([ 999 ]),
     controller.payment.down
   );
 
   router.post(
     '/order/create/:id',
     authTokenMiddleware,
-    authUserTypeMiddleware([1]),
+    authUserTypeMiddleware([ 1 ]),
     controller.order.create
   );
   router.post(
     '/orders/sended',
     authTokenMiddleware,
-    authUserTypeMiddleware([1]),
+    authUserTypeMiddleware([ 1 ]),
     controller.order.getSendedList
   );
-  router.post('/order/pay/:id', authTokenMiddleware, authUserTypeMiddleware([1]), controller.order.pay);
+  router.post('/order/pay/:id', authTokenMiddleware, authUserTypeMiddleware([ 1 ]), controller.order.pay);
   router.post(
     '/order/cancel/:id',
     authTokenMiddleware,
-    authUserTypeMiddleware([1]),
+    authUserTypeMiddleware([ 1 ]),
     controller.order.cancel
   );
   router.post(
     '/order/finish/:id',
     authTokenMiddleware,
-    authUserTypeMiddleware([1]),
+    authUserTypeMiddleware([ 1 ]),
     controller.order.finish
   );
   router.post(
     '/orders/received',
     authTokenMiddleware,
-    authUserTypeMiddleware([2]),
+    authUserTypeMiddleware([ 2 ]),
     controller.order.getReceivedList
   );
-  router.post('/order/close/:id', authTokenMiddleware, authUserTypeMiddleware([2]), controller.order.close);
+  router.post('/order/close/:id', authTokenMiddleware, authUserTypeMiddleware([ 2 ]), controller.order.close);
 
   router.get('/system/time', controller.system.time);
 

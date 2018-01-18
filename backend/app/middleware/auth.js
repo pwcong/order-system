@@ -1,10 +1,10 @@
-const jwt = require('jwt-simple');
+'use strict';
 
-const TYPES = [1, 2, 3, 999];
+const jwt = require('jwt-simple');
 
 /**
  * 校验用户token
- * @param {object} options
+ * @param {object} options 配置信息
  */
 exports.authToken = options => {
   return async (ctx, next) => {

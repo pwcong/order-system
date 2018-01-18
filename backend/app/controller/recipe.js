@@ -164,7 +164,7 @@ class RecipeController extends Controller {
       const { id } = ctx.params;
       const user_id = ctx.user.id;
 
-      const res = await service.recipe.remove(user_id, id);
+      await service.recipe.remove(user_id, id);
 
       ctx.body = {
         success: true,
@@ -193,7 +193,7 @@ class RecipeController extends Controller {
       const { id } = ctx.params;
       const user_id = ctx.user.id;
 
-      const res = await service.recipe.online(user_id, id);
+      await service.recipe.online(user_id, id);
 
       ctx.body = {
         success: true,
@@ -222,7 +222,7 @@ class RecipeController extends Controller {
       const { id } = ctx.params;
       const user_id = ctx.user.id;
 
-      const res = await service.recipe.offline(user_id, id);
+      await service.recipe.offline(user_id, id);
 
       ctx.body = {
         success: true,

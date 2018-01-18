@@ -2,6 +2,9 @@
   "extends": "eslint-config-egg",
   "rules": {
     "comma-dangle": "off",
-    "no-empty-function": "off"
+    "no-empty-function": "off",
+    "valid-jsdoc": "off",
+    "no-unused-vars": "off",
+    "no-empty": "off"
   }
 }

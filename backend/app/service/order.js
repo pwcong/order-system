@@ -19,7 +19,7 @@ class OrderService extends Service {
         }
 
         let amount = 0;
-        let recipes = [];
+        const recipes = [];
 
         for (let i = 0; i < details.length; i++) {
           const item = details[i];
@@ -125,9 +125,9 @@ class OrderService extends Service {
 
     return new Promise(async (resolve, reject) => {
       try {
-        ///////////////////
+        // /////////////////
         // 查询订单
-        ///////////////////
+        // /////////////////
         const _order = await app.model.Order.findOne({
           where: {
             id,
@@ -139,9 +139,9 @@ class OrderService extends Service {
           throw new Error('订单无效');
         }
 
-        ///////////////////
+        // /////////////////
         // 查询收款方
-        ///////////////////
+        // /////////////////
         const receiver_id = _order.receiver_id;
 
         const _receiver = await app.model.User.findById(receiver_id);
@@ -149,18 +149,18 @@ class OrderService extends Service {
           throw new Error('收款方账户无效');
         }
 
-        ///////////////////
+        // /////////////////
         // 查询付款方
-        ///////////////////
+        // /////////////////
 
         const _sender = await app.model.User.findById(sender_id);
         if (!_sender || _sender.status !== 0) {
           throw new Error('付款方账户无效');
         }
 
-        ///////////////////
+        // /////////////////
         // 更新付款方账户
-        ///////////////////
+        // /////////////////
 
         const orderAmount = parseFloat(_order.amount);
 
@@ -175,24 +175,24 @@ class OrderService extends Service {
           }
         }
 
-        ///////////////////
+        // /////////////////
         // 更新收款方账户
-        ///////////////////
+        // /////////////////
 
         const receiverBalance = parseFloat(_receiver.balance);
         _receiver.balance = receiverBalance + orderAmount;
         await _receiver.save();
 
-        ///////////////////
+        // /////////////////
         // 更新账单状态
-        ///////////////////
+        // /////////////////
         _order.status = 1;
         _order.has_payed = true;
         await _order.save();
 
-        ///////////////////
+        // /////////////////
         // 新建收款付款账单
-        ///////////////////
+        // /////////////////
         await app.model.Bill.create({
           user_id: receiver_id,
           name: '收款',
@@ -231,7 +231,7 @@ class OrderService extends Service {
           }
         });
 
-        if (!_order || _order.sender_id !== sender_id || [0, 1].indexOf(_order.status) < 0) {
+        if (!_order || _order.sender_id !== sender_id || [ 0, 1 ].indexOf(_order.status) < 0) {
           throw new Error('订单无效');
         }
 
@@ -274,7 +274,7 @@ class OrderService extends Service {
           }
         });
 
-        if (!_order || _order.sender_id !== sender_id || [1].indexOf(_order.status) < 0) {
+        if (!_order || _order.sender_id !== sender_id || [ 1 ].indexOf(_order.status) < 0) {
           throw new Error('订单无效');
         }
 
@@ -298,9 +298,9 @@ class OrderService extends Service {
 
     return new Promise(async (resolve, reject) => {
       try {
-        ///////////////////
+        // /////////////////
         // 查询订单
-        ///////////////////
+        // /////////////////
         const _order = await app.model.Order.findOne({
           where: {
             id,
@@ -308,21 +308,21 @@ class OrderService extends Service {
           }
         });
 
-        if (!_order || _order.receiver_id !== receiver_id || [3].indexOf(_order.status) < 0) {
+        if (!_order || _order.receiver_id !== receiver_id || [ 3 ].indexOf(_order.status) < 0) {
           throw new Error('无效的订单');
         }
 
-        ///////////////////
+        // /////////////////
         // 查询付款方
-        ///////////////////
+        // /////////////////
         const _receiver = await app.model.User.findById(receiver_id);
         if (!_receiver || _receiver.status !== 0) {
           throw new Error('付款方账户无效');
         }
 
-        ///////////////////
+        // /////////////////
         // 查询退款方
-        ///////////////////
+        // /////////////////
         const sender_id = _order.sender_id;
         const _sender = await app.model.User.findById(sender_id);
         if (!_sender || _sender.status !== 0) {
@@ -343,9 +343,9 @@ class OrderService extends Service {
         _order.has_refunded = true;
         await _order.save();
 
-        ///////////////////
+        // /////////////////
         // 新建收款付款账单
-        ///////////////////
+        // /////////////////
         await app.model.Bill.create({
           user_id: sender_id,
           name: '退款',

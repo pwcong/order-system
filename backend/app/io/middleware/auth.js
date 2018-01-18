@@ -1,3 +1,7 @@
+'use strict';
+
+const jwt = require('jwt-simple');
+
 module.exports = app => {
   return async (ctx, next) => {
     const token = ctx.socket.handshake.query.token;
@@ -15,7 +19,7 @@ module.exports = app => {
         return;
       }
 
-      const content = jwt.decode(value, options.secret);
+      const content = jwt.decode(value, app.config.auth.secret);
 
       const { id, type, timestamp } = content;
 

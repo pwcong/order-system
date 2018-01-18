@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = app => {
   class NoticeController extends app.Controller {
     async test() {

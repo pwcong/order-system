@@ -130,7 +130,7 @@ class RecipeCategoryController extends Controller {
       const { id } = ctx.params;
       const user_id = ctx.user.id;
 
-      const res = await service.recipeCategory.remove(user_id, id);
+      await service.recipeCategory.remove(user_id, id);
 
       ctx.body = {
         success: true,
