@@ -30,15 +30,13 @@ class PaymentController extends Controller {
     try {
       const { id } = ctx.params;
 
-      await service.paymentType.up(id);
+      const res = await service.paymentType.up(id);
 
       ctx.body = {
         success: true,
         message: '上线成功',
         code: ctx.code.STATUS_OK,
-        payload: {
-          id
-        }
+        payload: res.paymentType
       };
     } catch (err) {
       ctx.body = {
@@ -54,15 +52,13 @@ class PaymentController extends Controller {
     try {
       const { id } = ctx.params;
 
-      await service.paymentType.down(id);
+      const res = await service.paymentType.down(id);
 
       ctx.body = {
         success: true,
         message: '下线成功',
         code: ctx.code.STATUS_OK,
-        payload: {
-          id
-        }
+        payload: res.paymentType
       };
     } catch (err) {
       ctx.body = {

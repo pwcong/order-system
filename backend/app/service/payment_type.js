@@ -43,7 +43,9 @@ class PaymentTypeService extends Service {
         _paymentType.status = status;
         await _paymentType.save();
 
-        resolve();
+        resolve({
+          paymentType: _paymentType
+        });
       } catch (err) {
         reject({
           message: err.message

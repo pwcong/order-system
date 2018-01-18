@@ -68,6 +68,11 @@ curl -X POST $API_BASE/recipe/create \
 #### 获取指定菜单信息
 
 路径：`/recipe/:id`
+
+路径参数：
+
+* id: 菜单 id
+
 方法: `GET`
 
 请求示例：
@@ -103,6 +108,11 @@ curl -X POST $API_BASE/recipe/1
 #### 获取指定用户菜单列表
 
 路径：`/recipes/:user_id`
+
+路径参数：
+
+* user_id: 用户 id
+
 方法: `GET`
 
 请求示例：
@@ -140,6 +150,11 @@ curl -X POST $API_BASE/recipes/10000
 #### 获取指定用户与分类菜单列表
 
 路径：`/recipes/:user_id/:category_id`
+
+路径参数：
+
+* category_id: 分类 id
+
 方法: `GET`
 
 请求示例：
@@ -177,6 +192,12 @@ curl -X POST $API_BASE/recipes/10000/1
 #### 获取指定用户与分类菜单列表
 
 路径：`/recipes/:user_id/:category_id`
+
+路径参数：
+
+* user_id: 用户 id
+* category_id: 分类 id
+
 方法: `GET`
 
 请求示例：
@@ -214,6 +235,11 @@ curl -X POST $API_BASE/recipes/10000/1
 #### 修改指定菜单信息（需商户权限）
 
 路径：`/recipe/:id`
+
+路径参数：
+
+* id: 菜单 id
+
 方法: `POST`
 
 请求头：
@@ -269,6 +295,11 @@ curl -X POST $API_BASE/recipe/1 \
 #### 上线指定菜单（需商户权限）
 
 路径：`/recipe/up/:id`
+
+路径参数：
+
+* id: 菜单 id
+
 方法: `POST`
 
 请求头：
@@ -300,6 +331,11 @@ curl -X POST $API_BASE/recipe/up/1 \
 #### 下线指定菜单（需商户权限）
 
 路径：`/recipe/down/:id`
+
+路径参数：
+
+* id: 菜单 id
+
 方法: `POST`
 
 请求头：
@@ -331,6 +367,11 @@ curl -X POST $API_BASE/recipe/down/1 \
 #### 删除指定菜单（需商户权限）
 
 路径：`/recipe/remove/:id`
+
+路径参数：
+
+* id: 菜单 id
+
 方法: `POST`
 
 请求头：
