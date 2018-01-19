@@ -32,7 +32,7 @@
     "node": ">=8.9.0"
   },
   "scripts": {
-    "start": "egg-scripts start --daemon",
+    "start": "cross-env NODE_ENV=production egg-scripts start --daemon",
     "stop": "egg-scripts stop",
     "dev": "egg-bin dev --port",
     "debug": "egg-bin debug",
@@ -44,6 +44,7 @@
     "autod": "autod",
     "migrate:new": "egg-sequelize migration:create",
     "migrate:up": "egg-sequelize db:migrate",
+    "migrate:up:prod": "cross-env NODE_ENV=production egg-sequelize db:migrate",
     "migrate:down": "egg-sequelize db:migrate:undo",
     "migrate:down:all": "egg-sequelize db:migrate:undo:all"
   },

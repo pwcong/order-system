@@ -30,6 +30,10 @@ const uuidv1 = require('uuid/v1');
 const uuidv5 = require('uuid/v5');
 
 async function initAdmin(app) {
+  if (process.env.NODE_ENV !== 'production') {
+    return;
+  }
+
   app.config.admin = app.config.admin || {};
 
   await app.model.User.destroy({
