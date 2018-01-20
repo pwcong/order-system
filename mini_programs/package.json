@@ -1,0 +1,14 @@
+{
+  "name": "order-system-mp",
+  "version": "1.0.0",
+  "description": "Mini Programs for Order System",
+  "author": "Pwcong <pwcong@foxmail.com>",
+  "scripts": {
+    "new:app": "wepy new app",
+    "new:admin": "wepy new admin"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "wepy-cli": "^1.6.0"
+  }
+}
