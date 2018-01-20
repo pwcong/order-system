@@ -1,5 +1,5 @@
 const path = require('path');
-var prod = process.env.NODE_ENV === 'production'
+var prod = process.env.NODE_ENV === 'production';
 
 module.exports = {
   wpyExt: '.wpy',
@@ -12,7 +12,6 @@ module.exports = {
   },
   resolve: {
     alias: {
-      counter: path.join(__dirname, 'src/components/counter'),
       '@': path.join(__dirname, 'src')
     },
     modules: ['node_modules']
@@ -22,44 +21,39 @@ module.exports = {
     less: {
       compress: true
     },
-    /*sass: {
+    sass: {
       outputStyle: 'compressed'
-    },*/
+    },
     babel: {
       sourceMap: true,
-      presets: [
-        'env'
-      ],
+      presets: ['env'],
       plugins: [
         'transform-class-properties',
         'transform-decorators-legacy',
         'transform-object-rest-spread',
-        'transform-export-extensions',
+        'transform-export-extensions'
       ]
     }
   },
-  plugins: {
-  },
+  plugins: {},
   appConfig: {
     noPromiseAPI: ['createSelectorQuery']
   }
-}
+};
 
 if (prod) {
-
   delete module.exports.compilers.babel.sourcesMap;
   // 压缩sass
-  // module.exports.compilers['sass'] = {outputStyle: 'compressed'}
+  module.exports.compilers['sass'] = { outputStyle: 'compressed' };
 
   // 压缩less
-  module.exports.compilers['less'] = {compress: true}
+  module.exports.compilers['less'] = { compress: true };
 
   // 压缩js
   module.exports.plugins = {
     uglifyjs: {
       filter: /\.js$/,
-      config: {
-      }
+      config: {}
     },
     imagemin: {
       filter: /\.(jpg|png|jpeg)$/,
@@ -72,5 +66,5 @@ if (prod) {
         }
       }
     }
-  }
+  };
 }

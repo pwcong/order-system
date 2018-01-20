@@ -1,0 +1,30 @@
+<style lang="scss">
+.container {
+}
+</style>
+<template>
+  <view class="container">
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+export default class Home extends wepy.page {
+  config = {
+    navigationBarTitleText: '个人中心'
+  };
+  components = {};
+
+  mixins = [];
+
+  data = {};
+
+  computed = {};
+
+  methods = {};
+
+  events = {};
+
+  onLoad() {}
+}
+</script>

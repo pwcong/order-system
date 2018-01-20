@@ -1,0 +1,13 @@
+<style lang="scss">
+.test {
+}
+</style>
+
+<template>
+  <view class="test"></view>
+</template>
+<script>
+import wepy from 'wepy';
+
+export default class Test extends wepy.component {}
+</script>
