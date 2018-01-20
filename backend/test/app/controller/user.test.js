@@ -24,7 +24,7 @@ describe('test/app/controller/user.test.js', () => {
         })
         .expect(200);
 
-      assert(res.body.code === 20000);
+      assert(res.body.success);
 
       describe('POST /user/check', () => {
         it('should check token successfully', async () => {
@@ -64,7 +64,7 @@ describe('test/app/controller/user.test.js', () => {
           });
 
           describe('POST /user/login', () => {
-            it('should login failed', async () => {
+            it('should login failed because of lock status', async () => {
               const __res = await app
                 .httpRequest()
                 .post('/user/login')
@@ -91,7 +91,7 @@ describe('test/app/controller/user.test.js', () => {
           });
 
           describe('POST /user/login', () => {
-            it('should login successfully', async () => {
+            it('should login successfully because of normal status', async () => {
               const __res = await app
                 .httpRequest()
                 .post('/user/login')
@@ -118,7 +118,7 @@ describe('test/app/controller/user.test.js', () => {
           });
 
           describe('POST /user/login', () => {
-            it('should login failed', async () => {
+            it('should login failed because of remove status', async () => {
               const __res = await app
                 .httpRequest()
                 .post('/user/login')
