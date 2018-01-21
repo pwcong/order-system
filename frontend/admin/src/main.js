@@ -17,6 +17,9 @@ import '@/permission'; // permission control
 
 Vue.use(ElementUI, { locale });
 
+import VCharts from 'v-charts';
+Vue.use(VCharts);
+
 Vue.config.productionTip = false;
 
 new Vue({
