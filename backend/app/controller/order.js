@@ -10,16 +10,16 @@ class OrderController extends Controller {
     const { ctx, service } = this;
 
     try {
-      const { details } = ctx.request.body;
+      const { details, address } = ctx.request.body;
 
-      if (!details) {
+      if (!details || address) {
         throw new Error('参数不足');
       }
 
       const sender_id = ctx.user.id;
       const receiver_id = ctx.params.id;
 
-      const res = await service.order.create(sender_id, receiver_id, details);
+      const res = await service.order.create(sender_id, receiver_id, details, address);
 
       ctx.body = {
         success: true,

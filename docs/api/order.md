@@ -31,6 +31,7 @@
     }
   ]
   ```
+* address: 地址
 
 请求头：
 
@@ -44,7 +45,8 @@ curl -X POST \
   -H 'Content-Type: application/json' \
   -H 'X-Token: 10001:73f0799c-ffdd-551c-90c3-cf063e66c0d0' \
   -d '{
-	  "details": [{"id": 1, "counts": 2}]
+	  "details": [{"id": 1, "counts": 2}],
+    "address": "xxx"
   }'
 ```
 

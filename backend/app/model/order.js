@@ -58,6 +58,11 @@ module.exports = app => {
       allowNull: false
     },
 
+    address: {
+      type: TEXT,
+      allowNull: false
+    },
+
     /**
      * 订单状态
      * 0.发起 1.已支付 2.已完成 3.取消中 4.已取消

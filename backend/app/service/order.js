@@ -7,7 +7,7 @@ const moment = require('moment');
 const { generateOrderId } = require('../utils/order');
 
 class OrderService extends Service {
-  async create(sender_id, receiver_id, details) {
+  async create(sender_id, receiver_id, details, address) {
     const { app } = this;
 
     return new Promise(async (resolve, reject) => {
@@ -44,6 +44,7 @@ class OrderService extends Service {
           receiver_id,
           name: recipes.join('|'),
           details: JSON.stringify(details),
+          address,
           amount
         });
 
@@ -231,7 +232,7 @@ class OrderService extends Service {
           }
         });
 
-        if (!_order || _order.sender_id !== sender_id || [ 0, 1 ].indexOf(_order.status) < 0) {
+        if (!_order || _order.sender_id !== sender_id || [0, 1].indexOf(_order.status) < 0) {
           throw new Error('订单无效');
         }
 
@@ -274,7 +275,7 @@ class OrderService extends Service {
           }
         });
 
-        if (!_order || _order.sender_id !== sender_id || [ 1 ].indexOf(_order.status) < 0) {
+        if (!_order || _order.sender_id !== sender_id || [1].indexOf(_order.status) < 0) {
           throw new Error('订单无效');
         }
 
@@ -308,7 +309,7 @@ class OrderService extends Service {
           }
         });
 
-        if (!_order || _order.receiver_id !== receiver_id || [ 3 ].indexOf(_order.status) < 0) {
+        if (!_order || _order.receiver_id !== receiver_id || [3].indexOf(_order.status) < 0) {
           throw new Error('无效的订单');
         }
 

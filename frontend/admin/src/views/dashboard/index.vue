@@ -13,7 +13,7 @@
       </el-col>
     </el-row>
     <el-row class="main" :gutter="20">
-      <el-col :sm="24" :md="12" :lg="6" class="main-card">
+      <el-col :sm="24" :md="12" :lg="12" class="main-card">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>今日订单</span>
@@ -23,7 +23,7 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :sm="24" :md="12" :lg="6" class="main-card">
+      <el-col :sm="24" :md="12" :lg="12" class="main-card">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>今日收支</span>
@@ -33,7 +33,7 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :sm="24" :md="12" :lg="6" class="main-card">
+      <el-col :sm="24" :md="12" :lg="12" class="main-card">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>年度订单</span>
@@ -43,7 +43,7 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :sm="24" :md="12" :lg="6" class="main-card">
+      <el-col :sm="24" :md="12" :lg="12" class="main-card">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>年度收支</span>

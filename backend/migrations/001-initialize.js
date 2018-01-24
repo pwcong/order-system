@@ -389,6 +389,14 @@ module.exports = {
       },
 
       /**
+       * 订单地址
+       */
+      address: {
+        type: TEXT,
+        allowNull: false
+      },
+
+      /**
        * 订单状态
        * 0.发起 1.已支付 2.已完成 3.取消 4.已取消
        */
