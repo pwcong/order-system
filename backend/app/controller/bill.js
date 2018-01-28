@@ -3,7 +3,6 @@
 const Controller = require('egg').Controller;
 
 class BillController extends Controller {
-
   /**
    * 查询账单
    */
@@ -29,6 +28,7 @@ class BillController extends Controller {
       ctx.body = {
         success: true,
         message: '获取成功',
+        code: ctx.code.STATUS_OK,
         payload: res.bills.filter((bill, idx) => {
           if (!filter) {
             return true;

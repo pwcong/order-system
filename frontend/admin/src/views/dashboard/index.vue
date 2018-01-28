@@ -33,6 +33,8 @@
           </div>
         </el-card>
       </el-col>
+
+      <!-- 
       <el-col :sm="24" :md="12" :lg="12" class="main-card">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
@@ -53,6 +55,7 @@
           </div>
         </el-card>
       </el-col>
+      -->
     </el-row>
   </div>
 </template>
@@ -62,6 +65,9 @@ import banner1 from '@/assets/images/banner_1.jpg';
 import banner2 from '@/assets/images/banner_2.jpg';
 import banner3 from '@/assets/images/banner_3.jpg';
 
+import { getTodayOrders } from '@/api/order';
+import { getTodayBills } from '@/api/bill';
+
 export default {
   name: 'Dashboard',
   data() {
@@ -70,48 +76,92 @@ export default {
       todayOrderChart: {
         data: {
           columns: ['type', 'counts'],
-          rows: [
-            { type: '进行中', counts: 50 },
-            { type: '已完成', counts: 20 },
-            { type: '已取消', counts: 10 }
-          ]
+          rows: []
         }
       },
       todayBillChart: {
         data: {
           columns: ['type', 'amount'],
-          rows: [{ type: '收款', amount: 2000 }, { type: '退款', amount: 150 }]
-        }
-      },
-      yearOrderChart: {
-        data: {
-          columns: ['月份', '已完成', '已取消', '全部'],
-          rows: [
-            { 月份: '一月', 已完成: 1500, 已取消: 500, 全部: 2000 },
-            { 月份: '二月', 已完成: 1400, 已取消: 300, 全部: 1700 }
-          ]
-        },
-        setting: {
-          showLine: ['全部'],
-          metrics: ['已完成', '已取消', '全部'],
-          stack: { all: ['已完成', '已取消'] }
-        }
-      },
-      yearBillChart: {
-        data: {
-          columns: ['月份', '收款', '退款'],
-          rows: [
-            { 月份: '一月', 收款: 15000, 退款: 500},
-            { 月份: '二月', 收款: 14000, 退款: 300}
-          ]
-        },
-        setting: {
-          metrics: ['收款', '退款']
+          rows: []
         }
       }
+      // yearOrderChart: {
+      //   data: {
+      //     columns: ['月份', '已完成', '已取消', '全部'],
+      //     rows: [
+      //       { 月份: '一月', 已完成: 1500, 已取消: 500, 全部: 2000 },
+      //       { 月份: '二月', 已完成: 1400, 已取消: 300, 全部: 1700 }
+      //     ]
+      //   },
+      //   setting: {
+      //     showLine: ['全部'],
+      //     metrics: ['已完成', '已取消', '全部'],
+      //     stack: { all: ['已完成', '已取消'] }
+      //   }
+      // },
+      // yearBillChart: {
+      //   data: {
+      //     columns: ['月份', '收款', '退款'],
+      //     rows: [
+      //       { 月份: '一月', 收款: 15000, 退款: 500},
+      //       { 月份: '二月', 收款: 14000, 退款: 300}
+      //     ]
+      //   },
+      //   setting: {
+      //     metrics: ['收款', '退款']
+      //   }
+      // }
     };
   },
-  computed: {}
+  computed: {},
+  methods: {
+    async initCharts() {
+      const ctx = this;
+
+      try {
+        const todayOrders = await getTodayOrders([0, 1, 2, 3, 4]);
+        const todayBills = await getTodayBills([0, 1]);
+
+        ctx.todayOrderChart.data.rows = [
+          {
+            type: '进行中',
+            counts: todayOrders.payload.filter((order, idx) => [0, 1, 3].indexOf(order.status) >= 0).length
+          },
+          {
+            type: '已完成',
+            counts: todayOrders.payload.filter((order, idx) => order.status === 2).length
+          },
+          {
+            type: '已取消',
+            counts: todayOrders.payload.filter((order, idx) => order.status === 4).length
+          }
+        ];
+
+        const inBills = todayBills.payload
+          .filter((bill, idx) => bill.type === 0)
+          .map((bill, idx) => parseFloat(bill.amount) || 0);
+
+        const outBills = todayBills.payload
+          .filter((bill, idx) => bill.type === 1)
+          .map((bill, idx) => parseFloat(bill.amount) || 0);
+
+        ctx.todayBillChart.data.rows = [
+          {
+            type: '收款',
+            amount: inBills.length > 0 ? inBills.reduce((total, current) => total + current) : 0
+          },
+          {
+            type: '退款',
+            amount: outBills.length > 0 ? outBills.reduce((total, current) => total + current) : 0
+          }
+        ];
+      } catch (err) {}
+    }
+  },
+
+  async created() {
+    this.initCharts();
+  }
 };
 </script>
 
