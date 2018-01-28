@@ -491,7 +491,6 @@ module.exports = {
       },
       payment_type: {
         type: INTEGER,
-        allowNull: false,
         references: {
           model: 'payment_types',
           key: 'id'

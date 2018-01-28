@@ -142,6 +142,11 @@ module.exports = app => {
   );
   router.post('/order/close/:id', authTokenMiddleware, authUserTypeMiddleware([ 2 ]), controller.order.close);
 
+  router.post('/bills', authTokenMiddleware, authUserTypeMiddleware([ 1, 2 ]), controller.bill.search);
+  router.post('/bills/:filter', authTokenMiddleware, authUserTypeMiddleware([ 1, 2 ]), controller.bill.search);
+
+
+
   router.get('/system/time', controller.system.time);
 
   app.io.of('/notice').route('test', app.io.controller.notice.test);

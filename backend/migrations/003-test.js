@@ -28,7 +28,8 @@ module.exports = {
         phone: '13000000001',
         email: 'customer@email.com',
         password: uuidv5('123456', salt),
-        password_salt: salt
+        password_salt: salt,
+        balance: 1000
       },
       {
         id: 10002,
@@ -109,6 +110,7 @@ module.exports = {
 
     await queryInterface.bulkInsert('recipes', [
       {
+        id: 1,
         user_id: 10002,
         category_id: 1,
         name: '苹果',
@@ -117,6 +119,7 @@ module.exports = {
         content: '好吃的苹果'
       },
       {
+        id: 2,
         user_id: 10002,
         category_id: 1,
         name: '香蕉',
@@ -125,6 +128,7 @@ module.exports = {
         content: '好吃的香蕉'
       },
       {
+        id: 3,
         user_id: 10002,
         category_id: 2,
         name: '可乐',
@@ -132,6 +136,7 @@ module.exports = {
         avatar: 'http://cola.png'
       },
       {
+        id: 4,
         user_id: 10002,
         category_id: 2,
         name: '雪碧',
@@ -139,6 +144,7 @@ module.exports = {
         avatar: 'http://sharebi.png'
       },
       {
+        id: 5,
         user_id: 10002,
         category_id: 3,
         name: '番茄炒蛋',

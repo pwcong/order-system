@@ -62,7 +62,6 @@ class OrderController extends Controller {
       );
 
       const now = new Date();
-      const _d = new Date(filter.replace(/\-/g, '/'));
 
       ctx.body = {
         success: true,
@@ -73,6 +72,7 @@ class OrderController extends Controller {
             return true;
           }
 
+          const _d = new Date(filter.replace(/\-/g, '/'));
           const d = new Date(order.created_at);
 
           switch (true) {
@@ -94,7 +94,6 @@ class OrderController extends Controller {
               return _d.getFullYear() === d.getFullYear() && _d.getMonth() === d.getMonth();
             case /^\d{4}$/.test(filter):
               return _d.getFullYear() === d.getFullYear();
-              break;
             default:
               return false;
           }
@@ -135,7 +134,6 @@ class OrderController extends Controller {
       );
 
       const now = new Date();
-      const _d = new Date(filter.replace(/\-/g, '/'));
 
       ctx.body = {
         success: true,
@@ -146,6 +144,7 @@ class OrderController extends Controller {
             return true;
           }
 
+          const _d = new Date(filter.replace(/\-/g, '/'));
           const d = new Date(order.created_at);
 
           switch (true) {
@@ -167,7 +166,6 @@ class OrderController extends Controller {
               return _d.getFullYear() === d.getFullYear() && _d.getMonth() === d.getMonth();
             case /^\d{4}$/.test(filter):
               return _d.getFullYear() === d.getFullYear();
-              break;
             default:
               return false;
           }
