@@ -25,33 +25,22 @@ class UserService extends Service {
           throw new Error('手机号已存在');
         }
 
-        const userInfo = await app.model.transaction(t => {
-          const salt = uuidv1();
-          return app.model.User.create(
-            {
-              username,
-              phone,
-              password: uuidv5(password, salt),
-              password_salt: salt,
-              type
-            },
-            {
-              transaction: t
-            }
-          ).then(user => {
-            return app.model.UserInfo.create(
-              {
-                id: user.id
-              },
-              {
-                transaction: t
-              }
-            );
-          });
+        const salt = uuidv1();
+
+        _user = await app.model.User.create({
+          username,
+          phone,
+          password: uuidv5(password, salt),
+          password_salt: salt,
+          type
         });
 
+        if (!_user) {
+          throw new Error('注册失败');
+        }
+
         resolve({
-          id: userInfo.id
+          id: _user.id
         });
       } catch (err) {
         reject({

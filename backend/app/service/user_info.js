@@ -12,15 +12,28 @@ class UserInfoService extends Service {
 
     return new Promise(async (resolve, reject) => {
       try {
+        let _user = null;
+
+        _user = await app.model.User.findById(id);
+        if (!_user) {
+          throw new Error('用户不存在');
+        }
+
         let _userInfo = null;
+        _userInfo = await app.model.UserInfo.findOrCreate({
+          where: {
+            id
+          },
+          defaults: {
+            id
+          }
+        });
 
-        _userInfo = await app.model.UserInfo.findById(id);
-
-        if (!_userInfo) {
+        if (!_userInfo[0]) {
           throw new Error('用户信息不存在');
         }
 
-        resolve({ userInfo: _userInfo });
+        resolve({ userInfo: _userInfo[0] });
       } catch (err) {
         reject({
           message: err.message

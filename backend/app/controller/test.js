@@ -4,7 +4,7 @@ const Controller = require('egg').Controller;
 
 class TestController extends Controller {
   async default() {
-    const { ctx } = this;
+    const { ctx, app } = this;
 
     this.ctx.body = {
       params: ctx.params,
