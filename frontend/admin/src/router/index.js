@@ -51,12 +51,19 @@ export const constantRouterMap = [
   {
     path: '/recipe',
     component: Layout,
+    meta: { title: '菜单', icon: 'food' },
     children: [
       {
         path: 'index',
         name: 'Recipe',
         component: _import('recipe/index'),
-        meta: { title: '菜单', icon: 'food' }
+        meta: { title: '所有菜单', icon: 'list' }
+      },
+      {
+        path: 'category',
+        name: 'RecipeCategory',
+        component: _import('recipe/category'),
+        meta: { title: '菜单分类', icon: 'category' }
       }
     ]
   },

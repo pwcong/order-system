@@ -5,7 +5,7 @@
 
 <script>
 export default {
-  name: 'Bill',
+  name: 'RecipeCategory',
   computed: {}
 };
 </script>
