@@ -11,6 +11,7 @@ module.exports = app => {
     },
     user_id: {
       type: INTEGER,
+      allowNull: false,
       references: {
         model: app.model.User,
         key: 'id'
@@ -18,6 +19,7 @@ module.exports = app => {
     },
     category_id: {
       type: INTEGER,
+      allowNull: false,
       references: {
         model: app.model.RecipeCategory,
         key: 'id'

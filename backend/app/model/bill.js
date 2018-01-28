@@ -29,6 +29,7 @@ module.exports = app => {
 
     payment_type: {
       type: INTEGER,
+      allowNull: false,
       references: {
         model: app.model.PaymentType,
         key: 'id'

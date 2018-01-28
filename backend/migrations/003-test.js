@@ -88,6 +88,64 @@ module.exports = {
         avatar: 'http://avatar.png'
       }
     ]);
+
+    await queryInterface.bulkInsert('recipe_categories', [
+      {
+        id: 1,
+        user_id: 10002,
+        name: '水果'
+      },
+      {
+        id: 2,
+        user_id: 10002,
+        name: '饮料'
+      },
+      {
+        id: 3,
+        user_id: 10002,
+        name: '主菜'
+      }
+    ]);
+
+    await queryInterface.bulkInsert('recipes', [
+      {
+        user_id: 10002,
+        category_id: 1,
+        name: '苹果',
+        price: 2.55,
+        avatar: 'http://apple.png',
+        content: '好吃的苹果'
+      },
+      {
+        user_id: 10002,
+        category_id: 1,
+        name: '香蕉',
+        price: 5.18,
+        avatar: 'http://banana.png',
+        content: '好吃的香蕉'
+      },
+      {
+        user_id: 10002,
+        category_id: 2,
+        name: '可乐',
+        price: 2.09,
+        avatar: 'http://cola.png'
+      },
+      {
+        user_id: 10002,
+        category_id: 2,
+        name: '雪碧',
+        price: 3.18,
+        avatar: 'http://sharebi.png'
+      },
+      {
+        user_id: 10002,
+        category_id: 3,
+        name: '番茄炒蛋',
+        price: 18.18,
+        avatar: 'http://egg.png'
+      }
+    ]);
   },
 
   async down(queryInterface, Sequelize) {}

@@ -12,7 +12,7 @@ class OrderController extends Controller {
     try {
       const { details, address } = ctx.request.body;
 
-      if (!details || address) {
+      if (!details || !address) {
         throw new Error('参数不足');
       }
 
@@ -44,6 +44,7 @@ class OrderController extends Controller {
 
     try {
       const { status } = ctx.request.body;
+      const { filter } = ctx.params;
 
       if (!status) {
         throw new Error('参数不足');
@@ -60,11 +61,44 @@ class OrderController extends Controller {
         parseInt(pageNo)
       );
 
+      const now = new Date();
+      const _d = new Date(filter.replace(/\-/g, '/'));
+
       ctx.body = {
         success: true,
         message: '获取成功',
         code: ctx.code.STATUS_OK,
-        payload: res.orders
+        payload: res.orders.filter((order, idx) => {
+          if (!filter) {
+            return true;
+          }
+
+          const d = new Date(order.created_at);
+
+          switch (true) {
+            case /^today$/.test(filter):
+              return (
+                now.getFullYear() === d.getFullYear() &&
+                now.getMonth() === d.getMonth() &&
+                now.getDate() &&
+                d.getDate()
+              );
+            case /^\d{4}\-\d{2}\-\d{2}$/.test(filter):
+              return (
+                _d.getFullYear() === d.getFullYear() &&
+                _d.getMonth() === d.getMonth() &&
+                _d.getDate() &&
+                d.getDate()
+              );
+            case /^\d{4}\-\d{2}$/.test(filter):
+              return _d.getFullYear() === d.getFullYear() && _d.getMonth() === d.getMonth();
+            case /^\d{4}$/.test(filter):
+              return _d.getFullYear() === d.getFullYear();
+              break;
+            default:
+              return false;
+          }
+        })
       };
     } catch (err) {
       ctx.body = {
@@ -83,6 +117,7 @@ class OrderController extends Controller {
 
     try {
       const { status } = ctx.request.body;
+      const { filter } = ctx.params;
 
       if (!status) {
         throw new Error('参数不足');
@@ -99,11 +134,44 @@ class OrderController extends Controller {
         parseInt(pageNo)
       );
 
+      const now = new Date();
+      const _d = new Date(filter.replace(/\-/g, '/'));
+
       ctx.body = {
         success: true,
         message: '获取成功',
         code: ctx.code.STATUS_OK,
-        payload: res.orders
+        payload: res.orders.filter((order, idx) => {
+          if (!filter) {
+            return true;
+          }
+
+          const d = new Date(order.created_at);
+
+          switch (true) {
+            case /^today$/.test(filter):
+              return (
+                now.getFullYear() === d.getFullYear() &&
+                now.getMonth() === d.getMonth() &&
+                now.getDate() &&
+                d.getDate()
+              );
+            case /^\d{4}\-\d{2}\-\d{2}$/.test(filter):
+              return (
+                _d.getFullYear() === d.getFullYear() &&
+                _d.getMonth() === d.getMonth() &&
+                _d.getDate() &&
+                d.getDate()
+              );
+            case /^\d{4}\-\d{2}$/.test(filter):
+              return _d.getFullYear() === d.getFullYear() && _d.getMonth() === d.getMonth();
+            case /^\d{4}$/.test(filter):
+              return _d.getFullYear() === d.getFullYear();
+              break;
+            default:
+              return false;
+          }
+        })
       };
     } catch (err) {
       ctx.body = {

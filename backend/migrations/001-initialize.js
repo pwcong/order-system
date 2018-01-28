@@ -111,7 +111,8 @@ module.exports = {
         references: {
           model: 'users',
           key: 'id'
-        }
+        },
+        allowNull: false
       },
       nickname: STRING,
       birthday: DATE,
@@ -194,6 +195,7 @@ module.exports = {
       },
       user_id: {
         type: INTEGER,
+        allowNull: false,
         references: {
           model: 'users',
           key: 'id'
@@ -201,6 +203,7 @@ module.exports = {
       },
       category_id: {
         type: INTEGER,
+        allowNull: false,
         references: {
           model: 'recipe_categories',
           key: 'id'
@@ -488,6 +491,7 @@ module.exports = {
       },
       payment_type: {
         type: INTEGER,
+        allowNull: false,
         references: {
           model: 'payment_types',
           key: 'id'

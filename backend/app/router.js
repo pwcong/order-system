@@ -108,6 +108,13 @@ module.exports = app => {
     authUserTypeMiddleware([ 1 ]),
     controller.order.getSendedList
   );
+  router.post(
+    '/orders/sended/:filter',
+    authTokenMiddleware,
+    authUserTypeMiddleware([ 1 ]),
+    controller.order.getSendedList
+  );
+
   router.post('/order/pay/:id', authTokenMiddleware, authUserTypeMiddleware([ 1 ]), controller.order.pay);
   router.post(
     '/order/cancel/:id',
@@ -123,6 +130,12 @@ module.exports = app => {
   );
   router.post(
     '/orders/received',
+    authTokenMiddleware,
+    authUserTypeMiddleware([ 2 ]),
+    controller.order.getReceivedList
+  );
+  router.post(
+    '/orders/received/:filter',
     authTokenMiddleware,
     authUserTypeMiddleware([ 2 ]),
     controller.order.getReceivedList

@@ -7,6 +7,7 @@ module.exports = app => {
     id: {
       type: INTEGER,
       primaryKey: true,
+      allowNull: false,
       references: {
         model: app.model.User,
         key: 'id'
