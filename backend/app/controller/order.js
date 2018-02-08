@@ -54,50 +54,13 @@ class OrderController extends Controller {
 
       const sender_id = ctx.user.id;
 
-      const res = await service.order.findSendedOrdersWithStatus(
-        sender_id,
-        status,
-        parseInt(pageSize),
-        parseInt(pageNo)
-      );
-
-      const now = new Date();
+      const res = await service.order.findSendedOrdersWithStatus(sender_id, status, filter);
 
       ctx.body = {
         success: true,
         message: '获取成功',
         code: ctx.code.STATUS_OK,
-        payload: res.orders.filter((order, idx) => {
-          if (!filter) {
-            return true;
-          }
-
-          const _d = new Date(filter.replace(/\-/g, '/'));
-          const d = new Date(order.created_at);
-
-          switch (true) {
-            case /^today$/.test(filter):
-              return (
-                now.getFullYear() === d.getFullYear() &&
-                now.getMonth() === d.getMonth() &&
-                now.getDate() &&
-                d.getDate()
-              );
-            case /^\d{4}\-\d{2}\-\d{2}$/.test(filter):
-              return (
-                _d.getFullYear() === d.getFullYear() &&
-                _d.getMonth() === d.getMonth() &&
-                _d.getDate() &&
-                d.getDate()
-              );
-            case /^\d{4}\-\d{2}$/.test(filter):
-              return _d.getFullYear() === d.getFullYear() && _d.getMonth() === d.getMonth();
-            case /^\d{4}$/.test(filter):
-              return _d.getFullYear() === d.getFullYear();
-            default:
-              return false;
-          }
-        })
+        payload: ctx.pager(res.orders, pageSize, pageNo)
       };
     } catch (err) {
       ctx.body = {
@@ -126,50 +89,13 @@ class OrderController extends Controller {
 
       const receiver_id = ctx.user.id;
 
-      const res = await service.order.findReceivedOrdersWithStatus(
-        receiver_id,
-        status,
-        parseInt(pageSize),
-        parseInt(pageNo)
-      );
-
-      const now = new Date();
+      const res = await service.order.findReceivedOrdersWithStatus(receiver_id, status, filter);
 
       ctx.body = {
         success: true,
         message: '获取成功',
         code: ctx.code.STATUS_OK,
-        payload: res.orders.filter((order, idx) => {
-          if (!filter) {
-            return true;
-          }
-
-          const _d = new Date(filter.replace(/\-/g, '/'));
-          const d = new Date(order.created_at);
-
-          switch (true) {
-            case /^today$/.test(filter):
-              return (
-                now.getFullYear() === d.getFullYear() &&
-                now.getMonth() === d.getMonth() &&
-                now.getDate() &&
-                d.getDate()
-              );
-            case /^\d{4}\-\d{2}\-\d{2}$/.test(filter):
-              return (
-                _d.getFullYear() === d.getFullYear() &&
-                _d.getMonth() === d.getMonth() &&
-                _d.getDate() &&
-                d.getDate()
-              );
-            case /^\d{4}\-\d{2}$/.test(filter):
-              return _d.getFullYear() === d.getFullYear() && _d.getMonth() === d.getMonth();
-            case /^\d{4}$/.test(filter):
-              return _d.getFullYear() === d.getFullYear();
-            default:
-              return false;
-          }
-        })
+        payload: ctx.pager(res.orders, pageSize, pageNo)
       };
     } catch (err) {
       ctx.body = {

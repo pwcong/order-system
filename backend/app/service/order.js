@@ -63,26 +63,52 @@ class OrderService extends Service {
     });
   }
 
-  async findSendedOrdersWithStatus(sender_id, status, pageSize, pageNo) {
+  async findSendedOrdersWithStatus(sender_id, status, filter) {
     const { app } = this;
 
     return new Promise(async (resolve, reject) => {
       try {
-        const condition = {
+        const _orders = await app.model.Order.findAll({
           where: {
-            sender_id
+            sender_id,
+            status
           }
-        };
+        });
 
-        if (pageSize || pageNo) {
-          condition.limit = pageSize || 50;
-          condition.offset = (pageSize || 50) * (pageNo ? pageNo - 1 : 0);
-        }
-
-        const _orders = await app.model.Order.findAll(condition);
+        const now = new Date();
 
         resolve({
-          orders: _orders.filter((item, idx) => status.indexOf(item.status) >= 0)
+          orders: _orders.filter((order, idx) => {
+            if (!filter) {
+              return true;
+            }
+
+            const _d = new Date(filter.replace(/\-/g, '/'));
+            const d = new Date(order.created_at);
+
+            switch (true) {
+              case /^today$/.test(filter):
+                return (
+                  now.getFullYear() === d.getFullYear() &&
+                  now.getMonth() === d.getMonth() &&
+                  now.getDate() &&
+                  d.getDate()
+                );
+              case /^\d{4}\-\d{2}\-\d{2}$/.test(filter):
+                return (
+                  _d.getFullYear() === d.getFullYear() &&
+                  _d.getMonth() === d.getMonth() &&
+                  _d.getDate() &&
+                  d.getDate()
+                );
+              case /^\d{4}\-\d{2}$/.test(filter):
+                return _d.getFullYear() === d.getFullYear() && _d.getMonth() === d.getMonth();
+              case /^\d{4}$/.test(filter):
+                return _d.getFullYear() === d.getFullYear();
+              default:
+                return false;
+            }
+          })
         });
       } catch (err) {
         reject({
@@ -92,26 +118,52 @@ class OrderService extends Service {
     });
   }
 
-  async findReceivedOrdersWithStatus(receiver_id, status, pageSize, pageNo) {
+  async findReceivedOrdersWithStatus(receiver_id, status, filter) {
     const { app } = this;
 
     return new Promise(async (resolve, reject) => {
       try {
-        const condition = {
+        const _orders = await app.model.Order.findAll({
           where: {
-            receiver_id
+            receiver_id,
+            status
           }
-        };
+        });
 
-        if (pageSize || pageNo) {
-          condition.limit = pageSize || 50;
-          condition.offset = (pageSize || 50) * (pageNo ? pageNo - 1 : 0);
-        }
-
-        const _orders = await app.model.Order.findAll(condition);
+        const now = new Date();
 
         resolve({
-          orders: _orders.filter((item, idx) => status.indexOf(item.status) >= 0)
+          orders: _orders.filter((order, idx) => {
+            if (!filter) {
+              return true;
+            }
+
+            const _d = new Date(filter.replace(/\-/g, '/'));
+            const d = new Date(order.created_at);
+
+            switch (true) {
+              case /^today$/.test(filter):
+                return (
+                  now.getFullYear() === d.getFullYear() &&
+                  now.getMonth() === d.getMonth() &&
+                  now.getDate() &&
+                  d.getDate()
+                );
+              case /^\d{4}\-\d{2}\-\d{2}$/.test(filter):
+                return (
+                  _d.getFullYear() === d.getFullYear() &&
+                  _d.getMonth() === d.getMonth() &&
+                  _d.getDate() &&
+                  d.getDate()
+                );
+              case /^\d{4}\-\d{2}$/.test(filter):
+                return _d.getFullYear() === d.getFullYear() && _d.getMonth() === d.getMonth();
+              case /^\d{4}$/.test(filter):
+                return _d.getFullYear() === d.getFullYear();
+              default:
+                return false;
+            }
+          })
         });
       } catch (err) {
         reject({
@@ -229,7 +281,7 @@ class OrderService extends Service {
           }
         });
 
-        if (!_order || _order.sender_id !== sender_id || [ 0, 1 ].indexOf(_order.status) < 0) {
+        if (!_order || _order.sender_id !== sender_id || [0, 1].indexOf(_order.status) < 0) {
           throw new Error('订单无效');
         }
 
@@ -272,7 +324,7 @@ class OrderService extends Service {
           }
         });
 
-        if (!_order || _order.sender_id !== sender_id || [ 1 ].indexOf(_order.status) < 0) {
+        if (!_order || _order.sender_id !== sender_id || [1].indexOf(_order.status) < 0) {
           throw new Error('订单无效');
         }
 
@@ -307,7 +359,7 @@ class OrderService extends Service {
           }
         });
 
-        if (!_order || _order.receiver_id !== receiver_id || [ 3 ].indexOf(_order.status) < 0) {
+        if (!_order || _order.receiver_id !== receiver_id || [3].indexOf(_order.status) < 0) {
           throw new Error('无效的订单');
         }
 

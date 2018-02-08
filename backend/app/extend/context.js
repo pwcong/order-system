@@ -1,5 +1,7 @@
 'use strict';
 
+const lodash = require('lodash');
+
 const CODE = {
   // 一般http状态码
   STATUS_OK: 20000,
@@ -13,8 +15,43 @@ const CODE = {
   SERVER_ERROR: 50000
 };
 
+const PAGESIZE = 50;
+
 module.exports = {
   get code() {
     return CODE;
+  },
+  pager(data, pageSize, pageNo) {
+    try {
+      if (pageSize || pageNo) {
+        pageSize = parseInt(pageSize) || PAGESIZE;
+        pageNo = parseInt(pageNo) || 1;
+
+        if (pageSize <= 0) {
+          pageSize = PAGESIZE;
+        }
+
+        if (pageNo <= 0) {
+          pageNo = 1;
+        }
+
+        const totalSize = data.length;
+        const totalNo = parseInt(data.length / pageSize) + 1;
+
+        const res = data.splice((pageNo - 1) * pageSize, pageSize);
+
+        return {
+          data: res,
+          pageNo: pageNo,
+          totalNo,
+          pageSize: pageSize,
+          totalSize
+        };
+      }
+    } catch (err) {}
+
+    return {
+      data
+    };
   }
 };

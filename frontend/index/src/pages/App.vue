@@ -35,63 +35,61 @@
       </div>
     </transition>
 
-    <transition enter-active-class="animated bounceIn" leave-active-class="animated bounceOut">
-      <modal v-if="registerModalVisible">
-        <div class="register" slot="modal-main">
-          <div class="register-title">注册新账户</div>
-          <div class="register-form">
+    <modal v-if="registerModalVisible">
+      <div class="register" slot="modal-main">
+        <div class="register-title">注册新账户</div>
+        <div class="register-form">
 
-            <label class="register-form-row register-form-input">
-              <span>用户：</span>
-              <input type="text" placeholder="请输入用户名" v-model="username">
-            </label>
-            <label class="register-form-row register-form-input">
-              <span>密码：</span>
-              <input type="password" :style="{
-                  borderColor: passwordError ? 'red' : '#ccc'
-                }" placeholder="请输入密码" v-model="password1" @change="handlePasswordChange">
-            </label>
-            <label class="register-form-row register-form-input">
-              <span></span>
-              <input type="password" :style="{
-                  borderColor: passwordError ? 'red' : '#ccc'
-                }" placeholder="请再次输入密码" v-model="password2" @change="handlePasswordChange">
-            </label>
-            <label class="register-form-row register-form-input">
-              <span>手机：</span>
-              <input type="text" placeholder="请输入手机号" v-model="phone">
-            </label>
+          <label class="register-form-row register-form-input">
+            <span>用户：</span>
+            <input type="text" placeholder="请输入用户名" v-model="username">
+          </label>
+          <label class="register-form-row register-form-input">
+            <span>密码：</span>
+            <input type="password" :style="{
+                borderColor: passwordError ? 'red' : '#ccc'
+              }" placeholder="请输入密码" v-model="password1" @change="handlePasswordChange">
+          </label>
+          <label class="register-form-row register-form-input">
+            <span></span>
+            <input type="password" :style="{
+                borderColor: passwordError ? 'red' : '#ccc'
+              }" placeholder="请再次输入密码" v-model="password2" @change="handlePasswordChange">
+          </label>
+          <label class="register-form-row register-form-input">
+            <span>手机：</span>
+            <input type="text" placeholder="请输入手机号" v-model="phone">
+          </label>
 
-            <div class="register-form-row register-form-radio" style="margin: 32px 0">
-              <label>
-                <input type="radio" name="type" value="1" v-model="type">
-                <span>
-                  客户
-                </span>
-              </label>
-              <label>
-                <input type="radio" name="type" value="2" v-model="type">
-                <span>
-                  店家
-                </span>
-              </label>
-              <label>
-                <input type="radio" name="type" value="3" v-model="type">
-                <span>
-                  企业
-                </span>
-              </label>
-
-            </div>
+          <div class="register-form-row register-form-radio" style="margin: 32px 0">
+            <label>
+              <input type="radio" name="type" value="1" v-model="type">
+              <span>
+                客户
+              </span>
+            </label>
+            <label>
+              <input type="radio" name="type" value="2" v-model="type">
+              <span>
+                店家
+              </span>
+            </label>
+            <label>
+              <input type="radio" name="type" value="3" v-model="type">
+              <span>
+                企业
+              </span>
+            </label>
 
           </div>
-          <div class="register-tools">
-            <button @click="toRegister" type="button" class="register-btn register-btn-submit">注册</button>
-            <button @click="hideRegisterModal" type="button" class="register-btn register-btn-cancel">取消</button>
-          </div>
+
         </div>
-      </modal>
-    </transition>
+        <div class="register-tools">
+          <button @click="toRegister" type="button" class="register-btn register-btn-submit">注册</button>
+          <button @click="hideRegisterModal" type="button" class="register-btn register-btn-cancel">取消</button>
+        </div>
+      </div>
+    </modal>
 
   </div>
 </template>

@@ -1,8 +1,9 @@
 <template>
-
-  <div class="modal">
-      <slot name="modal-main"></slot>
-  </div>
+  <transition enter-active-class="animated bounceIn" leave-active-class="animated bounceOut">
+    <div class="modal">
+        <slot name="modal-main"></slot>
+    </div>
+  </transition>
 </template>
 <style lang="scss">
 .modal {

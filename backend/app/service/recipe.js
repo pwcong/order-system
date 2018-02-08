@@ -35,27 +35,20 @@ class RecipeService extends Service {
     });
   }
 
-  async findByUserIdWithCategoryId(user_id, category_id, pageSize = 50, pageNo = 1) {
+  async findByUserIdWithCategoryId(user_id, category_id) {
     const { app } = this;
 
     return new Promise(async (resolve, reject) => {
       try {
-        const condition = {
+        const _recipes = await app.model.Recipe.findAll({
           where: {
             user_id,
             category_id
           }
-        };
-
-        if (pageSize || pageNo) {
-          condition.limit = pageSize || 50;
-          condition.offset = (pageSize || 50) * (pageNo ? pageNo - 1 : 0);
-        }
-
-        const _recipes = await app.model.Recipe.findAll(condition);
+        });
 
         resolve({
-          recipes: _recipes.filter(item => [ 0, 1 ].indexOf(item.status) >= 0)
+          recipes: _recipes.filter(item => [0, 1].indexOf(item.status) >= 0)
         });
       } catch (err) {
         reject({
@@ -65,28 +58,19 @@ class RecipeService extends Service {
     });
   }
 
-  async findByUserId(user_id, pageSize, pageNo) {
+  async findByUserId(user_id) {
     const { app } = this;
 
     return new Promise(async (resolve, reject) => {
       try {
-        const condition = {
+        const _recipes = await app.model.Recipe.findAll({
           where: {
             user_id
           }
-        };
-
-        if (pageSize || pageNo) {
-          condition.limit = pageSize || 50;
-          condition.offset = (pageSize || 50) * (pageNo ? pageNo - 1 : 0);
-        }
-
-        console.log(condition);
-
-        const _recipes = await app.model.Recipe.findAll(condition);
+        });
 
         resolve({
-          recipes: _recipes.filter(item => [ 0, 1 ].indexOf(item.status) >= 0)
+          recipes: _recipes.filter(item => [0, 1].indexOf(item.status) >= 0)
         });
       } catch (err) {
         reject({
@@ -103,7 +87,7 @@ class RecipeService extends Service {
       try {
         const _recipe = await app.model.Recipe.findById(id);
 
-        if (!_recipe || [ 0, 1 ].indexOf(_recipe.status) < 0) {
+        if (!_recipe || [0, 1].indexOf(_recipe.status) < 0) {
           throw new Error('菜单不存在');
         }
 
@@ -125,7 +109,7 @@ class RecipeService extends Service {
       try {
         const _recipe = await app.model.Recipe.findById(id);
 
-        if (!_recipe || [ 0, 1 ].indexOf(_recipe.status) < 0) {
+        if (!_recipe || [0, 1].indexOf(_recipe.status) < 0) {
           throw new Error('菜单不存在');
         }
 
@@ -179,7 +163,7 @@ class RecipeService extends Service {
       try {
         const _recipe = await app.model.Recipe.findById(id);
 
-        if (!_recipe || [ 0, 1 ].indexOf(_recipe.status) < 0) {
+        if (!_recipe || [0, 1].indexOf(_recipe.status) < 0) {
           throw new Error('菜单不存在');
         }
 

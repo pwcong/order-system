@@ -46,13 +46,13 @@ class RecipeController extends Controller {
 
       const { pageSize, pageNo } = ctx.query;
 
-      const res = await service.recipe.findByUserId(user_id, parseInt(pageSize), parseInt(pageNo));
+      const res = await service.recipe.findByUserId(user_id);
 
       ctx.body = {
         success: true,
         message: '获取成功',
         code: ctx.code.STATUS_OK,
-        payload: res.recipes
+        payload: ctx.pager(res.recipes, pageSize, pageNo)
       };
     } catch (err) {
       ctx.body = {
@@ -73,18 +73,13 @@ class RecipeController extends Controller {
 
       const { pageSize, pageNo } = ctx.query;
 
-      const res = await service.recipe.findByUserIdWithCategoryId(
-        user_id,
-        category_id,
-        parseInt(pageSize),
-        parseInt(pageNo)
-      );
+      const res = await service.recipe.findByUserIdWithCategoryId(user_id, category_id);
 
       ctx.body = {
         success: true,
         message: '获取成功',
         code: ctx.code.STATUS_OK,
-        payload: res.recipes
+        payload: ctx.pager(res.recipes, pageSize, pageNo)
       };
     } catch (err) {
       ctx.body = {
