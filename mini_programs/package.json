@@ -4,11 +4,12 @@
   "description": "Mini Programs for Order System",
   "author": "Pwcong <pwcong@foxmail.com>",
   "scripts": {
-    "new:app": "wepy new app",
-    "new:admin": "wepy new admin"
+    "new:app": "wepy init standard app",
+    "new:admin": "wepy init standard admin",
+    "help": "wepy -h"
   },
   "license": "ISC",
   "devDependencies": {
-    "wepy-cli": "^1.6.0"
+    "wepy-cli": "^1.7.0"
   }
 }

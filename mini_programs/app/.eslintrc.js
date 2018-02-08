@@ -17,9 +17,10 @@ module.exports = {
   // add your custom rules here
   rules: {
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
-    semi: ['error', 'always'],
-    indent: 0,
+    'semi': ['error', 'always'],
+    'indent': 0,
     'no-unused-vars': 0,
-    'no-empty': 0
+    'no-empty': 0,
+    'no-console': 0
   }
 };
