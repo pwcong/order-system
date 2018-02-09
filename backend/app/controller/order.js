@@ -54,13 +54,13 @@ class OrderController extends Controller {
 
       const sender_id = ctx.user.id;
 
-      const res = await service.order.findSendedOrdersWithStatus(sender_id, status, filter);
+      const res = await service.order.findSendedOrdersWithStatus(sender_id, status);
 
       ctx.body = {
         success: true,
         message: '获取成功',
         code: ctx.code.STATUS_OK,
-        payload: ctx.pager(res.orders, pageSize, pageNo)
+        payload: ctx.pager(ctx.filter(res.orders, filter), pageSize, pageNo)
       };
     } catch (err) {
       ctx.body = {
@@ -89,13 +89,13 @@ class OrderController extends Controller {
 
       const receiver_id = ctx.user.id;
 
-      const res = await service.order.findReceivedOrdersWithStatus(receiver_id, status, filter);
+      const res = await service.order.findReceivedOrdersWithStatus(receiver_id, status);
 
       ctx.body = {
         success: true,
         message: '获取成功',
         code: ctx.code.STATUS_OK,
-        payload: ctx.pager(res.orders, pageSize, pageNo)
+        payload: ctx.pager(ctx.filter(res.orders, filter), pageSize, pageNo)
       };
     } catch (err) {
       ctx.body = {

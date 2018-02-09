@@ -63,7 +63,7 @@ class OrderService extends Service {
     });
   }
 
-  async findSendedOrdersWithStatus(sender_id, status, filter) {
+  async findSendedOrdersWithStatus(sender_id, status) {
     const { app } = this;
 
     return new Promise(async (resolve, reject) => {
@@ -75,40 +75,8 @@ class OrderService extends Service {
           }
         });
 
-        const now = new Date();
-
         resolve({
-          orders: _orders.filter((order, idx) => {
-            if (!filter) {
-              return true;
-            }
-
-            const _d = new Date(filter.replace(/\-/g, '/'));
-            const d = new Date(order.created_at);
-
-            switch (true) {
-              case /^today$/.test(filter):
-                return (
-                  now.getFullYear() === d.getFullYear() &&
-                  now.getMonth() === d.getMonth() &&
-                  now.getDate() &&
-                  d.getDate()
-                );
-              case /^\d{4}\-\d{2}\-\d{2}$/.test(filter):
-                return (
-                  _d.getFullYear() === d.getFullYear() &&
-                  _d.getMonth() === d.getMonth() &&
-                  _d.getDate() &&
-                  d.getDate()
-                );
-              case /^\d{4}\-\d{2}$/.test(filter):
-                return _d.getFullYear() === d.getFullYear() && _d.getMonth() === d.getMonth();
-              case /^\d{4}$/.test(filter):
-                return _d.getFullYear() === d.getFullYear();
-              default:
-                return false;
-            }
-          })
+          orders: _orders
         });
       } catch (err) {
         reject({
@@ -118,7 +86,7 @@ class OrderService extends Service {
     });
   }
 
-  async findReceivedOrdersWithStatus(receiver_id, status, filter) {
+  async findReceivedOrdersWithStatus(receiver_id, status) {
     const { app } = this;
 
     return new Promise(async (resolve, reject) => {
@@ -130,40 +98,8 @@ class OrderService extends Service {
           }
         });
 
-        const now = new Date();
-
         resolve({
-          orders: _orders.filter((order, idx) => {
-            if (!filter) {
-              return true;
-            }
-
-            const _d = new Date(filter.replace(/\-/g, '/'));
-            const d = new Date(order.created_at);
-
-            switch (true) {
-              case /^today$/.test(filter):
-                return (
-                  now.getFullYear() === d.getFullYear() &&
-                  now.getMonth() === d.getMonth() &&
-                  now.getDate() &&
-                  d.getDate()
-                );
-              case /^\d{4}\-\d{2}\-\d{2}$/.test(filter):
-                return (
-                  _d.getFullYear() === d.getFullYear() &&
-                  _d.getMonth() === d.getMonth() &&
-                  _d.getDate() &&
-                  d.getDate()
-                );
-              case /^\d{4}\-\d{2}$/.test(filter):
-                return _d.getFullYear() === d.getFullYear() && _d.getMonth() === d.getMonth();
-              case /^\d{4}$/.test(filter):
-                return _d.getFullYear() === d.getFullYear();
-              default:
-                return false;
-            }
-          })
+          orders: _orders
         });
       } catch (err) {
         reject({

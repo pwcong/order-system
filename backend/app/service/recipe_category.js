@@ -60,12 +60,13 @@ class RecipeCategoryService extends Service {
       try {
         const _recipeCategories = await app.model.RecipeCategory.findAll({
           where: {
-            user_id
+            user_id,
+            status: 0
           }
         });
 
         resolve({
-          recipeCategories: _recipeCategories.filter(item => item.status === 0)
+          recipeCategories: _recipeCategories
         });
       } catch (err) {
         reject({

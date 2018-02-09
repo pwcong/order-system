@@ -43,12 +43,13 @@ class RecipeService extends Service {
         const _recipes = await app.model.Recipe.findAll({
           where: {
             user_id,
-            category_id
+            category_id,
+            status: [0, 1]
           }
         });
 
         resolve({
-          recipes: _recipes.filter(item => [0, 1].indexOf(item.status) >= 0)
+          recipes: _recipes
         });
       } catch (err) {
         reject({
@@ -65,12 +66,13 @@ class RecipeService extends Service {
       try {
         const _recipes = await app.model.Recipe.findAll({
           where: {
-            user_id
+            user_id,
+            status: [0, 1]
           }
         });
 
         resolve({
-          recipes: _recipes.filter(item => [0, 1].indexOf(item.status) >= 0)
+          recipes: _recipes
         });
       } catch (err) {
         reject({

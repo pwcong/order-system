@@ -21,7 +21,7 @@ class BillController extends Controller {
       const { pageSize, pageNo } = ctx.query;
       const id = ctx.user.id;
 
-      const res = await service.bill.search(id, type, filter);
+      const res = await service.bill.search(id, type);
 
       const now = new Date();
 
@@ -29,7 +29,7 @@ class BillController extends Controller {
         success: true,
         message: '获取成功',
         code: ctx.code.STATUS_OK,
-        payload: ctx.pager(res.bills, pageSize, pageNo)
+        payload: ctx.pager(ctx.filter(res.bills, filter), pageSize, pageNo)
       };
     } catch (err) {
       ctx.body = {

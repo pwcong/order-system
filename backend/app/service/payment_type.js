@@ -8,10 +8,14 @@ class PaymentTypeService extends Service {
 
     return new Promise(async (resolve, reject) => {
       try {
-        const _paymentTypes = await app.model.PaymentType.findAll();
+        const _paymentTypes = await app.model.PaymentType.findAll({
+          where: {
+            status: 0
+          }
+        });
 
         resolve({
-          paymentTypes: _paymentTypes.filter((item, idx) => item.status === 0)
+          paymentTypes: _paymentTypes
         });
       } catch (err) {
         reject({

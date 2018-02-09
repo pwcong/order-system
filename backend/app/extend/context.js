@@ -53,5 +53,42 @@ module.exports = {
     return {
       data
     };
+  },
+  filter(data, f) {
+    try {
+      const now = new Date();
+
+      return data.filter((item, idx) => {
+        if (!f) {
+          return true;
+        }
+
+        const _d = new Date(f.replace(/\-/g, '/'));
+        const d = new Date(item.created_at);
+
+        switch (true) {
+          case /^today$/.test(f):
+            return (
+              now.getFullYear() === d.getFullYear() &&
+              now.getMonth() === d.getMonth() &&
+              now.getDate() === d.getDate()
+            );
+          case /^\d{4}\-\d{2}\-\d{2}$/.test(f):
+            return (
+              _d.getFullYear() === d.getFullYear() &&
+              _d.getMonth() === d.getMonth() &&
+              _d.getDate() === d.getDate()
+            );
+          case /^\d{4}\-\d{2}$/.test(f):
+            return _d.getFullYear() === d.getFullYear() && _d.getMonth() === d.getMonth();
+          case /^\d{4}$/.test(f):
+            return _d.getFullYear() === d.getFullYear();
+          default:
+            return false;
+        }
+      });
+    } catch (err) {}
+
+    return data;
   }
 };
