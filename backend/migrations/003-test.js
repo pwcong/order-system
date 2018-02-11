@@ -19,7 +19,8 @@ module.exports = {
         phone: '13000000000',
         email: 'admin@os.com',
         password: uuidv5('123456', salt),
-        password_salt: salt
+        password_salt: salt,
+        balance: 0
       },
       {
         id: 10001,
@@ -38,7 +39,8 @@ module.exports = {
         phone: '13000000002',
         email: 'business@email.com',
         password: uuidv5('123456', salt),
-        password_salt: salt
+        password_salt: salt,
+        balance: 1000
       },
       {
         id: 10003,
@@ -47,7 +49,8 @@ module.exports = {
         phone: '13000000003',
         email: 'enterprise@email.com',
         password: uuidv5('123456', salt),
-        password_salt: salt
+        password_salt: salt,
+        balance: 0
       }
     ]);
 

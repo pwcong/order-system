@@ -48,5 +48,9 @@ module.exports = app => {
     }
   });
 
+  Recipe.associate = function() {
+    this.belongsTo(app.model.RecipeCategory, { as: 'recipe_category', foreignKey: 'category_id' });
+  };
+
   return Recipe;
 };

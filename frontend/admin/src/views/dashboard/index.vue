@@ -119,29 +119,29 @@ export default {
       const ctx = this;
 
       try {
-        const todayOrders = await getTodayOrders([0, 1, 2, 3, 4]);
-        const todayBills = await getTodayBills([0, 1]);
+        const todayOrders = (await getTodayOrders([0, 1, 2, 3, 4])).payload.data;
+        const todayBills = (await getTodayBills([0, 1])).payload.data;
 
         ctx.todayOrderChart.data.rows = [
           {
             type: '进行中',
-            counts: todayOrders.payload.filter((order, idx) => [0, 1, 3].indexOf(order.status) >= 0).length
+            counts: todayOrders.filter((order, idx) => [0, 1, 3].indexOf(order.status) >= 0).length
           },
           {
             type: '已完成',
-            counts: todayOrders.payload.filter((order, idx) => order.status === 2).length
+            counts: todayOrders.filter((order, idx) => order.status === 2).length
           },
           {
             type: '已取消',
-            counts: todayOrders.payload.filter((order, idx) => order.status === 4).length
+            counts: todayOrders.filter((order, idx) => order.status === 4).length
           }
         ];
 
-        const inBills = todayBills.payload
+        const inBills = todayBills
           .filter((bill, idx) => bill.type === 0)
           .map((bill, idx) => parseFloat(bill.amount) || 0);
 
-        const outBills = todayBills.payload
+        const outBills = todayBills
           .filter((bill, idx) => bill.type === 1)
           .map((bill, idx) => parseFloat(bill.amount) || 0);
 

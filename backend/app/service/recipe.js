@@ -68,7 +68,13 @@ class RecipeService extends Service {
           where: {
             user_id,
             status: [0, 1]
-          }
+          },
+          include: [
+            {
+              model: app.model.RecipeCategory,
+              as: 'recipe_category'
+            }
+          ]
         });
 
         resolve({

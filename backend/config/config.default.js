@@ -28,6 +28,11 @@ module.exports = appInfo => {
     dir: 'app/public'
   };
 
+  config.bodyParser = {
+    jsonLimit: '1mb',
+    formLimit: '1mb'
+  };
+
   // Token验证设置
   config.auth = {
     secret: 'order_system',

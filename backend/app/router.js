@@ -85,7 +85,9 @@ module.exports = app => {
     controller.recipe.offline
   );
   router.get('/recipes/:user_id', controller.recipe.searchByUserId);
+  router.post('/recipes/:user_id', controller.recipe.searchByUserId);
   router.get('/recipes/:user_id/:category_id', controller.recipe.searchByUserIdWithCategoryId);
+  router.post('/recipes/:user_id', controller.recipe.searchByUserId);
 
   router.get('/payment/support', controller.payment.support);
   router.post('/payment/up/:id', authTokenMiddleware, authUserTypeMiddleware([ 999 ]), controller.payment.up);

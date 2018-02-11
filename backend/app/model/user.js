@@ -63,6 +63,10 @@ module.exports = app => {
     }
   });
 
+  User.associate = function() {
+    this.belongsTo(app.model.UserType, { as: 'user_type', foreignKey: 'type' });
+  };
+
   User.findByUPE = function(upe) {
     return this.findOne({
       where: {
