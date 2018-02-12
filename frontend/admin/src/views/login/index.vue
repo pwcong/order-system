@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <el-form autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left" label-width="0px" class="card-box login-form">
-      <h3 class="title">平板点餐系统</h3>
+      <h3 class="title">享味点餐</h3>
       <el-form-item prop="username">
         <span class="svg-container svg-container_login">
           <svg-icon icon-class="user" />
@@ -29,7 +29,7 @@
 
 <script>
 import { isvalidUsername } from '@/utils/validate';
-import { Message, MessageBox } from 'element-ui';
+import { Message } from 'element-ui';
 
 export default {
   name: 'login',

@@ -25,7 +25,8 @@ class UserInfoService extends Service {
             id
           },
           defaults: {
-            id
+            id,
+            nickname: _user.username
           }
         });
 

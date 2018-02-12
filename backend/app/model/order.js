@@ -76,7 +76,7 @@ module.exports = app => {
     /**
      * 是否支付订单
      */
-    has_payed: {
+    has_paid: {
       type: BOOLEAN,
       allowNull: false,
       defaultValue: 0

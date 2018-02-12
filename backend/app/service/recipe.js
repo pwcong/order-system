@@ -95,7 +95,7 @@ class RecipeService extends Service {
       try {
         const _recipe = await app.model.Recipe.findById(id);
 
-        if (!_recipe || [0, 1].indexOf(_recipe.status) < 0) {
+        if (!_recipe) {
           throw new Error('菜单不存在');
         }
 

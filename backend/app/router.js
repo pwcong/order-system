@@ -142,6 +142,8 @@ module.exports = app => {
     authUserTypeMiddleware([ 2 ]),
     controller.order.getReceivedList
   );
+
+  router.post('/order/confirm/:id', authTokenMiddleware, authUserTypeMiddleware([ 2 ]), controller.order.confirm);
   router.post('/order/close/:id', authTokenMiddleware, authUserTypeMiddleware([ 2 ]), controller.order.close);
 
   router.post('/bills', authTokenMiddleware, authUserTypeMiddleware([ 1, 2 ]), controller.bill.search);

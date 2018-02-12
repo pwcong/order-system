@@ -410,7 +410,7 @@ module.exports = {
         defaultValue: 0
       },
 
-      has_payed: {
+      has_paid: {
         type: BOOLEAN,
         allowNull: false,
         defaultValue: 0

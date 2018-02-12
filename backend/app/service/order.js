@@ -31,7 +31,7 @@ class OrderService extends Service {
           }
 
           amount += _recipe.price * item.counts;
-          recipes.push(_recipe.name + '*' + item.counts);
+          recipes.push(_recipe.id + '#' + _recipe.name + '#' + item.counts);
         }
 
         if (recipes.length <= 0) {
@@ -42,7 +42,7 @@ class OrderService extends Service {
           id: generateOrderId(),
           sender_id,
           receiver_id,
-          name: recipes.join('|'),
+          name: recipes.join('&'),
           details: JSON.stringify(details),
           address,
           amount
@@ -68,11 +68,16 @@ class OrderService extends Service {
 
     return new Promise(async (resolve, reject) => {
       try {
+        const condition = {
+          sender_id
+        };
+
+        if (status && status.length > 0) {
+          condition.status = status;
+        }
+
         const _orders = await app.model.Order.findAll({
-          where: {
-            sender_id,
-            status
-          }
+          where: condition
         });
 
         resolve({
@@ -91,11 +96,16 @@ class OrderService extends Service {
 
     return new Promise(async (resolve, reject) => {
       try {
+        const condition = {
+          receiver_id
+        };
+
+        if (status && status.length > 0) {
+          condition.status = status;
+        }
+
         const _orders = await app.model.Order.findAll({
-          where: {
-            receiver_id,
-            status
-          }
+          where: condition
         });
 
         resolve({
@@ -121,11 +131,12 @@ class OrderService extends Service {
         const _order = await app.model.Order.findOne({
           where: {
             id,
-            sender_id
+            sender_id,
+            status: [0]
           }
         });
 
-        if (!_order || _order.sender_id !== sender_id || _order.status !== 0) {
+        if (!_order) {
           throw new Error('订单无效');
         }
 
@@ -164,7 +175,7 @@ class OrderService extends Service {
 
         /** ********** 更新账单状态 ************/
         _order.status = 1;
-        _order.has_payed = true;
+        _order.has_paid = true;
         await _order.save({ transaction: t });
 
         /** ********** 新建收款付款账单 ************/
@@ -213,11 +224,12 @@ class OrderService extends Service {
         const _order = await app.model.Order.findOne({
           where: {
             id,
-            sender_id
+            sender_id,
+            status: [0, 1]
           }
         });
 
-        if (!_order || _order.sender_id !== sender_id || [0, 1].indexOf(_order.status) < 0) {
+        if (!_order) {
           throw new Error('订单无效');
         }
 
@@ -256,11 +268,12 @@ class OrderService extends Service {
         const _order = await app.model.Order.findOne({
           where: {
             id,
-            sender_id
+            sender_id,
+            status: [1]
           }
         });
 
-        if (!_order || _order.sender_id !== sender_id || [1].indexOf(_order.status) < 0) {
+        if (!_order) {
           throw new Error('订单无效');
         }
 
@@ -272,6 +285,46 @@ class OrderService extends Service {
           order: _order
         });
       } catch (err) {
+        reject({
+          message: err.message
+        });
+      }
+    });
+  }
+
+  async confirm(id, receiver_id) {
+    const { app } = this;
+
+    return new Promise(async (resolve, reject) => {
+      /** ********** 开启事务 ************/
+      const t = await app.model.transaction();
+
+      try {
+        /** ********** 查询订单 ************/
+        const _order = await app.model.Order.findOne({
+          where: {
+            id,
+            receiver_id,
+            status: [0]
+          }
+        });
+
+        if (!_order) {
+          throw new Error('无效的订单');
+        }
+
+        _order.status = 1;
+        _order.has_paid = true;
+        await _order.save({ transaction: t });
+
+        await t.commit();
+
+        resolve({
+          order: _order
+        });
+      } catch (err) {
+        await t.rollback();
+
         reject({
           message: err.message
         });
@@ -291,12 +344,21 @@ class OrderService extends Service {
         const _order = await app.model.Order.findOne({
           where: {
             id,
-            receiver_id
+            receiver_id,
+            status: [0, 1, 3]
           }
         });
 
-        if (!_order || _order.receiver_id !== receiver_id || [3].indexOf(_order.status) < 0) {
+        if (!_order) {
           throw new Error('无效的订单');
+        }
+
+        if (!_order.has_paid) {
+          _order.status = 4;
+          _order.has_refunded = true;
+          await _order.save({ transaction: t });
+          await t.commit();
+          return;
         }
 
         /** ********** 查询付款方 ************/

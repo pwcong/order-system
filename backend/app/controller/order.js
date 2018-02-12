@@ -46,10 +46,6 @@ class OrderController extends Controller {
       const { status } = ctx.request.body;
       const { filter } = ctx.params;
 
-      if (!status) {
-        throw new Error('参数不足');
-      }
-
       const { pageSize, pageNo } = ctx.query;
 
       const sender_id = ctx.user.id;
@@ -80,10 +76,6 @@ class OrderController extends Controller {
     try {
       const { status } = ctx.request.body;
       const { filter } = ctx.params;
-
-      if (!status) {
-        throw new Error('参数不足');
-      }
 
       const { pageSize, pageNo } = ctx.query;
 
@@ -175,6 +167,33 @@ class OrderController extends Controller {
       ctx.body = {
         success: true,
         message: '取消订单',
+        code: ctx.code.STATUS_OK,
+        payload: res.order
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
+
+  /**
+   * 确认订单
+   */
+  async confirm() {
+    const { ctx, service } = this;
+
+    try {
+      const { id } = ctx.params;
+      const receiver_id = ctx.user.id;
+
+      const res = await service.order.confirm(id, receiver_id);
+
+      ctx.body = {
+        success: true,
+        message: '确认订单',
         code: ctx.code.STATUS_OK,
         payload: res.order
       };
