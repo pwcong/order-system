@@ -45,7 +45,8 @@ class RecipeService extends Service {
             user_id,
             category_id,
             status: [0, 1]
-          }
+          },
+          order: [['created_at', 'DESC']]
         });
 
         resolve({
@@ -74,7 +75,8 @@ class RecipeService extends Service {
               model: app.model.RecipeCategory,
               as: 'recipe_category'
             }
-          ]
+          ],
+          order: [['created_at', 'DESC']]
         });
 
         resolve({

@@ -77,7 +77,8 @@ class OrderService extends Service {
         }
 
         const _orders = await app.model.Order.findAll({
-          where: condition
+          where: condition,
+          order: [['created_at', 'DESC']]
         });
 
         resolve({
@@ -105,7 +106,8 @@ class OrderService extends Service {
         }
 
         const _orders = await app.model.Order.findAll({
-          where: condition
+          where: condition,
+          order: [['created_at', 'DESC']]
         });
 
         resolve({

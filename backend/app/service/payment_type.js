@@ -11,7 +11,8 @@ class PaymentTypeService extends Service {
         const _paymentTypes = await app.model.PaymentType.findAll({
           where: {
             status: 0
-          }
+          },
+          order: [['created_at', 'DESC']]
         });
 
         resolve({

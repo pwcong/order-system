@@ -62,7 +62,8 @@ class RecipeCategoryService extends Service {
           where: {
             user_id,
             status: 0
-          }
+          },
+          order: [['created_at', 'DESC']]
         });
 
         resolve({

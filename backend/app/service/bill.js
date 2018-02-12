@@ -17,7 +17,8 @@ class PaymentTypeService extends Service {
         }
 
         const _bills = await app.model.Bill.findAll({
-          where: condition
+          where: condition,
+          order: [['created_at', 'DESC']]
         });
 
         resolve({

@@ -26,6 +26,7 @@
           v-loading="loading"
           style="width: 100%">
           <el-table-column
+            width="180"
             label="下单时间">
             <template slot-scope="scope">
               <i class="el-icon-time"></i>
@@ -34,6 +35,7 @@
 
           </el-table-column>
           <el-table-column
+            width="180"
             prop="name"
             label="订单概览">
           </el-table-column>
@@ -176,7 +178,6 @@ export default {
     return {
       ORDER_STATUS_OPTIONS,
       selectedOrderStatus: '全部',
-      ordersTableData: [],
       pageNo: 1,
       pageSize: 30,
       totalSize: 0,
@@ -285,25 +286,14 @@ export default {
       pageNo = pageNo || ctx.pageNo;
       filter = filter || '';
 
-      getOrders(orderStatus, pageSize, pageNo, filter)
+      ctx.$store
+        .dispatch('LoadOrders', {
+          orderStatus,
+          pageSize,
+          pageNo,
+          filter
+        })
         .then(res => {
-          ctx.ordersTableData = res.payload.data.map((order, idx) =>
-            Object.assign(order, {
-              status: ORDER_STATUS[order.status],
-              statusValue: order.status,
-              name: order.name
-                .split('&')
-                .map(_name => {
-                  const t = _name.split('#');
-                  return t[1] + '*' + t[2];
-                })
-                .join(' & '),
-              nameValue: order.name,
-              created_at: moment(order.created_at).format('YYYY-MM-DD hh:mm:ss'),
-              amount: '￥' + order.amount
-            })
-          );
-
           ctx.totalSize = res.payload.totalSize || 0;
           ctx.loading = false;
         })
@@ -312,7 +302,26 @@ export default {
         });
     }
   },
-  computed: {},
+  computed: {
+    ordersTableData() {
+      return this.$store.getters.orders.map((order, idx) =>
+        Object.assign(order, {
+          status: ORDER_STATUS[order.status],
+          statusValue: order.status,
+          name: order.name
+            .split('&')
+            .map(_name => {
+              const t = _name.split('#');
+              return t[1] + '*' + t[2];
+            })
+            .join(' & '),
+          nameValue: order.name,
+          created_at: moment(order.created_at).format('YYYY-MM-DD hh:mm:ss'),
+          amount: '￥' + order.amount
+        })
+      );
+    }
+  },
 
   mounted() {
     const ctx = this;
