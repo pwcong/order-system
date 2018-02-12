@@ -65,13 +65,20 @@ module.exports = app => {
 
   User.associate = function() {
     this.belongsTo(app.model.UserType, { as: 'user_type', foreignKey: 'type' });
+    this.hasOne(app.model.UserInfo, { as: 'user_info', foreignKey: 'id' });
   };
 
   User.findByUPE = function(upe) {
     return this.findOne({
       where: {
         [app.model.Op.or]: [{ username: upe }, { phone: upe }, { email: upe }]
-      }
+      },
+      include: [
+        {
+          model: app.model.UserInfo,
+          as: 'user_info'
+        }
+      ]
     });
   };
 

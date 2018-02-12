@@ -21,7 +21,7 @@ class UserController extends Controller {
         throw new Error('参数不足');
       }
 
-      if ([ 1, 2, 3 ].indexOf(type) < 0) {
+      if ([1, 2, 3].indexOf(type) < 0) {
         throw new Error('参数有误');
       }
 
@@ -29,7 +29,7 @@ class UserController extends Controller {
 
       const res = await service.user.register(username, password, phone, type);
 
-      const { id } = res;
+      const { id } = res.user;
       const timestamp = new Date().getTime();
 
       const salt = uuidv1();
@@ -83,7 +83,8 @@ class UserController extends Controller {
 
       const res = await service.user.login(upe, password);
 
-      const { id, type } = res;
+      const { id, type } = res.user;
+
       const timestamp = new Date().getTime();
 
       const salt = uuidv1();

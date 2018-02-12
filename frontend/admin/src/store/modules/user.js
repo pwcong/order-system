@@ -34,12 +34,18 @@ const user = {
       return new Promise((resolve, reject) => {
         login(userInfo.username.trim(), userInfo.password)
           .then(response => {
-            const data = response.payload;
-            setToken(data.token);
+            const { token, type, id } = response.payload;
 
-            commit('SET_TOKEN', data.token);
-            commit('SET_TYPE', data.type);
-            commit('SET_ID', data.id);
+            if ([2, 3, 999].indexOf(type) < 0) {
+              reject({ message: '用户类型不匹配' });
+              return;
+            }
+
+            setToken(token);
+
+            commit('SET_TOKEN', token);
+            commit('SET_TYPE', type);
+            commit('SET_ID', id);
             resolve(response);
           })
           .catch(error => {

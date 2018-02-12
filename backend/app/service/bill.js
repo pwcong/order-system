@@ -8,11 +8,16 @@ class PaymentTypeService extends Service {
 
     return new Promise(async (resolve, reject) => {
       try {
+        const condition = {
+          user_id: id
+        };
+
+        if (type && type.length > 0) {
+          condition.type = type;
+        }
+
         const _bills = await app.model.Bill.findAll({
-          where: {
-            user_id: id,
-            type
-          }
+          where: condition
         });
 
         resolve({

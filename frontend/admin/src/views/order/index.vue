@@ -1,24 +1,25 @@
 <template>
   <div class="order-container">
     <el-row class="row row-condition">
-      <el-col :span="6">筛选条件：</el-col>
-      <el-col :span="18">
-        <el-select v-model="value">
+      <el-col :span="4">订单类型：</el-col>
+      <el-col :span="8">
+        <el-select v-model="value" @change="handleOrderTypeChange">
           <el-option
-            v-for="(item, idx) in statusOptions"
+            v-for="(item, idx) in STATUS_OPTIONS"
             :key="'status-option-' + idx"
-            :label="item"
-            :value="item">
+            :label="item.label"
+            :value="item.value">
           </el-option>
         </el-select>
       </el-col>
     </el-row>
 
-    <el-row class="row row-main">
+    <el-row class="row row-main" :style="{marginTop: '16px'}">
       <el-col :span="24">
         <el-table
           :data="ordersTableData"
           stripe
+          border
           style="width: 100%">
           <el-table-column
             prop="date"
@@ -39,6 +40,7 @@
             label="状态">
           </el-table-column>
           <el-table-column
+            fixed="right"
             label="操作">
 
             <template slot-scope="scope">
@@ -58,20 +60,54 @@
 
     </el-row>
 
+    <el-row style="margin-top: 16px;">
+      <el-col>
+        <div class="block" style="text-align: center;">
+          <el-pagination
+            @size-change="handlePageSizeChange"
+            @current-change="handlePageNoChange"
+            :current-page="pageNo"
+            :page-sizes="[30, 50, 100, 200]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalNo">
+          </el-pagination>
+        </div>        
+      </el-col>
+    </el-row>
+
   </div>
 </template>
 
 <script>
-const STATUS_OPTIONS = { 进行中: [0, 1, 3], 已完成: [2], 已取消: [4] };
+const STATUS_OPTIONS = [
+  { label: '进行中', value: [0, 1, 3] },
+  { label: '已完成', value: [2] },
+  { label: '已取消', value: [4] }
+];
 
 export default {
   name: 'Order',
   data() {
     return {
-      statusOptions: ['进行中', '已完成', '已取消'],
+      STATUS_OPTIONS,
       value: '进行中',
-      ordersTableData: []
+      ordersTableData: [],
+      pageNo: 1,
+      pageSize: 30,
+      totalNo: 999
     };
+  },
+  methods: {
+    handlePageSizeChange(val) {
+      console.log(val);
+    },
+    handlePageNoChange(val) {
+      console.log(val);
+    },
+    handleOrderTypeChange(val) {
+      console.log(val);
+    }
   },
   computed: {}
 };

@@ -40,7 +40,7 @@ class UserService extends Service {
         }
 
         resolve({
-          id: _user.id
+          user: _user
         });
       } catch (err) {
         reject({
@@ -85,8 +85,7 @@ class UserService extends Service {
         }
 
         resolve({
-          id: _user.id,
-          type: _user.type
+          user: _user
         });
       } catch (err) {
         reject({

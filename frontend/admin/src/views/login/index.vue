@@ -29,6 +29,7 @@
 
 <script>
 import { isvalidUsername } from '@/utils/validate';
+import { Message, MessageBox } from 'element-ui';
 
 export default {
   name: 'login',
@@ -78,7 +79,12 @@ export default {
               this.loading = false;
               this.$router.push({ path: '/' });
             })
-            .catch(() => {
+            .catch(err => {
+              Message({
+                message: err.message,
+                type: 'error',
+                duration: 5 * 1000
+              });
               this.loading = false;
             });
         } else {

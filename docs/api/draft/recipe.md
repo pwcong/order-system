@@ -1,7 +1,5 @@
 # 菜单接口
 
-### 接口列表
-
 * 新建菜单（需商户权限）
 * 获取指定菜单信息
 * 获取指定用户菜单列表
@@ -10,7 +8,7 @@
 * 下线指定菜单（需商户权限）
 * 删除指定菜单（需商户权限）
 
-#### 新建菜单（需商户权限）
+## 新建菜单（需商户权限）
 
 路径：`/recipe/create`
 方法: `POST`
@@ -31,7 +29,7 @@
 
 ```shell
 curl -X POST $API_BASE/recipe/create \
-  -H 'X-Token: 10000:xxxxxxxxxxxxx'
+  -H 'X-Token: 10000:xxxxxxxxxxxxx' \
   -d '{
     "category_id": 1,
     "name": "香蕉",
@@ -65,7 +63,7 @@ curl -X POST $API_BASE/recipe/create \
 
 ---
 
-#### 获取指定菜单信息
+## 获取指定菜单信息
 
 路径：`/recipe/:id`
 
@@ -105,7 +103,7 @@ curl -X POST $API_BASE/recipe/1
 
 ---
 
-#### 获取指定用户菜单列表
+## 获取指定用户菜单列表
 
 路径：`/recipes/:user_id`
 
@@ -147,7 +145,7 @@ curl -X POST $API_BASE/recipes/10000
 
 ---
 
-#### 获取指定用户与分类菜单列表
+## 获取指定用户与分类菜单列表
 
 路径：`/recipes/:user_id/:category_id`
 
@@ -189,7 +187,7 @@ curl -X POST $API_BASE/recipes/10000/1
 
 ---
 
-#### 获取指定用户与分类菜单列表
+## 获取指定用户与分类菜单列表
 
 路径：`/recipes/:user_id/:category_id`
 
@@ -232,7 +230,7 @@ curl -X POST $API_BASE/recipes/10000/1
 
 ---
 
-#### 修改指定菜单信息（需商户权限）
+## 修改指定菜单信息（需商户权限）
 
 路径：`/recipe/:id`
 
@@ -258,7 +256,7 @@ curl -X POST $API_BASE/recipes/10000/1
 
 ```shell
 curl -X POST $API_BASE/recipe/1 \
-  -H 'X-Token: 10000:xxxxxxxxxxxxx'
+  -H 'X-Token: 10000:xxxxxxxxxxxxx' \
   -d '{
     "category_id": 1,
     "name": "香蕉",
@@ -292,7 +290,7 @@ curl -X POST $API_BASE/recipe/1 \
 
 ---
 
-#### 上线指定菜单（需商户权限）
+## 上线指定菜单（需商户权限）
 
 路径：`/recipe/up/:id`
 
@@ -328,7 +326,7 @@ curl -X POST $API_BASE/recipe/up/1 \
 
 ---
 
-#### 下线指定菜单（需商户权限）
+## 下线指定菜单（需商户权限）
 
 路径：`/recipe/down/:id`
 
@@ -364,7 +362,7 @@ curl -X POST $API_BASE/recipe/down/1 \
 
 ---
 
-#### 删除指定菜单（需商户权限）
+## 删除指定菜单（需商户权限）
 
 路径：`/recipe/remove/:id`
 

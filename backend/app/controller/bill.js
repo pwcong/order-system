@@ -14,10 +14,6 @@ class BillController extends Controller {
 
       const { filter } = ctx.params;
 
-      if (!type) {
-        throw new Error('参数不足');
-      }
-
       const { pageSize, pageNo } = ctx.query;
       const id = ctx.user.id;
 
