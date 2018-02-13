@@ -12,6 +12,9 @@ const getters = {
   id: state => state.user.id,
 
   /****** 订单 ******/
-  orders: state => state.order.orders
+  orders: state => state.order.orders,
+
+  /****** 账单 ******/
+  bills: state => state.bill.bills
 };
 export default getters;

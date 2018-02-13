@@ -1,8 +1,8 @@
 <template>
   <div class="order-container">
     <el-row class="row row-condition">
-      <el-col :span="4" style="white-space: nowrap;">订单类型：</el-col>
-      <el-col :span="8">
+      <el-col :span="8" style="white-space: nowrap;">
+        订单类型：
         <el-select v-model="selectedOrderStatus" @change="handleOrderStausChange">
           <el-option
             v-for="(item, idx) in ORDER_STATUS_OPTIONS"
@@ -12,7 +12,7 @@
           </el-option>
         </el-select>
       </el-col>
-      <el-col :span="4" :offset="8" style="text-align: right;">
+      <el-col :span="4" :offset="12" style="text-align: right;">
          <el-button type="primary" round @click="loadOrders()">刷新</el-button>
       </el-col>
     </el-row>
