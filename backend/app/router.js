@@ -159,6 +159,8 @@ module.exports = app => {
     controller.bill.search
   );
 
+  router.post('/attachment/upload', authTokenMiddleware, controller.attachment.upload);
+
   router.get('/system/time', controller.system.time);
 
   app.io.of('/business').route('disconnecting', app.io.controller.business.disconnecting);

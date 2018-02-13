@@ -4,9 +4,7 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     const { STRING, INTEGER, BOOLEAN, DECIMAL, DATE, TEXT } = Sequelize;
 
-    // ///////////////////
-    // 用户类型表
-    // //////////////////
+    /********** 用户类型表 **********/
     await queryInterface.createTable('user_types', {
       id: {
         type: INTEGER,
@@ -28,9 +26,7 @@ module.exports = {
       }
     });
 
-    // ///////////////////
-    // 用户表
-    // //////////////////
+    /********** 用户表 **********/
     await queryInterface.createTable('users', {
       id: {
         type: INTEGER,
@@ -89,7 +85,7 @@ module.exports = {
         allowNull: false,
         defaultValue: 0
       },
-      
+
       created_at: {
         type: DATE,
         allowNull: false,
@@ -102,9 +98,7 @@ module.exports = {
       }
     });
 
-    // ///////////////////
-    // 用户信息表
-    // //////////////////
+    /********** 用户信息表 **********/
     await queryInterface.createTable('user_infos', {
       id: {
         type: INTEGER,
@@ -142,9 +136,7 @@ module.exports = {
       }
     });
 
-    // ///////////////////
-    // 菜单分类表
-    // //////////////////
+    /********** 菜单分类表 **********/
     await queryInterface.createTable('recipe_categories', {
       id: {
         type: INTEGER,
@@ -185,9 +177,7 @@ module.exports = {
       }
     });
 
-    // ///////////////////
-    // 菜单表
-    // //////////////////
+    /********** 菜单表 **********/
     await queryInterface.createTable('recipes', {
       id: {
         type: INTEGER,
@@ -243,9 +233,7 @@ module.exports = {
       }
     });
 
-    // ///////////////////
-    // 菜单点评表
-    // //////////////////
+    /********** 菜单点评表 **********/
     await queryInterface.createTable('recipe_evaluates', {
       id: {
         type: INTEGER,
@@ -308,9 +296,7 @@ module.exports = {
       }
     });
 
-    // ///////////////////
-    // 支付方式表
-    // //////////////////
+    /********** 支付方式表 **********/
     await queryInterface.createTable('payment_types', {
       id: {
         type: INTEGER,
@@ -338,9 +324,7 @@ module.exports = {
       }
     });
 
-    // ///////////////////
-    // 订单表
-    // //////////////////
+    /********** 订单表 **********/
     await queryInterface.createTable('orders', {
       /**
        * 订单号，长度为26位数
@@ -464,9 +448,7 @@ module.exports = {
       }
     });
 
-    // ///////////////////
-    // 账单表
-    // //////////////////
+    /********** 账单表 **********/
     await queryInterface.createTable('bills', {
       id: {
         type: INTEGER,
@@ -518,6 +500,47 @@ module.exports = {
         defaultValue: new Date()
       }
     });
+
+    /********** 附件表 **********/
+    await queryInterface.createTable('attachments', {
+      id: {
+        type: STRING,
+        primaryKey: true
+      },
+      user_id: {
+        type: INTEGER,
+        allowNull: false,
+        references: {
+          model: 'users',
+          key: 'id'
+        }
+      },
+      year: {
+        type: STRING,
+        allowNull: false
+      },
+      month: {
+        type: STRING,
+        allowNull: false
+      },
+      date: {
+        type: STRING,
+        allowNull: false
+      },
+      extname: {
+        type: STRING
+      },
+      created_at: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: new Date()
+      },
+      updated_at: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: new Date()
+      }
+    });
   },
 
   async down(queryInterface, Sequelize) {
@@ -530,5 +553,6 @@ module.exports = {
     await queryInterface.dropTable('user_infos');
     await queryInterface.dropTable('users');
     await queryInterface.dropTable('user_types');
+    await queryInterface.dropTable('attachments');
   }
 };

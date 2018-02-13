@@ -2,7 +2,7 @@
 
 const Service = require('egg').Service;
 
-class PaymentTypeService extends Service {
+class BillService extends Service {
   async search(id, type) {
     const { app } = this;
 
@@ -26,11 +26,11 @@ class PaymentTypeService extends Service {
         });
       } catch (err) {
         reject({
-          message: err
+          message: err.message
         });
       }
     });
   }
 }
 
-module.exports = PaymentTypeService;
+module.exports = BillService;

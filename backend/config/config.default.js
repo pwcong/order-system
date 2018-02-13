@@ -1,10 +1,12 @@
 'use strict';
 
+const path = require('path');
+
 module.exports = appInfo => {
   const config = (exports = {});
 
   // Cookie签名密钥
-  config.keys = appInfo.name + '_powered_by_pwcong';
+  config.keys = (appInfo.name || '') + '_powered_by_pwcong';
 
   // 安全设置
   config.security = {
@@ -25,7 +27,7 @@ module.exports = appInfo => {
   // 静态文件路由配置
   config.static = {
     prefix: '/public/',
-    dir: 'app/public'
+    dir: path.join(appInfo.baseDir || '', 'app/public')
   };
 
   config.bodyParser = {
