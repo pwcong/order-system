@@ -82,12 +82,19 @@ export const constantRouterMap = [
   {
     path: '/setting',
     component: Layout,
+    meta: { title: '设置', icon: 'setting' },
     children: [
       {
         path: 'index',
-        name: 'Setting',
+        name: 'Setting-Preview',
         component: _import('setting/index'),
-        meta: { title: '设置', icon: 'setting' }
+        meta: { title: '预览', icon: 'eye' }
+      },
+      {
+        path: 'edit',
+        name: 'Setting-Edit',
+        component: _import('setting/edit'),
+        meta: { title: '编辑', icon: 'edit' }
       }
     ]
   },

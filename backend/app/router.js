@@ -161,7 +161,7 @@ module.exports = app => {
 
   router.get('/system/time', controller.system.time);
 
-  app.io.of('/business').route('auth', app.io.controller.business.auth);
   app.io.of('/business').route('disconnecting', app.io.controller.business.disconnecting);
   app.io.of('/business').route('disconnect', app.io.controller.business.disconnect);
+  app.io.of('/business').route('error', app.io.controller.business.error);
 };

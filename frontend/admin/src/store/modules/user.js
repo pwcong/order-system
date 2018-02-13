@@ -93,9 +93,13 @@ const user = {
             commit('SET_ID', data.id);
             commit('SET_CHECKED', true);
 
-            const socket = io('http://127.0.0.1:7001/business');
+            const socket = io('http://127.0.0.1:7001/business', {
+              query: {
+                token: getToken()
+              }
+            });
             handler(socket);
-            
+
             commit('SET_SOCKET', socket);
 
             resolve(data);

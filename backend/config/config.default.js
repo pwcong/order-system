@@ -74,7 +74,7 @@ module.exports = appInfo => {
         packetMiddleware: []
       },
       '/business': {
-        connectionMiddleware: [],
+        connectionMiddleware: ['auth'],
         packetMiddleware: []
       },
       '/enterprise': {

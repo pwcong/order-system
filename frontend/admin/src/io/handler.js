@@ -5,11 +5,7 @@ import { Message } from 'element-ui';
 import { getToken } from '@/utils/auth';
 
 export default function(socket) {
-  socket.on('connect', () => {
-    socket.emit('auth', {
-      token: getToken()
-    });
-  });
+  socket.on('connect', () => {});
 
   socket.on('msg', payload => {
     switch (payload.type) {
