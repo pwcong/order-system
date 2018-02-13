@@ -360,6 +360,11 @@ class OrderService extends Service {
           _order.has_refunded = true;
           await _order.save({ transaction: t });
           await t.commit();
+
+          resolve({
+            order: _order
+          });
+
           return;
         }
 
