@@ -62,7 +62,7 @@
                 icon="el-icon-view"
                 size="mini">详情</el-button>
               <el-button
-                v-if="!scope.row.has_paid"
+                v-if="scope.row.statusValue === 0"
                 @click="handleConfirmOrder(scope.row)"
                 icon="el-icon-star-on"
                 type="success"
@@ -91,7 +91,7 @@
             @size-change="handlePageSizeChange"
             @current-change="handlePageNoChange"
             :current-page="pageNo"
-            :page-sizes="[30, 50, 100, 200]"
+            :page-sizes="[15, 30, 50, 100, 200]"
             :page-size="pageSize"
             layout="total, sizes, prev, pager, next, jumper"
             :total="totalSize">
@@ -106,16 +106,16 @@
       width="50%">
       
       <el-form label-width="120px">
-        <el-form-item label="订单编号：">
+        <el-form-item label="订单编号：" style="margin-bottom: 0;">
           <span>{{orderContent.id}}</span>
         </el-form-item>
-        <el-form-item label="下单时间：">
+        <el-form-item label="下单时间：" style="margin-bottom: 0;">
           <span>{{orderContent.created_at}}</span>
         </el-form-item>
-        <el-form-item label="订单用户：">
+        <el-form-item label="订单用户：" style="margin-bottom: 0;">
           <span>{{orderContent.nickname}}</span>
         </el-form-item>
-        <el-form-item label="配送地址：">
+        <el-form-item label="配送地址：" style="margin-bottom: 0;">
           <span>{{orderContent.address}}</span>
         </el-form-item>
         <el-form-item label="订单金额：">
@@ -152,7 +152,7 @@
 </template>
 
 <script>
-import { getOrders, confirmOrder, closeOrder } from '@/api/order';
+import { confirmOrder, closeOrder } from '@/api/order';
 import { getInfo } from '@/api/user';
 
 import moment from 'moment';
@@ -179,7 +179,7 @@ export default {
       ORDER_STATUS_OPTIONS,
       selectedOrderStatus: '全部',
       pageNo: 1,
-      pageSize: 30,
+      pageSize: 15,
       totalSize: 0,
       loading: false,
       orderContentVisiable: false,

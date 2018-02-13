@@ -69,7 +69,15 @@ module.exports = appInfo => {
   config.io = {
     init: {},
     namespace: {
-      '/notice': {
+      '/customer': {
+        connectionMiddleware: [],
+        packetMiddleware: []
+      },
+      '/business': {
+        connectionMiddleware: [],
+        packetMiddleware: []
+      },
+      '/enterprise': {
         connectionMiddleware: [],
         packetMiddleware: []
       }

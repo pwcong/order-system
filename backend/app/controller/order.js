@@ -7,7 +7,7 @@ class OrderController extends Controller {
    * 创建订单
    */
   async create() {
-    const { ctx, service } = this;
+    const { app, ctx, service } = this;
 
     try {
       const { details, address } = ctx.request.body;
@@ -20,6 +20,16 @@ class OrderController extends Controller {
       const receiver_id = ctx.params.id;
 
       const res = await service.order.create(sender_id, receiver_id, details, address);
+
+      app.io
+        .of('/business')
+        .to(receiver_id)
+        .emit('msg', {
+          type: 'BUSINESS_NEW_ORDER',
+          success: true,
+          message: '收到新的订单!',
+          code: ctx.code.STATUS_OK
+        });
 
       ctx.body = {
         success: true,

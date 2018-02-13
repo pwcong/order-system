@@ -1,13 +1,18 @@
 import { login, logout, getInfo, check } from '@/api/user';
 import { getToken, setToken, removeToken } from '@/utils/auth';
 
+import io from 'socket.io-client';
+import handler from '@/io/handler';
+
 const user = {
   state: {
+    checked: false,
     token: getToken(),
     id: 0,
     type: 0,
     nickname: '',
-    avatar: ''
+    avatar: '',
+    socket: null
   },
 
   mutations: {
@@ -25,6 +30,12 @@ const user = {
     },
     SET_TYPE: (state, type) => {
       state.type = type;
+    },
+    SET_CHECKED: (state, flag) => {
+      state.checked = flag;
+    },
+    SET_SOCKET: (state, socket) => {
+      state.socket = socket;
     }
   },
 
@@ -46,6 +57,7 @@ const user = {
             commit('SET_TOKEN', token);
             commit('SET_TYPE', type);
             commit('SET_ID', id);
+
             resolve(response);
           })
           .catch(error => {
@@ -70,14 +82,21 @@ const user = {
       });
     },
 
-    // 检测登录状态
+    // 检测登录状态，初始化socket连接
     Check({ commit, state }) {
       return new Promise((resolve, reject) => {
         check()
           .then(response => {
             const data = response.payload;
+
             commit('SET_TYPE', data.type);
             commit('SET_ID', data.id);
+            commit('SET_CHECKED', true);
+
+            const socket = io('http://127.0.0.1:7001/business');
+            handler(socket);
+            
+            commit('SET_SOCKET', socket);
 
             resolve(data);
           })
@@ -85,6 +104,8 @@ const user = {
             commit('SET_TOKEN', '');
             commit('SET_TYPE', 0);
             commit('SET_ID', 0);
+            commit('SET_CHECKED', false);
+
             removeToken();
             reject(error);
           });
@@ -99,6 +120,7 @@ const user = {
             commit('SET_TOKEN', '');
             commit('SET_TYPE', 0);
             commit('SET_ID', 0);
+            commit('SET_CHECKED', false);
             removeToken();
             resolve();
           })
@@ -114,6 +136,7 @@ const user = {
         commit('SET_TOKEN', '');
         commit('SET_TYPE', 0);
         commit('SET_ID', 0);
+        commit('SET_CHECKED', false);
         removeToken();
         resolve();
       });
