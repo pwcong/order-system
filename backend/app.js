@@ -29,6 +29,16 @@ class HomeController extends Controller {
 const uuidv1 = require('uuid/v1');
 const uuidv5 = require('uuid/v5');
 
+const fs = require('fs-extra');
+
+async function initDirs(app) {
+  const staticDir = app.config.static.dir;
+
+  if (!fs.pathExistsSync(staticDir)) {
+    fs.mkdirsSync(staticDir);
+  }
+}
+
 async function initAdmin(app) {
   if (process.env.NODE_ENV !== 'production') {
     return;
@@ -61,7 +71,10 @@ module.exports = app => {
   app.beforeStart(async () => {
     // 应用会等待下面逻辑执行完成才启动
 
+    // 初始化目录
+    await initDirs(app);
+
     // 初始化管理员角色
-    initAdmin(app);
+    await initAdmin(app);
   });
 };
