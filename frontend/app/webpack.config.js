@@ -59,7 +59,7 @@ module.exports = {
   },
   plugins: [
     new HTMLWebpackPlugin({
-      title: '平板点餐系统 | 用户',
+      title: '享味点餐',
       template: 'index.ejs',
       minify: {
         collapseWhitespace: true

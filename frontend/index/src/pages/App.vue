@@ -27,7 +27,7 @@
     </div>
 
     <div class="footer">
-      @ 2017-{{new Date().getUTCFullYear()}} 平板点餐系统 POWERED BY Pwcong
+      @ 2017-{{new Date().getUTCFullYear()}} 享味点餐 POWERED BY Pwcong
     </div>
 
     <transition :duration="200" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
