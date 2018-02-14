@@ -107,11 +107,16 @@ export default {
         ctx.todayBillChart.data.rows = [
           {
             type: '收款',
-            amount: inBills.length > 0 ? inBills.reduce((total, current) => total + current) : 0
+            amount: (inBills.length > 0 ? inBills.reduce((total, current) => total + current) : 0).toFixed(
+              2
+            )
           },
           {
             type: '退款',
-            amount: outBills.length > 0 ? outBills.reduce((total, current) => total + current) : 0
+            amount: (outBills.length > 0
+              ? outBills.reduce((total, current) => total + current)
+              : 0
+            ).toFixed(2)
           }
         ];
       } catch (err) {}
