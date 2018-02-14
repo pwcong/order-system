@@ -81,7 +81,7 @@ import config from '@/const/config.js';
 import banner from '@/assets/images/banner.jpg';
 
 export default {
-  name: 'Setting',
+  name: 'Setting-Preview',
 
   data() {
     return {

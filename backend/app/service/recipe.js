@@ -46,11 +46,17 @@ class RecipeService extends Service {
             category_id,
             status: [0, 1]
           },
+          include: [
+            {
+              model: app.model.RecipeCategory,
+              as: 'recipe_category'
+            }
+          ],
           order: [['created_at', 'DESC']]
         });
 
         resolve({
-          recipes: _recipes
+          recipes: _recipes.filter(recipe => [0, 1].indexOf(recipe.recipe_category.status) >= 0)
         });
       } catch (err) {
         reject({
@@ -80,7 +86,7 @@ class RecipeService extends Service {
         });
 
         resolve({
-          recipes: _recipes
+          recipes: _recipes.filter(recipe => [0, 1].indexOf(recipe.recipe_category.status) >= 0)
         });
       } catch (err) {
         reject({
@@ -95,7 +101,17 @@ class RecipeService extends Service {
 
     return new Promise(async (resolve, reject) => {
       try {
-        const _recipe = await app.model.Recipe.findById(id);
+        const _recipe = await app.model.Recipe.findOne({
+          where: {
+            id
+          },
+          include: [
+            {
+              model: app.model.RecipeCategory,
+              as: 'recipe_category'
+            }
+          ]
+        });
 
         if (!_recipe) {
           throw new Error('菜单不存在');
@@ -129,7 +145,6 @@ class RecipeService extends Service {
 
         const editable = {
           category_id: true,
-          name: true,
           price: true,
           avatar: true,
           content: true
@@ -171,9 +186,14 @@ class RecipeService extends Service {
 
     return new Promise(async (resolve, reject) => {
       try {
-        const _recipe = await app.model.Recipe.findById(id);
+        const _recipe = await app.model.Recipe.findOne({
+          where: {
+            id,
+            status: [0, 1]
+          }
+        });
 
-        if (!_recipe || [0, 1].indexOf(_recipe.status) < 0) {
+        if (!_recipe) {
           throw new Error('菜单不存在');
         }
 

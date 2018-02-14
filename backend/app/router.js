@@ -61,6 +61,18 @@ module.exports = app => {
   );
 
   router.post(
+    '/recipe_category/up/:id',
+    authTokenMiddleware,
+    authUserTypeMiddleware([2]),
+    controller.recipeCategory.up
+  );
+  router.post(
+    '/recipe_category/down/:id',
+    authTokenMiddleware,
+    authUserTypeMiddleware([2]),
+    controller.recipeCategory.down
+  );
+  router.post(
     '/recipe_category/remove/:id',
     authTokenMiddleware,
     authUserTypeMiddleware([2]),

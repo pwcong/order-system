@@ -44,13 +44,15 @@ class RecipeCategoryController extends Controller {
     try {
       const { user_id } = ctx.params;
 
+      const { pageSize, pageNo } = ctx.query;
+
       const res = await service.recipeCategory.findByUserId(user_id);
 
       ctx.body = {
         success: true,
         message: '获取成功',
         code: ctx.code.STATUS_OK,
-        payload: res.recipeCategories
+        payload: ctx.pager(res.recipeCategories, pageSize, pageNo)
       };
     } catch (err) {
       ctx.body = {
@@ -130,15 +132,66 @@ class RecipeCategoryController extends Controller {
       const { id } = ctx.params;
       const user_id = ctx.user.id;
 
-      await service.recipeCategory.remove(user_id, id);
+      const res = await service.recipeCategory.remove(user_id, id);
 
       ctx.body = {
         success: true,
         message: '删除成功',
         code: ctx.code.STATUS_OK,
-        payload: {
-          id
-        }
+        payload: res.recipeCategory
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
+  /**
+   * 上架菜单分类
+   */
+  async up() {
+    const { ctx, service } = this;
+
+    try {
+      const { id } = ctx.params;
+      const user_id = ctx.user.id;
+
+      const res = await service.recipeCategory.online(user_id, id);
+
+      ctx.body = {
+        success: true,
+        message: '上架成功',
+        code: ctx.code.STATUS_OK,
+        payload: res.recipeCategory
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
+
+  /**
+   * 下架菜单分类
+   */
+  async down() {
+    const { ctx, service } = this;
+
+    try {
+      const { id } = ctx.params;
+      const user_id = ctx.user.id;
+
+      const res = await service.recipeCategory.offline(user_id, id);
+
+      ctx.body = {
+        success: true,
+        message: '下架成功',
+        code: ctx.code.STATUS_OK,
+        payload: res.recipeCategory
       };
     } catch (err) {
       ctx.body = {

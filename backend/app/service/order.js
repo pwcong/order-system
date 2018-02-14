@@ -24,13 +24,28 @@ class OrderService extends Service {
         for (let i = 0; i < details.length; i++) {
           const item = details[i];
 
-          const _recipe = await app.model.Recipe.findById(item.id);
-
-          if (!_recipe || !item.counts) {
+          if (!item.id || parseInt(item.counts) < 1) {
             continue;
           }
 
-          amount += _recipe.price * item.counts;
+          const _recipe = await app.model.Recipe.findOne({
+            where: {
+              id: item.id,
+              status: 0
+            },
+            include: [
+              {
+                model: app.model.RecipeCategory,
+                as: 'recipe_category'
+              }
+            ]
+          });
+
+          if (!_recipe || !(_recipe.recipe_category.status === 0)) {
+            continue;
+          }
+
+          amount += _recipe.price * parseInt(item.counts);
           recipes.push(_recipe.id + '#' + _recipe.name + '#' + item.counts);
         }
 

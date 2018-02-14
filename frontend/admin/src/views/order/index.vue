@@ -166,7 +166,7 @@ import moment from 'moment';
 const ORDER_STATUS_OPTIONS = [
   { label: '全部', value: [] },
   { label: '进行中', value: [0, 1, 3] },
-  { label: '已支付', value: [1] },
+  { label: '已确认', value: [1] },
   { label: '已完成', value: [2] },
   { label: '已取消', value: [4] }
 ];

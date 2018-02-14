@@ -16,6 +16,9 @@ const getters = {
   orders: state => state.order.orders,
 
   /****** 账单 ******/
-  bills: state => state.bill.bills
+  bills: state => state.bill.bills,
+
+  /****** 菜单分类 ******/
+  recipeCategories: state => state.recipeCategory.recipeCategories
 };
 export default getters;

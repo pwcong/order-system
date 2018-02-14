@@ -1,8 +1,10 @@
 # 菜单分类接口
 
-* 获取个人用户信息
+* 获取指定菜单分类信息
 * 获取指定用户菜单分类列表
 * 修改指定菜单分类信息（需商户权限）
+* 上架指定菜单分类（需商户权限）
+* 下架指定菜单分类（需商户权限）
 * 删除指定菜单分类（需商户权限）
 * 新建菜单分类（需商户权限）
 
@@ -114,6 +116,68 @@ curl -X POST \
 
 ---
 
+## 上架指定菜单分类（需商户权限）
+
+路径：`/recipe_category/up/:id`
+方法: `POST`
+
+请求头：
+
+* X-Token: 用户令牌
+
+请求示例：
+
+```shell
+curl -X POST \
+  $API_BASE/recipe_category/up/1 \
+  -H 'X-Token: 10000:xxxxxxxxxxxxx'
+```
+
+返回值：
+
+```json
+{
+  "success": true,
+  "message": "上架成功",
+  "code": 20000,
+  "payload": {
+    "id": 1
+  }
+}
+```
+---
+
+## 下架指定菜单分类（需商户权限）
+
+路径：`/recipe_category/down/:id`
+方法: `POST`
+
+请求头：
+
+* X-Token: 用户令牌
+
+请求示例：
+
+```shell
+curl -X POST \
+  $API_BASE/recipe_category/down/1 \
+  -H 'X-Token: 10000:xxxxxxxxxxxxx'
+```
+
+返回值：
+
+```json
+{
+  "success": true,
+  "message": "下架成功",
+  "code": 20000,
+  "payload": {
+    "id": 1
+  }
+}
+```
+
+---
 ## 删除指定菜单分类（需商户权限）
 
 路径：`/recipe_category/remove/:id`

@@ -61,7 +61,7 @@ class RecipeCategoryService extends Service {
         const _recipeCategories = await app.model.RecipeCategory.findAll({
           where: {
             user_id,
-            status: 0
+            status: [0, 1]
           },
           order: [['created_at', 'DESC']]
         });
@@ -82,9 +82,14 @@ class RecipeCategoryService extends Service {
 
     return new Promise(async (resolve, reject) => {
       try {
-        const _recipeCategory = await app.model.RecipeCategory.findById(id);
+        const _recipeCategory = await app.model.RecipeCategory.findOne({
+          where: {
+            id,
+            status: [0, 1]
+          }
+        });
 
-        if (!_recipeCategory || _recipeCategory.status !== 0) {
+        if (!_recipeCategory) {
           throw new Error('分类不存在');
         }
 
@@ -106,29 +111,47 @@ class RecipeCategoryService extends Service {
     });
   }
 
+  async offline(user_id, id) {
+    return this.changeStatus(user_id, id, 1);
+  }
+
+  async online(user_id, id) {
+    return this.changeStatus(user_id, id, 0);
+  }
+
   async remove(user_id, id) {
+    return this.changeStatus(user_id, id, 2);
+  }
+
+  async changeStatus(user_id, id, status) {
     const { app } = this;
 
     return new Promise(async (resolve, reject) => {
       try {
-        const _recipeCategory = await app.model.RecipeCategory.findById(id);
+        const _recipeCategory = await app.model.RecipeCategory.findOne({
+          where: {
+            id,
+            status: [0, 1]
+          }
+        });
 
-        if (!_recipeCategory || _recipeCategory.status !== 0) {
-          throw new Error('分类不存在');
+        if (!_recipeCategory) {
+          throw new Error('菜单分类不存在');
         }
 
         if (_recipeCategory.user_id !== user_id) {
           throw new Error('没有权限');
         }
 
-        _recipeCategory.status = 1;
+        _recipeCategory.status = status;
+
         await _recipeCategory.save();
 
-        resolve();
-      } catch (err) {
-        reject({
-          message: err.message
+        resolve({
+          recipeCategory: _recipeCategory
         });
+      } catch (err) {
+        reject({ message: err.message });
       }
     });
   }
