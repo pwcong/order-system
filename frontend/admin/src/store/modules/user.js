@@ -1,4 +1,4 @@
-import { login, logout, getInfo, check } from '@/api/user';
+import { login, logout, getInfo, check, modifyInfo } from '@/api/user';
 import { getToken, setToken, removeToken } from '@/utils/auth';
 
 import io from 'socket.io-client';
@@ -12,30 +12,34 @@ const user = {
     type: 0,
     nickname: '',
     avatar: '',
-    socket: null
+    socket: null,
+    userInfo: {}
   },
 
   mutations: {
-    SET_TOKEN: (state, token) => {
+    USER_SET_TOKEN: (state, token) => {
       state.token = token;
     },
-    SET_NICKNAME: (state, nickname) => {
+    USER_SET_NICKNAME: (state, nickname) => {
       state.nickname = nickname;
     },
-    SET_AVATAR: (state, avatar) => {
+    USER_SET_AVATAR: (state, avatar) => {
       state.avatar = avatar;
     },
-    SET_ID: (state, id) => {
+    USER_SET_ID: (state, id) => {
       state.id = id;
     },
-    SET_TYPE: (state, type) => {
+    USER_SET_TYPE: (state, type) => {
       state.type = type;
     },
-    SET_CHECKED: (state, flag) => {
+    USER_SET_CHECKED: (state, flag) => {
       state.checked = flag;
     },
-    SET_SOCKET: (state, socket) => {
+    USER_SET_SOCKET: (state, socket) => {
       state.socket = socket;
+    },
+    USER_SET_USERINFO: (state, userInfo) => {
+      state.userInfo = userInfo;
     }
   },
 
@@ -45,7 +49,7 @@ const user = {
       return new Promise((resolve, reject) => {
         login(userInfo.username.trim(), userInfo.password)
           .then(response => {
-            const { token, type, id } = response.payload;
+            const { token, type, id, userInfo } = response.payload;
 
             if ([2, 3, 999].indexOf(type) < 0) {
               reject({ message: '用户类型不匹配' });
@@ -54,9 +58,11 @@ const user = {
 
             setToken(token);
 
-            commit('SET_TOKEN', token);
-            commit('SET_TYPE', type);
-            commit('SET_ID', id);
+            commit('USER_SET_TOKEN', token);
+            commit('USER_SET_TYPE', type);
+            commit('USER_SET_ID', id);
+
+            commit('USER_SET_USERINFO', userInfo);
 
             resolve(response);
           })
@@ -72,8 +78,21 @@ const user = {
         getInfo(id || state.id)
           .then(response => {
             const data = response.payload;
-            commit('SET_NICKNAME', data.nicknickname);
-            commit('SET_AVATAR', data.avatar);
+            commit('USER_SET_NICKNAME', data.nicknickname);
+            commit('USER_SET_AVATAR', data.avatar);
+            resolve(response);
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+
+    ModifyInfo({ commit, state }, userInfo) {
+      return new Promise((resolve, reject) => {
+        modifyInfo(userInfo || {})
+          .then(response => {
+            commit('USER_SET_USERINFO', response.payload);
             resolve(response);
           })
           .catch(error => {
@@ -87,11 +106,13 @@ const user = {
       return new Promise((resolve, reject) => {
         check()
           .then(response => {
-            const data = response.payload;
+            const { type, id, userInfo } = response.payload;
 
-            commit('SET_TYPE', data.type);
-            commit('SET_ID', data.id);
-            commit('SET_CHECKED', true);
+            commit('USER_SET_TYPE', type);
+            commit('USER_SET_ID', id);
+            commit('USER_SET_CHECKED', true);
+
+            commit('USER_SET_USERINFO', userInfo);
 
             const socket = io('http://127.0.0.1:7001/business', {
               query: {
@@ -100,15 +121,15 @@ const user = {
             });
             handler(socket);
 
-            commit('SET_SOCKET', socket);
+            commit('USER_SET_SOCKET', socket);
 
-            resolve(data);
+            resolve(response);
           })
           .catch(error => {
-            commit('SET_TOKEN', '');
-            commit('SET_TYPE', 0);
-            commit('SET_ID', 0);
-            commit('SET_CHECKED', false);
+            commit('USER_SET_TOKEN', '');
+            commit('USER_SET_TYPE', 0);
+            commit('USER_SET_ID', 0);
+            commit('USER_SET_CHECKED', false);
 
             removeToken();
             reject(error);
@@ -120,13 +141,13 @@ const user = {
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
         logout(state.token)
-          .then(() => {
-            commit('SET_TOKEN', '');
-            commit('SET_TYPE', 0);
-            commit('SET_ID', 0);
-            commit('SET_CHECKED', false);
+          .then(response => {
+            commit('USER_SET_TOKEN', '');
+            commit('USER_SET_TYPE', 0);
+            commit('USER_SET_ID', 0);
+            commit('USER_SET_CHECKED', false);
             removeToken();
-            resolve();
+            resolve(response);
           })
           .catch(error => {
             reject(error);
@@ -137,10 +158,10 @@ const user = {
     // 前端 登出
     FedLogOut({ commit }) {
       return new Promise(resolve => {
-        commit('SET_TOKEN', '');
-        commit('SET_TYPE', 0);
-        commit('SET_ID', 0);
-        commit('SET_CHECKED', false);
+        commit('USER_SET_TOKEN', '');
+        commit('USER_SET_TYPE', 0);
+        commit('USER_SET_ID', 0);
+        commit('USER_SET_CHECKED', false);
         removeToken();
         resolve();
       });

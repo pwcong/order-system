@@ -65,8 +65,14 @@
                 v-if="scope.row.statusValue === 0"
                 @click="handleConfirmOrder(scope.row)"
                 icon="el-icon-star-on"
-                type="success"
+                type="primary"
                 size="mini">支付</el-button>
+              <el-button
+                v-if="[1].indexOf(scope.row.statusValue) >= 0"
+                @click="handleFinishOrder(scope.row)"
+                size="mini"
+                icon="el-icon-check"
+                type="success">完成</el-button>
               <el-button
                 v-if="[0, 1, 3].indexOf(scope.row.statusValue) >= 0"
                 @click="handleCancelOrder(scope.row)"
@@ -152,7 +158,7 @@
 </template>
 
 <script>
-import { confirmOrder, closeOrder } from '@/api/order';
+import { confirmOrder, closeOrder, finishOrder } from '@/api/order';
 import { getInfo } from '@/api/user';
 
 import moment from 'moment';
@@ -160,6 +166,7 @@ import moment from 'moment';
 const ORDER_STATUS_OPTIONS = [
   { label: '全部', value: [] },
   { label: '进行中', value: [0, 1, 3] },
+  { label: '已支付', value: [1] },
   { label: '已完成', value: [2] },
   { label: '已取消', value: [4] }
 ];
@@ -275,6 +282,27 @@ export default {
         })
         .catch(err => {});
     },
+    handleFinishOrder(row) {
+      const ctx = this;
+
+      ctx
+        .$confirm('是否确认完成该订单?', '提示', {
+          confirmButtonText: '确认',
+          cancelButtonText: '返回',
+          type: 'warning'
+        })
+        .then(() => {
+          finishOrder(row.id).then(res => {
+            ctx.$message({
+              type: 'success',
+              message: '订单已完成!'
+            });
+
+            ctx.loadOrders();
+          });
+        })
+        .catch(() => {});
+    },
     loadOrders(orderStatus, pageSize, pageNo, filter) {
       const ctx = this;
 
@@ -305,7 +333,7 @@ export default {
   computed: {
     ordersTableData() {
       return this.$store.getters.orders.map((order, idx) =>
-        Object.assign(order, {
+        Object.assign({}, order, {
           status: ORDER_STATUS[order.status],
           statusValue: order.status,
           name: order.name

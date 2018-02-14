@@ -127,7 +127,7 @@ module.exports = app => {
   router.post(
     '/order/finish/:id',
     authTokenMiddleware,
-    authUserTypeMiddleware([1]),
+    authUserTypeMiddleware([1, 2]),
     controller.order.finish
   );
   router.post(

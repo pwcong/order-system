@@ -121,9 +121,29 @@ module.exports = {
         allowNull: false,
         defaultValue: 0
       },
-      address: STRING,
-      intro: STRING,
-      avatar: STRING,
+      address: {
+        type: STRING,
+        defaultValue: ''
+      },
+      contact: {
+        type: STRING,
+        defaultValue: ''
+      },
+      intro: {
+        type: STRING,
+        defaultValue: ''
+      },
+      avatar: {
+        type: STRING,
+        defaultValue: ''
+      },
+      /**
+       * 横幅图片，逗号拼接
+       */
+      banner: {
+        type: TEXT,
+        defaultValue: ''
+      },
       created_at: {
         type: DATE,
         allowNull: false,
@@ -544,6 +564,7 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable('attachments');
     await queryInterface.dropTable('bills');
     await queryInterface.dropTable('orders');
     await queryInterface.dropTable('payment_types');
@@ -553,6 +574,5 @@ module.exports = {
     await queryInterface.dropTable('user_infos');
     await queryInterface.dropTable('users');
     await queryInterface.dropTable('user_types');
-    await queryInterface.dropTable('attachments');
   }
 };

@@ -143,9 +143,10 @@ class OrderController extends Controller {
 
     try {
       const { id } = ctx.params;
-      const sender_id = ctx.user.id;
+      const user_id = ctx.user.id;
+      const user_type = ctx.user.type;
 
-      const res = await service.order.finish(id, sender_id);
+      const res = await service.order.finish(id, user_id, user_type);
 
       ctx.body = {
         success: true,

@@ -102,7 +102,6 @@ class UserController extends Controller {
       const token = id + ':' + _token;
 
       await app.redis.set(token, content);
-
       ctx.body = {
         success: true,
         message: '登录成功',
@@ -111,7 +110,8 @@ class UserController extends Controller {
           token,
           id,
           type,
-          timestamp
+          timestamp,
+          userInfo: res.user.user_info
         }
       };
     } catch (err) {
@@ -146,20 +146,31 @@ class UserController extends Controller {
    * 验证Token
    */
   async check() {
-    const { ctx } = this;
+    const { ctx, service } = this;
 
-    const { id, type, timestamp } = ctx.user;
+    try {
+      const { id, type, timestamp } = ctx.user;
 
-    ctx.body = {
-      success: true,
-      code: ctx.code.STATUS_OK,
-      message: '验证成功',
-      payload: {
-        id,
-        type,
-        timestamp
-      }
-    };
+      const res = await service.userInfo.queryById(id);
+
+      ctx.body = {
+        success: true,
+        code: ctx.code.STATUS_OK,
+        message: '验证成功',
+        payload: {
+          id,
+          type,
+          timestamp,
+          userInfo: res.userInfo
+        }
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
   }
 
   /**

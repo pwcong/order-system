@@ -10,6 +10,7 @@ const getters = {
   nickname: state => state.user.nickname,
   type: state => state.user.type,
   id: state => state.user.id,
+  userInfo: state => state.user.userInfo,
 
   /****** 订单 ******/
   orders: state => state.order.orders,

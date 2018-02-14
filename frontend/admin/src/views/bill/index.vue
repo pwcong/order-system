@@ -1,7 +1,7 @@
 <template>
   <div class="bill-container">
 
-      <el-row class="row row-condition">
+    <el-row class="row row-condition">
       <el-col :span="8" style="white-space: nowrap;">
         账单类型：
         <el-select v-model="selectedBillType" @change="handleBillTypeChange">
@@ -146,7 +146,7 @@ export default {
   computed: {
     billsTableData() {
       return this.$store.getters.bills.map((bill, idx) =>
-        Object.assign(bill, {
+        Object.assign({}, bill, {
           type: BILL_TYPE[bill.type],
           created_at: moment(bill.created_at).format('YYYY-MM-DD hh:mm:ss')
         })

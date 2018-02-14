@@ -262,25 +262,41 @@ class OrderService extends Service {
     });
   }
 
-  async finish(id, sender_id) {
+  async finish(id, user_id, user_type) {
     const { app } = this;
 
     return new Promise(async (resolve, reject) => {
       try {
-        const _order = await app.model.Order.findOne({
-          where: {
-            id,
-            sender_id,
-            status: [1]
-          }
-        });
+        let _order = null;
+
+        if (user_type === 1) {
+          _order = await app.model.Order.findOne({
+            where: {
+              id,
+              sender_id: user_id,
+              status: [1]
+            }
+          });
+        } else if (user_type === 2) {
+          _order = await app.model.Order.findOne({
+            where: {
+              id,
+              receiver_id: user_id,
+              status: [1]
+            }
+          });
+        }
 
         if (!_order) {
           throw new Error('订单无效');
         }
 
         _order.status = 2;
-        _order.has_finished = true;
+
+        if (user_type === 1) {
+          _order.has_finished = true;
+        }
+
         await _order.save();
 
         resolve({

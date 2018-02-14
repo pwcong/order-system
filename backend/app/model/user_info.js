@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = app => {
-  const { STRING, INTEGER, DATE } = app.Sequelize;
+  const { STRING, INTEGER, DATE, TEXT } = app.Sequelize;
 
   const UserInfo = app.model.define('user_info', {
     id: {
@@ -25,9 +25,26 @@ module.exports = app => {
       allowNull: false,
       defaultValue: 0
     },
-    address: STRING,
-    intro: STRING,
-    avatar: STRING
+    address: {
+      type: STRING,
+      defaultValue: ''
+    },
+    contact: {
+      type: STRING,
+      defaultValue: ''
+    },
+    intro: {
+      type: STRING,
+      defaultValue: ''
+    },
+    avatar: {
+      type: STRING,
+      defaultValue: ''
+    },
+    banner: {
+      type: TEXT,
+      defaultValue: ''
+    }
   });
 
   return UserInfo;

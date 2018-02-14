@@ -67,7 +67,9 @@ class UserInfoService extends Service {
           sex: true,
           address: true,
           intro: true,
-          avatar: true
+          avatar: true,
+          contact: true,
+          banner: true
         };
 
         Object.keys(newUserInfo).forEach((key, idx) => {

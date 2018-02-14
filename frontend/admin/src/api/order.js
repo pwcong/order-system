@@ -27,6 +27,13 @@ export function confirmOrder(id) {
   });
 }
 
+export function finishOrder(id) {
+  return request({
+    url: `/order/finish/${id}`,
+    method: 'post'
+  });
+}
+
 export function closeOrder(id) {
   return request({
     url: `/order/close/${id}`,

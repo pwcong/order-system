@@ -33,37 +33,14 @@
           </div>
         </el-card>
       </el-col>
-
-      <!-- 
-      <el-col :sm="24" :md="12" :lg="12" class="main-card">
-        <el-card class="box-card">
-          <div slot="header" class="clearfix">
-            <span>年度订单</span>
-          </div>
-          <div>
-            <ve-histogram :data="yearOrderChart.data" :settings="yearOrderChart.setting"></ve-histogram>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :sm="24" :md="12" :lg="12" class="main-card">
-        <el-card class="box-card">
-          <div slot="header" class="clearfix">
-            <span>年度收支</span>
-          </div>
-          <div>
-            <ve-line :data="yearBillChart.data" :settings="yearBillChart.setting"></ve-line>
-          </div>
-        </el-card>
-      </el-col>
-      -->
     </el-row>
   </div>
 </template>
 
 <script>
-import banner1 from '@/assets/images/banner_1.jpg';
-import banner2 from '@/assets/images/banner_2.jpg';
-import banner3 from '@/assets/images/banner_3.jpg';
+import banner from '@/assets/images/banner.jpg';
+
+import config from '@/const/config';
 
 import { getTodayOrders } from '@/api/order';
 import { getTodayBills } from '@/api/bill';
@@ -72,7 +49,6 @@ export default {
   name: 'Dashboard',
   data() {
     return {
-      banners: [banner1, banner2, banner3],
       todayOrderChart: {
         data: {
           columns: ['type', 'counts'],
@@ -85,35 +61,18 @@ export default {
           rows: []
         }
       }
-      // yearOrderChart: {
-      //   data: {
-      //     columns: ['月份', '已完成', '已取消', '全部'],
-      //     rows: [
-      //       { 月份: '一月', 已完成: 1500, 已取消: 500, 全部: 2000 },
-      //       { 月份: '二月', 已完成: 1400, 已取消: 300, 全部: 1700 }
-      //     ]
-      //   },
-      //   setting: {
-      //     showLine: ['全部'],
-      //     metrics: ['已完成', '已取消', '全部'],
-      //     stack: { all: ['已完成', '已取消'] }
-      //   }
-      // },
-      // yearBillChart: {
-      //   data: {
-      //     columns: ['月份', '收款', '退款'],
-      //     rows: [
-      //       { 月份: '一月', 收款: 15000, 退款: 500},
-      //       { 月份: '二月', 收款: 14000, 退款: 300}
-      //     ]
-      //   },
-      //   setting: {
-      //     metrics: ['收款', '退款']
-      //   }
-      // }
     };
   },
-  computed: {},
+  computed: {
+    banners() {
+      const t = (this.$store.getters.userInfo.banner || '')
+        .trim()
+        .split(',')
+        .filter(banner => !!banner)
+        .map(banner => config.BASE_API + banner);
+      return t.length > 0 ? t : [banner];
+    }
+  },
   methods: {
     async initCharts() {
       const ctx = this;
@@ -176,7 +135,7 @@ export default {
       .banner-item {
         width: 100%;
         height: 100%;
-        background-color: #aaa;
+        border: 1px solid #c5c5c5;
         background-position: 50% 50%;
         background-size: cover;
         background-repeat: no-repeat;

@@ -18,18 +18,18 @@ export function getInfo(id) {
   });
 }
 
+export function modifyInfo(userInfo) {
+  return request({
+    url: '/user/info',
+    method: 'post',
+    data: userInfo
+  });
+}
+
 export function check() {
   return request({
     url: `/user/check`,
     method: 'post'
-  });
-}
-
-export function modifyInfo(id, userInfo) {
-  return request({
-    url: `/user/info/${id}`,
-    method: 'post',
-    data: userInfo
   });
 }
 
