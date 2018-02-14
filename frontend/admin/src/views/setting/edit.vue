@@ -65,7 +65,7 @@
         <el-button type="primary" icon="el-icon-refresh" @click="reloadUserInfo">刷新</el-button>
       </div>
       <div>
-        <el-button type="success" icon="el-icon-check" @click="saveUserInfo" v-loading.fullscreen.lock="fullscreenLoading">保存</el-button>
+        <el-button type="success" icon="el-icon-upload" @click="saveUserInfo" v-loading.fullscreen.lock="fullscreenLoading">保存</el-button>
       </div>
       <div>
         <el-button type="info" icon="el-icon-back" @click="redirectToPreview">取消</el-button>
@@ -185,7 +185,9 @@ export default {
           ctx.fullscreenLoading = false;
         });
     },
-    redirectToPreview() {}
+    redirectToPreview() {
+      this.$router.push({ path: '/setting/index' });
+    }
   },
   computed: {},
   mounted() {
