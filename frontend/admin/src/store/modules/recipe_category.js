@@ -41,6 +41,22 @@ export default {
             reject(error);
           });
       });
+    },
+    LoadAllRecipeCategories({ commit, state }, payload) {
+      return new Promise((resolve, reject) => {
+        const { userId } = payload;
+
+        userId && commit('RECIPECATEGORY_SET_USERID', userId);
+
+        getRecipeCategories(state.userId)
+          .then(response => {
+            commit('RECIPECATEGORY_SET_RECIPECATEGORIES', response.payload.data);
+            resolve(response);
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
     }
   }
 };

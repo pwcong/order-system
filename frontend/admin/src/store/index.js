@@ -6,6 +6,7 @@ import user from './modules/user';
 import order from './modules/order';
 import bill from './modules/bill';
 import recipeCategory from './modules/recipe_category';
+import recipe from './modules/recipe';
 
 import getters from './getters';
 
@@ -17,7 +18,8 @@ const store = new Vuex.Store({
     user,
     order,
     bill,
-    recipeCategory
+    recipeCategory,
+    recipe
   },
   getters
 });

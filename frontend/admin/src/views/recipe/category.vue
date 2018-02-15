@@ -3,7 +3,7 @@
     
     <el-row>
       <el-col :span="24" style="text-align: right;">
-        <el-button type="success" icon="el-icon-plus" @click="addRecipeCategory" v-loading.fullscreen.lock="fullscreenLoading">新建</el-button>
+        <el-button type="success" icon="el-icon-plus" @click="handleAddRecipeCategory">新建</el-button>
         <el-button type="primary" icon="el-icon-refresh" @click="loadRecipeCategories()">刷新</el-button>
       </el-col>
     </el-row>
@@ -159,7 +159,6 @@ export default {
       pageSize: 15,
       pageNo: 1,
       totalSize: 0,
-      fullscreenLoading: false,
       modifyDialogVisible: false,
       modifyName: '',
       selectedRecipeCategoryId: '',
@@ -168,7 +167,7 @@ export default {
     };
   },
   methods: {
-    addRecipeCategory() {
+    handleAddRecipeCategory() {
       this.newName = '';
       this.newDialogVisible = true;
     },
@@ -301,14 +300,14 @@ export default {
       this.pageNo = val;
       this.loadBills();
     },
-    loadRecipeCategories(userId, pageSize, pageNo) {
+    loadRecipeCategories() {
       const ctx = this;
 
       ctx.loading = true;
 
-      userId = userId || ctx.$store.getters.id;
-      pageSize = pageSize || ctx.pageSize;
-      pageNo = pageNo || ctx.pageNo;
+      const userId = ctx.$store.getters.id;
+      const pageSize = ctx.pageSize;
+      const pageNo = ctx.pageNo;
 
       ctx.$store
         .dispatch('LoadRecipeCategories', {

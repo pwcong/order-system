@@ -117,15 +117,15 @@ export default {
       this.selectedBillType = val;
       this.loadBills();
     },
-    loadBills(billType, filter, pageSize, pageNo) {
+    loadBills() {
       const ctx = this;
 
       ctx.loading = true;
 
-      billType = billType || (ctx.selectedBillType instanceof Array ? ctx.selectedBillType : []);
-      filter = filter || '';
-      pageSize = pageSize || ctx.pageSize;
-      pageNo = pageNo || ctx.pageNo;
+      const billType = ctx.selectedBillType instanceof Array ? ctx.selectedBillType : [];
+      const filter = '';
+      const pageSize = ctx.pageSize;
+      const pageNo = ctx.pageNo;
 
       ctx.$store
         .dispatch('LoadBills', {

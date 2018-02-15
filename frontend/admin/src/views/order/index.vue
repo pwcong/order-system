@@ -303,16 +303,15 @@ export default {
         })
         .catch(() => {});
     },
-    loadOrders(orderStatus, pageSize, pageNo, filter) {
+    loadOrders() {
       const ctx = this;
 
       ctx.loading = true;
 
-      orderStatus =
-        orderStatus || (ctx.selectedOrderStatus instanceof Array ? ctx.selectedOrderStatus : []);
-      pageSize = pageSize || ctx.pageSize;
-      pageNo = pageNo || ctx.pageNo;
-      filter = filter || '';
+      const orderStatus = ctx.selectedOrderStatus instanceof Array ? ctx.selectedOrderStatus : [];
+      const pageSize = ctx.pageSize;
+      const pageNo = ctx.pageNo;
+      const filter = '';
 
       ctx.$store
         .dispatch('LoadOrders', {

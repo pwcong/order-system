@@ -133,9 +133,14 @@ class RecipeService extends Service {
 
     return new Promise(async (resolve, reject) => {
       try {
-        const _recipe = await app.model.Recipe.findById(id);
+        const _recipe = await app.model.Recipe.findOne({
+          where: {
+            id,
+            status: [0, 1]
+          }
+        });
 
-        if (!_recipe || [0, 1].indexOf(_recipe.status) < 0) {
+        if (!_recipe) {
           throw new Error('菜单不存在');
         }
 
