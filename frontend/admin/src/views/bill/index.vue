@@ -4,14 +4,13 @@
     <el-row class="row row-condition">
       <el-col :span="8" style="white-space: nowrap;">
         账单类型：
-        <el-select v-model="selectedBillType" @change="handleBillTypeChange">
-          <el-option
-            v-for="(item, idx) in BILL_TYPE_OPTIONS"
-            :key="'status-option-' + idx"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
+        <el-radio-group v-model="selectedBillType" @change="handleBillTypeChange">
+          <el-radio-button 
+            v-for="(label, idx) in BILL_TYPE_OPTIONS" 
+            :label="label"
+            :key="'bill-type-' + idx">
+          </el-radio-button>
+        </el-radio-group>
       </el-col>
       <el-col :span="4" :offset="12" style="text-align: right;">
          <el-button type="primary" round @click="loadBills()">刷新</el-button>
@@ -81,11 +80,13 @@
 <script>
 import moment from 'moment';
 
-const BILL_TYPE_OPTIONS = [
-  { label: '全部', value: [] },
-  { label: '收入', value: [0] },
-  { label: '支出', value: [1] }
-];
+const BILL_TYPE_OPTIONS_VALUE = {
+  全部: [],
+  收入: [0],
+  支出: [1]
+};
+
+const BILL_TYPE_OPTIONS = ['全部', '收入', '支出'];
 
 const BILL_TYPE = {
   '0': '收入',
@@ -114,7 +115,6 @@ export default {
       this.loadBills();
     },
     handleBillTypeChange(val) {
-      this.selectedBillType = val;
       this.loadBills();
     },
     loadBills() {
@@ -122,7 +122,7 @@ export default {
 
       ctx.loading = true;
 
-      const billType = ctx.selectedBillType instanceof Array ? ctx.selectedBillType : [];
+      const billType = BILL_TYPE_OPTIONS_VALUE[ctx.selectedBillType] || [];
       const filter = '';
       const pageSize = ctx.pageSize;
       const pageNo = ctx.pageNo;

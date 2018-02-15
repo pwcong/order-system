@@ -3,14 +3,13 @@
     <el-row class="row row-condition">
       <el-col :span="8" style="white-space: nowrap;">
         订单类型：
-        <el-select v-model="selectedOrderStatus" @change="handleOrderStausChange">
-          <el-option
-            v-for="(item, idx) in ORDER_STATUS_OPTIONS"
-            :key="'status-option-' + idx"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
+        <el-radio-group v-model="selectedOrderStatus" @change="handleOrderStausChange">
+          <el-radio-button 
+            v-for="(label, idx) in ORDER_STATUS_OPTIONS" 
+            :label="label"
+            :key="'order-staus-' + idx">
+          </el-radio-button>
+        </el-radio-group>
       </el-col>
       <el-col :span="4" :offset="12" style="text-align: right;">
          <el-button type="primary" round @click="loadOrders()">刷新</el-button>
@@ -163,13 +162,15 @@ import { getInfo } from '@/api/user';
 
 import moment from 'moment';
 
-const ORDER_STATUS_OPTIONS = [
-  { label: '全部', value: [] },
-  { label: '进行中', value: [0, 1, 3] },
-  { label: '已确认', value: [1] },
-  { label: '已完成', value: [2] },
-  { label: '已取消', value: [4] }
-];
+const ORDER_STATUS_OPTIONS_VALUE = {
+  全部: [],
+  进行中: [0, 1, 3],
+  已确认: [1],
+  已完成: [2],
+  已取消: [4]
+};
+
+const ORDER_STATUS_OPTIONS = ['全部', '进行中', '已确认', '已完成', '已取消'];
 
 const ORDER_STATUS = {
   '0': '发起',
@@ -212,7 +213,6 @@ export default {
       this.loadOrders();
     },
     handleOrderStausChange(val) {
-      this.selectedOrderStatus = val;
       this.loadOrders();
     },
 
@@ -308,7 +308,7 @@ export default {
 
       ctx.loading = true;
 
-      const orderStatus = ctx.selectedOrderStatus instanceof Array ? ctx.selectedOrderStatus : [];
+      const orderStatus = ORDER_STATUS_OPTIONS_VALUE[ctx.selectedOrderStatus] || [];
       const pageSize = ctx.pageSize;
       const pageNo = ctx.pageNo;
       const filter = '';
