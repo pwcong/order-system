@@ -103,13 +103,13 @@
                     type="primary"
                     size="mini">修改</el-button>
                   <el-button
-                    v-if="[1].indexOf(scope.row.statusValue) >= 0"
+                    v-if="[1].indexOf(scope.row.statusValue) >= 0 && scope.row.recipe_category.status === 0"
                     @click="handleUpRecipe(scope.row)"
                     size="mini"
                     icon="el-icon-goods"
                     type="success">上架</el-button>
                   <el-button
-                    v-if="[0].indexOf(scope.row.statusValue) >= 0"
+                    v-if="[0].indexOf(scope.row.statusValue) >= 0 && scope.row.recipe_category.status === 0"
                     @click="handleDownRecipe(scope.row)"
                     size="mini"
                     icon="el-icon-sold-out"
