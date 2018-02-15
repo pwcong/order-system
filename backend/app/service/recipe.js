@@ -149,7 +149,6 @@ class RecipeService extends Service {
         }
 
         const editable = {
-          category_id: true,
           price: true,
           avatar: true,
           content: true

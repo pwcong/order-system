@@ -35,7 +35,7 @@
 
         <el-row>
           <el-col :span="24" style="text-align: right;">
-            <el-button type="success" icon="el-icon-plus" @click="handleAddRecipe">新建</el-button>
+            <el-button v-if="!!selectedCategory" type="success" icon="el-icon-plus" @click="handleAddRecipe">新建</el-button>
             <el-button type="primary" icon="el-icon-refresh" @click="reloadRecipes()">刷新</el-button>
           </el-col>
         </el-row>
@@ -51,7 +51,7 @@
                 <template slot-scope="props">
                   <el-form label-position="left" label-width="90" inline class="recipe-table-expand">
                     <el-form-item label="贴图：">
-                      <img :src="props.row.avatar"/>
+                      <img :src="props.row.avatar" @click="handlePictureCardPreview(props.row.avatar)"/>
                     </el-form-item>
                     <el-form-item label="分类：">
                       <span>{{ props.row.category }}</span>
@@ -144,11 +144,98 @@
       </el-col>
     </el-row>
 
+    <el-dialog
+      title="修改菜单"
+      :visible.sync="modifyDialogVisible"
+      width="40%">
+
+      <el-form ref="modifyForm" :rules="modifyRules" label-width="80px" :model="modifyForm">
+        <el-form-item label="贴图：" prop="avatar">
+          <el-upload
+            class="avatar-uploader"
+            :action="uploadUrl"
+            :headers="uploadHeaders"
+            :show-file-list="false"
+            :on-success="handleModifyAvatarSuccess"
+            :before-upload="beforeAvatarUpload">
+            <img v-if="modifyForm.avatarUrl" :src="modifyForm.avatarUrl" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="名称：" prop="name">
+          <el-input v-model="modifyForm.name" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="分类：" prop="category">
+          <el-input v-model="modifyForm.category" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="价格：" prop="price">
+          <el-input v-model="modifyForm.price">
+            <template slot="prepend">￥</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="介绍：" prop="content">
+          <el-input v-model="modifyForm.content" type="textarea"></el-input>
+        </el-form-item>
+      </el-form>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="handleCancelModifyRecipe">取 消</el-button>
+        <el-button type="primary" @click="handleSubmitModifyRecipe">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog
+      title="新增菜单"
+      :visible.sync="newDialogVisible"
+      width="40%">
+
+      <el-form ref="newForm" label-width="80px" :rules="newRules" :model="newForm">
+        <el-form-item label="贴图：" prop="avatar">
+          <el-upload
+            class="avatar-uploader"
+            :action="uploadUrl"
+            :headers="uploadHeaders"
+            :show-file-list="false"
+            :on-success="handleAddAvatarSuccess"
+            :before-upload="beforeAvatarUpload">
+            <img v-if="newForm.avatarUrl" :src="newForm.avatarUrl" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="名称：" prop="name">
+          <el-input v-model="newForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="分类：" prop="category">
+          <el-input v-model="newForm.category" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="价格：" prop="price">
+          <el-input v-model="newForm.price">
+            <template slot="prepend">￥</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="介绍：" prop="content">
+          <el-input v-model="newForm.content" type="textarea"></el-input>
+        </el-form-item>
+      </el-form>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="handleCancelAddRecipe">取 消</el-button>
+        <el-button type="primary" @click="handleSubmitAddRecipe">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog :visible.sync="dialogVisible">
+      <img width="100%" :src="dialogImageUrl" alt="">
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import moment from 'moment';
+
+import { getToken } from '@/utils/auth';
+
+import { upRecipe, downRecipe, removeRecipe, modifyRecipe, createRecipe } from '@/api/recipe';
 
 import config from '@/const/config';
 
@@ -160,17 +247,101 @@ const RECIPE_STATUS = {
 export default {
   name: 'Recipe',
   data() {
+    var pricePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入价格'));
+      } else {
+        if (!/^(([1-9][0-9]*)|(([0]\.\d{0,2}|[1-9][0-9]*\.\d{0,2})))$/.test(value)) {
+          callback(new Error('请输入正确的价格'));
+        }
+        callback();
+      }
+    };
+
     return {
       RECIPE_STATUS,
+      uploadUrl: config.BASE_API + '/attachment/upload',
+      uploadHeaders: {
+        'X-Token': getToken()
+      },
       loading: false,
       pageSize: 15,
       pageNo: 1,
       totalSize: 0,
       loadAll: true,
-      selectedCategoryId: ''
+      selectedCategory: '',
+
+      selectedRecipeId: '',
+      modifyForm: {},
+      modifyDialogVisible: false,
+      modifyRules: {
+        price: [
+          { required: true, message: '请输入价格', trigger: 'blur' },
+          { validator: pricePass, trigger: 'blur' }
+        ],
+        name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+        category: [{ required: true, message: '请选择分类', trigger: 'blur' }],
+        content: [{ required: true, message: '请输入描述', trigger: 'blur' }],
+        avatar: [{ required: true, message: '请上传贴图', trigger: 'blur' }]
+      },
+
+      newForm: {},
+      newDialogVisible: false,
+      newRules: {
+        price: [
+          { required: true, message: '请输入价格', trigger: 'blur' },
+          { validator: pricePass, trigger: 'blur' }
+        ],
+        name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+        category: [{ required: true, message: '请选择分类', trigger: 'blur' }],
+        content: [{ required: true, message: '请输入描述', trigger: 'blur' }],
+        avatar: [{ required: true, message: '请上传贴图', trigger: 'blur' }]
+      },
+
+      dialogVisible: false,
+      dialogImageUrl: ''
     };
   },
   methods: {
+    handleAddAvatarSuccess(res, file) {
+      if (!res.success) {
+        this.$message({
+          message: res.message,
+          type: 'error'
+        });
+        return;
+      }
+      this.newForm = Object.assign({}, this.newForm, {
+        avatarUrl: config.BASE_API + res.payload.url,
+        avatar: res.payload.url
+      });
+    },
+    handleModifyAvatarSuccess(res, file) {
+      if (!res.success) {
+        this.$message({
+          message: res.message,
+          type: 'error'
+        });
+        return;
+      }
+
+      this.modifyForm = Object.assign({}, this.modifyForm, {
+        avatarUrl: config.BASE_API + res.payload.url,
+        avatar: res.payload.url
+      });
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+      }
+      return isJPG && isLt2M;
+    },
     handlePageSizeChange(val) {
       this.pageSize = val;
       this.loadRecips();
@@ -183,10 +354,11 @@ export default {
       this.pageNo = 1;
 
       if (item) {
-        this.selectedCategoryId = item.id;
+        this.selectedCategory = item;
       }
 
       if (flag) {
+        this.selectedCategory = '';
         this.loadAll = true;
         this.loadAllRecipes();
       } else {
@@ -194,12 +366,142 @@ export default {
         this.loadRecips();
       }
     },
-    handleAddRecipe() {},
-    handleSubmitAddRecipe() {},
-    handleModifyRecipe(row) {},
-    handleUpRecipe(row) {},
-    handleDownRecipe(row) {},
-    handleRemoveRecipe(row) {},
+    handleAddRecipe() {
+      const ctx = this;
+      ctx.newDialogVisible = true;
+      ctx.newForm = {
+        category: ctx.selectedCategory.name,
+        category_id: ctx.selectedCategory.id
+      };
+    },
+    handleSubmitAddRecipe() {
+      const ctx = this;
+      ctx.$refs.newForm.validate(valid => {
+        if (valid) {
+          createRecipe(ctx.newForm)
+            .then(res => {
+              ctx.$message({
+                message: '新增成功!',
+                type: 'success'
+              });
+              ctx.newDialogVisible = false;
+              ctx.reloadRecipes();
+            })
+            .catch(err => {
+              ctx.$message({
+                message: err.message,
+                type: 'error'
+              });
+            });
+        } else {
+          return false;
+        }
+      });
+    },
+    handleCancelAddRecipe() {
+      this.$refs.newForm.resetFields();
+      this.newDialogVisible = false;
+    },
+    handleModifyRecipe(row) {
+      this.modifyDialogVisible = true;
+      this.selectedRecipeId = row.id;
+      this.modifyForm = {
+        name: row.name,
+        category: row.recipe_category.name,
+        avatarUrl: row.avatar,
+        avatar: row.avatarValue,
+        price: row.priceValue,
+        content: row.content
+      };
+    },
+    handleSubmitModifyRecipe() {
+      const ctx = this;
+      ctx.$refs.modifyForm.validate(valid => {
+        if (valid) {
+          modifyRecipe(ctx.selectedRecipeId, ctx.modifyForm)
+            .then(res => {
+              ctx.$message({
+                message: '修改成功!',
+                type: 'success'
+              });
+              ctx.modifyDialogVisible = false;
+              ctx.reloadRecipes();
+            })
+            .catch(err => {
+              ctx.$message({
+                message: err.message,
+                type: 'error'
+              });
+            });
+        } else {
+          return false;
+        }
+      });
+    },
+    handleCancelModifyRecipe() {
+      this.$refs.modifyForm.resetFields();
+      this.modifyDialogVisible = false;
+    },
+    handleUpRecipe(row) {
+      const ctx = this;
+      upRecipe(row.id)
+        .then(res => {
+          ctx.$message({
+            message: '上架成功!',
+            type: 'success'
+          });
+          ctx.reloadRecipes();
+        })
+        .catch(err => {
+          ctx.$message({
+            message: err.message,
+            type: 'error'
+          });
+        });
+    },
+    handleDownRecipe(row) {
+      const ctx = this;
+      downRecipe(row.id)
+        .then(res => {
+          ctx.$message({
+            message: '上架成功!',
+            type: 'success'
+          });
+          ctx.reloadRecipes();
+        })
+        .catch(err => {
+          ctx.$message({
+            message: err.message,
+            type: 'error'
+          });
+        });
+    },
+    handleRemoveRecipe(row) {
+      const ctx = this;
+      ctx
+        .$confirm('是否确认删除该菜单?', '提示', {
+          confirmButtonText: '确认',
+          cancelButtonText: '返回',
+          type: 'warning'
+        })
+        .then(() => {
+          removeRecipe(row.id)
+            .then(res => {
+              ctx.$message({
+                message: '删除成功!',
+                type: 'success'
+              });
+              ctx.reloadRecipes();
+            })
+            .catch(err => {
+              ctx.$message({
+                message: err.message,
+                type: 'error'
+              });
+            });
+        })
+        .catch(() => {});
+    },
     reloadRecipes() {
       this.pageNo = 1;
 
@@ -213,7 +515,7 @@ export default {
       const ctx = this;
 
       const userId = ctx.$store.getters.id;
-      const categoryId = ctx.selectedCategoryId;
+      const categoryId = ctx.selectedCategory.id;
       const pageSize = ctx.pageSize;
       const pageNo = ctx.pageNo;
 
@@ -262,6 +564,10 @@ export default {
           });
           ctx.loading = false;
         });
+    },
+    handlePictureCardPreview(url) {
+      this.dialogImageUrl = url;
+      this.dialogVisible = true;
     }
   },
   computed: {
@@ -272,7 +578,9 @@ export default {
           statusValue: recipe.recipe_category.status || recipe.status,
           category: recipe.recipe_category.name,
           price: '￥' + recipe.price,
+          priceValue: recipe.price,
           avatar: config.BASE_API + recipe.avatar,
+          avatarValue: recipe.avatar,
           created_at: moment(recipe.created_at).format('YYYY-MM-DD hh:mm:ss')
         })
       );
@@ -320,6 +628,7 @@ export default {
     img {
       width: 48px;
       height: 48px;
+      cursor: pointer;
     }
   }
 
@@ -331,6 +640,30 @@ export default {
     margin-right: 0;
     margin-bottom: 0;
     width: 50%;
+  }
+
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409eff;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 128px;
+    height: 128px;
+    line-height: 128px;
+    text-align: center;
+  }
+  .avatar {
+    width: 128px;
+    height: 128px;
+    display: block;
   }
 }
 </style>

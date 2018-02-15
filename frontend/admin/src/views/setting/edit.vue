@@ -87,13 +87,13 @@ export default {
   data() {
     return {
       uploadUrl: config.BASE_API + '/attachment/upload',
+      uploadHeaders: {
+        'X-Token': getToken()
+      },
       avatarUrl: '',
       banners: [],
       dialogVisible: false,
       dialogImageUrl: '',
-      uploadHeaders: {
-        'X-Token': getToken()
-      },
       form: {},
       fullscreenLoading: false
     };

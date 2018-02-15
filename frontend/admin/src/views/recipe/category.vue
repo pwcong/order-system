@@ -101,7 +101,7 @@
     <el-dialog
       title="修改菜单分类"
       :visible.sync="modifyDialogVisible"
-      width="30%">
+      width="40%">
 
       <el-form label-width="60px">
         <el-form-item label="分类名">
@@ -118,7 +118,7 @@
     <el-dialog
       title="新增菜单分类"
       :visible.sync="newDialogVisible"
-      width="30%">
+      width="40%">
 
       <el-form label-width="60px">
         <el-form-item label="分类名">
