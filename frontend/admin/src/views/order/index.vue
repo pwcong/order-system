@@ -16,7 +16,7 @@
       </el-col>
     </el-row>
 
-    <el-row class="row row-main" :style="{marginTop: '16px'}">
+    <el-row class="row row-main" :style="{marginTop: '20px'}">
       <el-col :span="24">
         <el-table
           :data="ordersTableData"
