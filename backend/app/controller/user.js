@@ -15,9 +15,9 @@ class UserController extends Controller {
     const { app, ctx, service, config } = this;
 
     try {
-      const { username, password, phone, type } = ctx.request.body;
+      const { username, password, type } = ctx.request.body;
 
-      if (!username || !password || !phone || !type) {
+      if (!username || !password || !type) {
         throw new Error('参数不足');
       }
 
@@ -27,7 +27,7 @@ class UserController extends Controller {
 
       // Todo 校验参数
 
-      const res = await service.user.register(username, password, phone, type);
+      const res = await service.user.register(username, password, type);
 
       const { id } = res.user;
       const timestamp = new Date().getTime();
@@ -75,13 +75,13 @@ class UserController extends Controller {
     const { app, ctx, service, config } = this;
 
     try {
-      const { upe, password } = ctx.request.body;
+      const { username, password } = ctx.request.body;
 
-      if (!upe || !password) {
+      if (!username || !password) {
         throw new Error('参数不足');
       }
 
-      const res = await service.user.login(upe, password);
+      const res = await service.user.login(username, password);
 
       const { id, type } = res.user;
 
@@ -243,6 +243,43 @@ class UserController extends Controller {
         code: ctx.code.STATUS_OK,
         payload: {
           id
+        }
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
+
+  /**
+   * 修改密码
+   */
+  async modifyPWD() {
+    const { ctx, service } = this;
+
+    try {
+      const { password } = ctx.request.body;
+
+      if (!password) {
+        throw new Error('参数不足');
+      }
+
+      const { id, timestamp } = ctx.user;
+
+      const res = await service.user.modifyPWD(id, password);
+
+      ctx.body = {
+        success: true,
+        code: ctx.code.STATUS_OK,
+        message: '验证成功',
+        payload: {
+          id: res.id,
+          type: res.type,
+          timestamp,
+          userInfo: res.user_info
         }
       };
     } catch (err) {

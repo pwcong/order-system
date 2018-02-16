@@ -26,8 +26,8 @@ module.exports = appInfo => {
 
   // 静态文件路由配置
   config.static = {
-    prefix: '/public/',
-    dir: path.join(appInfo.baseDir || '', 'app/public')
+    prefix: '/',
+    dir: path.join(appInfo.baseDir || '', 'public')
   };
 
   config.bodyParser = {

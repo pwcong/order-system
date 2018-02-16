@@ -52,7 +52,6 @@ module.exports = {
       },
       phone: {
         type: STRING,
-        allowNull: false,
         unique: true
       },
       email: {

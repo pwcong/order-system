@@ -6,7 +6,7 @@ const uuidv1 = require('uuid/v1');
 const uuidv5 = require('uuid/v5');
 
 class UserService extends Service {
-  async register(username, password, phone, type) {
+  async register(username, password, type) {
     const { app } = this;
 
     return new Promise(async (resolve, reject) => {
@@ -19,17 +19,10 @@ class UserService extends Service {
           throw new Error('用户已存在');
         }
 
-        _user = await app.model.User.findByPhone(phone);
-
-        if (_user) {
-          throw new Error('手机号已存在');
-        }
-
         const salt = uuidv1();
 
         _user = await app.model.User.create({
           username,
-          phone,
           password: uuidv5(password, salt),
           password_salt: salt,
           type
@@ -50,14 +43,14 @@ class UserService extends Service {
     });
   }
 
-  async login(upe, pwd) {
+  async login(username, pwd) {
     const { app } = this;
 
     return new Promise(async (resolve, reject) => {
       try {
         let _user = null;
 
-        _user = await app.model.User.findByUPE(upe);
+        _user = await app.model.User.findByUsername(username);
 
         if (!_user) {
           throw new Error('用户不存在');
@@ -83,6 +76,72 @@ class UserService extends Service {
           }
           throw new Error(message);
         }
+
+        resolve({
+          user: _user
+        });
+      } catch (err) {
+        reject({
+          message: err.message
+        });
+      }
+    });
+  }
+
+  async modifyPWD(id, password) {
+    const { app } = this;
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        let _user = null;
+
+        _user = await app.model.User.findById(id);
+
+        if (!_user) {
+          throw new Error('用户不存在');
+        }
+
+        const salt = uuidv1();
+
+        _user.password = uuidv5(password, salt);
+        _user.password_salt = salt;
+
+        await _user.save();
+
+        resolve({
+          user: _user
+        });
+      } catch (err) {
+        reject({
+          message: err.message
+        });
+      }
+    });
+  }
+
+  async modifyPhone(id, phone) {
+    const { app } = this;
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        let _user = null;
+
+        _user = await app.model.User.findById(id);
+
+        if (_user) {
+          throw new Error('用户不存在');
+        }
+
+        let __user = null;
+        __user = await app.model.User.findByPhone(phone);
+
+        if (__user) {
+          throw new Error('该手机号正在使用中');
+        }
+
+        _user.phone = phone;
+
+        await _user.save();
 
         resolve({
           user: _user

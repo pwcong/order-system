@@ -28,7 +28,6 @@ module.exports = app => {
     },
     phone: {
       type: STRING,
-      allowNull: false,
       unique: true
     },
     email: {

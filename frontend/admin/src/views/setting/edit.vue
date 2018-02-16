@@ -60,6 +60,44 @@
 
     </el-row>
 
+    <el-row style="margin-top: 20px;">
+
+      <el-col :span="18" :offset="3">
+        <el-card>
+          <div slot="header" class="clearfix" style="text-align: center;">
+            <span>安全</span>
+          </div>
+          
+          <el-button type="success" icon="el-icon-menu" @click="handleModifyPWD">修改密码</el-button>
+
+        </el-card>
+
+      </el-col>
+
+    </el-row>
+
+
+    <el-dialog
+      title="新增菜单"
+      :visible.sync="modifyDialogVisible"
+      width="40%">
+
+      <el-form ref="modifyForm" label-width="80px" :rules="modifyRules" :model="modifyForm">
+        <el-form-item label="新密码：" prop="pwd1">
+          <el-input v-model="modifyForm.pwd1" type="password"></el-input>
+        </el-form-item>
+        <el-form-item label="" prop="pwd2">
+          <el-input v-model="modifyForm.pwd2" type="password">
+          </el-input>
+        </el-form-item>
+      </el-form>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="handleCancelModifyPWD">取 消</el-button>
+        <el-button type="primary" @click="handleSubmitModifyPWD">确 定</el-button>
+      </span>
+    </el-dialog>
+
     <div class="tools">
       <div>
         <el-button type="primary" icon="el-icon-refresh" @click="reloadUserInfo">刷新</el-button>
@@ -78,13 +116,36 @@
 <script>
 import config from '@/const/config';
 
-import { modifyInfo } from '@/api/user';
+import { modifyInfo, modifyPWD } from '@/api/user';
 
 import { getToken } from '@/utils/auth';
 
 export default {
   name: 'Setting-Edit',
   data() {
+    const validatePass1 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'));
+      } else {
+        if (value.length < 5) {
+          callback(new Error('密码不能小于5位'));
+        } else if (this.modifyForm.pwd1 !== '') {
+          this.$refs.modifyForm.validateField('pwd2');
+        }
+        callback();
+      }
+    };
+
+    const validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'));
+      } else if (value !== this.modifyForm.pwd1) {
+        callback(new Error('两次输入密码不一致!'));
+      } else {
+        callback();
+      }
+    };
+
     return {
       uploadUrl: config.BASE_API + '/attachment/upload',
       uploadHeaders: {
@@ -95,10 +156,47 @@ export default {
       dialogVisible: false,
       dialogImageUrl: '',
       form: {},
-      fullscreenLoading: false
+      fullscreenLoading: false,
+
+      modifyForm: {},
+      modifyDialogVisible: false,
+      modifyRules: {
+        pwd1: [{ validator: validatePass1, trigger: 'blur' }],
+        pwd2: [{ validator: validatePass2, trigger: 'blur' }]
+      }
     };
   },
   methods: {
+    handleCancelModifyPWD() {},
+    handleModifyPWD() {
+      this.modifyDialogVisible = true;
+      this.modifyForm = {
+        pwd1: '',
+        pwd2: ''
+      };
+    },
+    handleSubmitModifyPWD() {
+      const ctx = this;
+      ctx.$refs.modifyForm.validate(valid => {
+        if (valid) {
+          modifyPWD(ctx.modifyForm.pwd1)
+            .then(res => {
+              ctx.$message({
+                message: '修改成功!',
+                type: 'success'
+              });
+              ctx.modifyDialogVisible = false;
+
+              ctx.$store.dispatch('LogOut').then(res => {
+                ctx.$router.push({ path: '/login' });
+              });
+            })
+            .catch(err => {});
+        } else {
+          return false;
+        }
+      });
+    },
     handleBannerSuccess(res, file) {
       if (!res.success) {
         this.$message({
@@ -178,10 +276,6 @@ export default {
           ctx.fullscreenLoading = false;
         })
         .catch(err => {
-          ctx.$message({
-            type: 'error',
-            message: err.message
-          });
           ctx.fullscreenLoading = false;
         });
     },

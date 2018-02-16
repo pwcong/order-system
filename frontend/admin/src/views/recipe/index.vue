@@ -247,7 +247,7 @@ const RECIPE_STATUS = {
 export default {
   name: 'Recipe',
   data() {
-    var pricePass = (rule, value, callback) => {
+    const pricePass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入价格'));
       } else {
@@ -387,12 +387,7 @@ export default {
               ctx.newDialogVisible = false;
               ctx.reloadRecipes();
             })
-            .catch(err => {
-              ctx.$message({
-                message: err.message,
-                type: 'error'
-              });
-            });
+            .catch(err => {});
         } else {
           return false;
         }
@@ -427,12 +422,7 @@ export default {
               ctx.modifyDialogVisible = false;
               ctx.reloadRecipes();
             })
-            .catch(err => {
-              ctx.$message({
-                message: err.message,
-                type: 'error'
-              });
-            });
+            .catch(err => {});
         } else {
           return false;
         }
@@ -452,12 +442,7 @@ export default {
           });
           ctx.reloadRecipes();
         })
-        .catch(err => {
-          ctx.$message({
-            message: err.message,
-            type: 'error'
-          });
-        });
+        .catch(err => {});
     },
     handleDownRecipe(row) {
       const ctx = this;
@@ -469,12 +454,7 @@ export default {
           });
           ctx.reloadRecipes();
         })
-        .catch(err => {
-          ctx.$message({
-            message: err.message,
-            type: 'error'
-          });
-        });
+        .catch(err => {});
     },
     handleRemoveRecipe(row) {
       const ctx = this;
@@ -493,12 +473,7 @@ export default {
               });
               ctx.reloadRecipes();
             })
-            .catch(err => {
-              ctx.$message({
-                message: err.message,
-                type: 'error'
-              });
-            });
+            .catch(err => {});
         })
         .catch(() => {});
     },
@@ -530,12 +505,9 @@ export default {
         })
         .then(res => {
           ctx.loading = false;
+          ctx.totalSize = res.payload.totalSize;
         })
         .catch(err => {
-          ctx.$message({
-            type: 'error',
-            message: err.message
-          });
           ctx.loading = false;
         });
     },
@@ -556,12 +528,9 @@ export default {
         })
         .then(res => {
           ctx.loading = false;
+          ctx.totalSize = res.payload.totalSize;
         })
         .catch(err => {
-          ctx.$message({
-            type: 'error',
-            message: err.message
-          });
           ctx.loading = false;
         });
     },

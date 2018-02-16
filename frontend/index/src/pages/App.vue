@@ -10,10 +10,10 @@
         <a :href="adminIndexUrl" class="entry" style="background-color: #F64561">
           <div>我是店家</div>
         </a>
-        <a :href="userIndexUrl" class="entry" style="background-color: #3EBCC8">
+        <a @click="showCustomerMessage" class="entry" style="background-color: #3EBCC8">
           <div>我是客户</div>
         </a>
-        <a :href="adminIndexUrl" class="entry" style="background-color: #744E37">
+        <a @click="showEnterpriseMessage" class="entry" style="background-color: #744E37">
           <div>我是企业</div>
         </a>
 
@@ -55,10 +55,6 @@
             <input type="password" :style="{
                 borderColor: passwordError ? 'red' : '#ccc'
               }" placeholder="请再次输入密码" v-model="password2" @change="handlePasswordChange">
-          </label>
-          <label class="register-form-row register-form-input">
-            <span>手机：</span>
-            <input type="text" placeholder="请输入手机号" v-model="phone">
           </label>
 
           <div class="register-form-row register-form-radio" style="margin: 32px 0">
@@ -325,7 +321,7 @@ body {
 </style>
 
 <script>
-import { Toast, Indicator } from 'mint-ui';
+import { Toast, Indicator, MessageBox } from 'mint-ui';
 
 import Modal from '../components/Modal.vue';
 
@@ -343,17 +339,30 @@ export default {
       username: '',
       password1: '',
       password2: '',
-      phone: '',
       type: '',
       passwordError: false,
       adminIndexUrl: CONFIG.URL_INDEX_ADMIN,
-      userIndexUrl: CONFIG.URL_INDEX_USER
+      userIndexUrl: CONFIG.URL_INDEX_APP
     };
   },
   components: {
     Modal
   },
   methods: {
+    showEnterpriseMessage() {
+      MessageBox({
+        title: '/(ㄒoㄒ)/~~',
+        message: '企业入口还在努力建设中。',
+        showCancelButton: true
+      });
+    },
+    showCustomerMessage() {
+      MessageBox({
+        title: '/(ㄒoㄒ)/~~',
+        message: 'WEB端还在努力建设中。不如先试试小程序端吧。微信搜索 -> 小程序 -> 享味点餐',
+        showCancelButton: true
+      });
+    },
     showRegisterModal(e) {
       this.registerModalVisible = true;
     },
@@ -362,7 +371,7 @@ export default {
       this.registerModalVisible = false;
     },
     async toRegister(e) {
-      if (!this.username || !this.password1 || !this.password2 || !this.phone || !this.type) {
+      if (!this.username || !this.password1 || !this.password2 || !this.type) {
         Toast({
           message: '请填写所有信息~',
           position: 'bottom'
@@ -387,7 +396,7 @@ export default {
       console.log(this.$data);
 
       try {
-        const res = await userApi.register(this.username, this.phone, this.password1, parseInt(this.type));
+        const res = await userApi.register(this.username, this.password1, parseInt(this.type));
         Indicator.close();
         Toast('注册成功');
         this.resetRegisterForm();
@@ -402,7 +411,6 @@ export default {
       this.username = '';
       this.password1 = '';
       this.password2 = '';
-      this.phone = '';
       this.type = '';
       this.passwordError = false;
     },

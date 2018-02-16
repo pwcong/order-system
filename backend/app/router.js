@@ -9,6 +9,10 @@ module.exports = app => {
   const authTokenMiddleware = middlewares.auth.authToken(app.config.auth);
   const authUserTypeMiddleware = middlewares.auth.authUserType;
 
+  router.redirect('/', '/index.html', 302);
+  router.redirect('/admin', '/admin/index.html', 302);
+  router.redirect('/app', '/app/index.html', 302);
+
   router.get('/test', controller.test.default);
   router.post('/test', controller.test.default);
 
@@ -16,6 +20,8 @@ module.exports = app => {
   router.post('/user/logout', controller.user.logout);
 
   router.post('/user/register', controller.user.register);
+
+  router.post('/user/modify/password', authTokenMiddleware, controller.user.modifyPWD);
 
   router.post('/user/check', authTokenMiddleware, controller.user.check);
 

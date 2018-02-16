@@ -5,12 +5,12 @@ const api = {
     login: {
       url: () => API_BASE + 'user/login',
       method: 'POST',
-      data: (upe, password) => ({ upe, password })
+      data: (upe, password) => ({ username: upe, password })
     },
     register: {
       url: type => API_BASE + 'user/register',
       method: 'POST',
-      data: (username, phone, password, type) => ({ username, phone, password, type })
+      data: (username, password, type) => ({ username, password, type })
     }
   }
 };

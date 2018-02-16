@@ -192,10 +192,6 @@ export default {
           ctx.loadRecipeCategories();
         })
         .catch(err => {
-          ctx.$message({
-            message: err.message,
-            type: 'error'
-          });
           ctx.newDialogVisible = false;
         });
     },
@@ -225,10 +221,6 @@ export default {
           ctx.loadRecipeCategories();
         })
         .catch(err => {
-          ctx.$message({
-            message: err.message,
-            type: 'error'
-          });
           ctx.modifyDialogVisible = false;
         });
     },
@@ -242,12 +234,7 @@ export default {
           });
           ctx.loadRecipeCategories();
         })
-        .catch(err => {
-          ctx.$message({
-            message: err.message,
-            type: 'error'
-          });
-        });
+        .catch(err => {});
     },
     handleDownRecipeCategory(row) {
       const ctx = this;
@@ -259,12 +246,7 @@ export default {
           });
           ctx.loadRecipeCategories();
         })
-        .catch(err => {
-          ctx.$message({
-            message: err.message,
-            type: 'error'
-          });
-        });
+        .catch(err => {});
     },
     handleRemoveRecipeCategory(row) {
       const ctx = this;
@@ -283,12 +265,7 @@ export default {
               });
               ctx.loadRecipeCategories();
             })
-            .catch(err => {
-              ctx.$message({
-                message: err.message,
-                type: 'error'
-              });
-            });
+            .catch(err => {});
         })
         .catch(() => {});
     },
@@ -321,10 +298,6 @@ export default {
         })
         .catch(err => {
           ctx.loading = false;
-          ctx.$message({
-            message: err.message,
-            type: 'error'
-          });
         });
     }
   },

@@ -80,11 +80,6 @@ export default {
               this.$router.push({ path: '/' });
             })
             .catch(err => {
-              Message({
-                message: err.message,
-                type: 'error',
-                duration: 5 * 1000
-              });
               this.loading = false;
             });
         } else {
