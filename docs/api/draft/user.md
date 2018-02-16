@@ -16,7 +16,6 @@
 
 * username: 用户名
 * password: 密码
-* phone: 手机号
 * type: 用户类型，1.客户 2.店家 3.企业
 
 请求示例：
@@ -28,7 +27,6 @@ curl -X POST \
   -d '{
     "username": "xxx",
     "password": "yyy",
-    "phone": "13000000000",
     "type": "1"
   }'
 ```
@@ -44,7 +42,10 @@ curl -X POST \
     "token": "10000:xxxxxxxxxxxxx",
     "id": 10000,
     "type": 999,
-    "timestamp": 1516008115906
+    "timestamp": 1516008115906,
+    "user_info": {
+      ...
+    }
   }
 }
 ```
@@ -83,7 +84,10 @@ curl -X POST \
     "token": "10000:xxxxxxxxxxxxx",
     "id": 10000,
     "type": 999,
-    "timestamp": 1516008115906
+    "timestamp": 1516008115906,
+    "user_info": {
+      ...
+    }
   }
 }
 ```
@@ -146,7 +150,10 @@ curl -X POST \
   "payload": {
     "id": 10000,
     "type": 999,
-    "timestamp": 1516008115906
+    "timestamp": 1516008115906,
+    "user_info": {
+      ...
+    }
   }
 }
 ```
@@ -246,6 +253,49 @@ curl -X POST \
   "message": "注销成功",
   "payload": {
     "id": 10001
+  }
+}
+```
+
+---
+
+## 修改密码
+
+路径：`/user/modify/password`
+方法：`POST`
+
+请求头：
+
+* X-Token: 用户令牌
+
+请求参数：
+
+* password: 新密码请求示例：
+
+```shell
+curl -X POST \
+  $API_BASE/user/remove/10001 \
+  -H 'X-Token: 10000:xxxxxxxxxxxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "password": "aaa"
+  }'
+```
+
+返回值：
+
+```json
+{
+  "success": true,
+  "code": 20000,
+  "message": "修改成功",
+  "payload": {
+    "id": 10000,
+    "type": 999,
+    "timestamp": 1516008115906,
+    "user_info": {
+      ...
+    }
   }
 }
 ```

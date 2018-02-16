@@ -78,7 +78,7 @@
 
 
     <el-dialog
-      title="新增菜单"
+      title="修改密码"
       :visible.sync="modifyDialogVisible"
       width="40%">
 
@@ -167,7 +167,10 @@ export default {
     };
   },
   methods: {
-    handleCancelModifyPWD() {},
+    handleCancelModifyPWD() {
+      this.$refs.modifyForm.resetFields();
+      this.modifyDialogVisible = false;
+    },
     handleModifyPWD() {
       this.modifyDialogVisible = true;
       this.modifyForm = {

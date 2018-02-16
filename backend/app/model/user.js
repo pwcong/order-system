@@ -85,16 +85,38 @@ module.exports = app => {
     return this.findOne({
       where: {
         username
-      }
+      },
+      include: [
+        {
+          model: app.model.UserInfo,
+          as: 'user_info'
+        }
+      ]
     });
   };
 
   User.findByPhone = function(phone) {
-    return this.findOne({ where: { phone } });
+    return this.findOne({
+      where: { phone },
+      include: [
+        {
+          model: app.model.UserInfo,
+          as: 'user_info'
+        }
+      ]
+    });
   };
 
   User.findByEmail = function(email) {
-    return this.findOne({ where: { email } });
+    return this.findOne({
+      where: { email },
+      include: [
+        {
+          model: app.model.UserInfo,
+          as: 'user_info'
+        }
+      ]
+    });
   };
 
   return User;

@@ -95,7 +95,17 @@ class UserService extends Service {
       try {
         let _user = null;
 
-        _user = await app.model.User.findById(id);
+        _user = await app.model.User.findOne({
+          where: {
+            id
+          },
+          include: [
+            {
+              model: app.model.UserInfo,
+              as: 'user_info'
+            }
+          ]
+        });
 
         if (!_user) {
           throw new Error('用户不存在');
@@ -126,7 +136,15 @@ class UserService extends Service {
       try {
         let _user = null;
 
-        _user = await app.model.User.findById(id);
+        _user = await app.model.User.findOne({
+          where: { id },
+          include: [
+            {
+              model: app.model.UserInfo,
+              as: 'user_info'
+            }
+          ]
+        });
 
         if (_user) {
           throw new Error('用户不存在');
