@@ -146,7 +146,7 @@ class UserService extends Service {
           ]
         });
 
-        if (_user) {
+        if (!_user) {
           throw new Error('用户不存在');
         }
 
@@ -160,6 +160,41 @@ class UserService extends Service {
         _user.phone = phone;
 
         await _user.save();
+
+        resolve({
+          user: _user
+        });
+      } catch (err) {
+        reject({
+          message: err.message
+        });
+      }
+    });
+  }
+
+  async searchBusiness(id) {
+    const { app } = this;
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        let _user = null;
+
+        _user = await app.model.User.findOne({
+          where: {
+            id,
+            type: [2]
+          },
+          include: [
+            {
+              model: app.model.UserInfo,
+              as: 'user_info'
+            }
+          ]
+        });
+
+        if (!_user) {
+          throw new Error('店家不存在');
+        }
 
         resolve({
           user: _user

@@ -40,9 +40,6 @@ async function initDirs(app) {
 }
 
 async function initAdmin(app) {
-  if (process.env.NODE_ENV !== 'production') {
-    return;
-  }
 
   app.config.admin = app.config.admin || {};
 

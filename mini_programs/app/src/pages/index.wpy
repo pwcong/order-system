@@ -1,14 +1,53 @@
 <style lang="scss">
-.container {
+.main {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+
+  #scanBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-flow: row nowrap;
+    width: 280rpx;
+    height: 280rpx;
+    border: 1px dashed #ccc;
+
+    font-size: 180rpx;
+
+    position: relative;
+    top: -128rpx;
+  }
 }
 </style>
 <template>
   <view class="container">
+
+    <view class="main">
+
+      <view>
+        <image id="scanBtn" src="{{scanImg}}" @tap="handleScanBusinessCode"></image>
+      </view>
+
+      <view>
+        <icon style="position: relative; top: 8rpx; margin-right: 16rpx;" type="search" size="16"/><text>请扫描二维码进入点餐</text>
+      </view>
+
+    </view>
+
   </view>
 </template>
 
 <script>
 import wepy from 'wepy';
+
+import { getStore } from 'wepy-redux';
+
+import { asyncSearchBusiness } from '@/store/actions';
 
 export default class Index extends wepy.page {
   config = {
@@ -18,11 +57,38 @@ export default class Index extends wepy.page {
 
   mixins = [];
 
-  data = {};
+  data = {
+    scanImg: '../assets/imgs/scan.png'
+  };
 
   computed = {};
 
-  methods = {};
+  methods = {
+    handleScanBusinessCode() {
+      wepy.scanCode({
+        success(res) {
+          getStore()
+            .dispatch(asyncSearchBusiness(res.result))
+            .then(res => {
+              if (res.error) {
+                wepy.showModal({
+                  title: '提示',
+                  showCancel: false,
+                  content: res.payload.message
+                });
+              } else {
+                wepy.navigateTo({
+                  url: '/pages/business'
+                });
+              }
+            });
+        },
+        fail(err) {
+          console.log(err);
+        }
+      });
+    }
+  };
 
   events = {};
 

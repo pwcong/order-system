@@ -8,6 +8,8 @@
 * 解锁用户（需管理员权限）
 * 注销用户（需管理员权限）
 
+* 查询店家
+
 ## 用户注册
 
 路径：`/user/register`
@@ -270,7 +272,9 @@ curl -X POST \
 
 请求参数：
 
-* password: 新密码请求示例：
+* password: 新密码
+
+请求示例：
 
 ```shell
 curl -X POST \
@@ -293,6 +297,41 @@ curl -X POST \
     "id": 10000,
     "type": 999,
     "timestamp": 1516008115906,
+    "user_info": {
+      ...
+    }
+  }
+}
+```
+
+---
+
+## 查询店家
+
+路径：`/user/business/:id`
+方法：`GET`
+
+请求参数：
+
+* id: 店家 id
+
+请求示例：
+
+```shell
+curl -X GET \
+  $API_BASE/user/business/10001
+```
+
+返回值：
+
+```json
+{
+  "success": true,
+  "code": 20000,
+  "message": "修改成功",
+  "payload": {
+    "id": 10001,
+    "type": 2,
     "user_info": {
       ...
     }

@@ -19,6 +19,8 @@ module.exports = app => {
   router.post('/user/login', controller.user.login);
   router.post('/user/logout', controller.user.logout);
 
+  router.get('/user/business/:id', controller.user.searchBusiness);
+
   router.post('/user/register', controller.user.register);
 
   router.post('/user/modify/password', authTokenMiddleware, controller.user.modifyPWD);

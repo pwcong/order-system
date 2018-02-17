@@ -274,12 +274,42 @@ class UserController extends Controller {
       ctx.body = {
         success: true,
         code: ctx.code.STATUS_OK,
-        message: '验证成功',
+        message: '修改成功',
         payload: {
-          id: res.id,
-          type: res.type,
+          id: res.user.id,
+          type: res.user.type,
           timestamp,
-          userInfo: res.user_info
+          userInfo: res.user.user_info
+        }
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
+
+  /**
+   * 查询店家
+   */
+  async searchBusiness() {
+    const { ctx, service } = this;
+
+    try {
+      const { id } = ctx.params;
+
+      const res = await service.user.searchBusiness(id);
+
+      ctx.body = {
+        success: true,
+        code: ctx.code.STATUS_OK,
+        message: '查询成功',
+        payload: {
+          id: res.user.id,
+          type: res.user.type,
+          userInfo: res.user.user_info
         }
       };
     } catch (err) {

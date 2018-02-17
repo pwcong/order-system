@@ -1,6 +1,6 @@
-<style lang="less">
+<style lang="scss">
 .container {
-  position: relative;
+  position: absolute;
   width: 100%;
   height: 100%;
   box-sizing: border-box;
@@ -20,12 +20,12 @@ setStore(store);
 
 export default class extends wepy.app {
   config = {
-    pages: ['pages/index', 'pages/home', 'pages/order'],
+    pages: ['pages/index', 'pages/home', 'pages/order', 'pages/business'],
     window: {
       backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#fff',
+      navigationBarBackgroundColor: '#47B248',
       navigationBarTitleText: '享味点餐',
-      navigationBarTextStyle: 'black'
+      navigationBarTextStyle: 'white'
     },
 
     tabBar: {
