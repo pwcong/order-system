@@ -4,7 +4,7 @@
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  overflow: auto;
+  overflow: hidden;
 }
 </style>
 
@@ -20,7 +20,7 @@ setStore(store);
 
 export default class extends wepy.app {
   config = {
-    pages: ['pages/index', 'pages/home', 'pages/order', 'pages/business'],
+    pages: ['pages/business', 'pages/index', 'pages/home', 'pages/order'],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#47B248',

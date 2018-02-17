@@ -1,1 +1,1 @@
-.container{position:absolute;width:100%;height:100%;box-sizing:border-box;overflow:auto}
+.container{position:absolute;width:100%;height:100%;box-sizing:border-box;overflow:hidden}

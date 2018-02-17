@@ -11,6 +11,20 @@ export default handleActions(
     }
   },
   {
-    business: {}
+    business: {
+      id: 1,
+      type: 2,
+      userInfo: {
+        id: 1,
+        nickname: 'business',
+        birthday: null,
+        sex: 0,
+        address: '',
+        contact: '',
+        intro: '',
+        avatar: '',
+        banner: ''
+      }
+    }
   }
 );

@@ -1,0 +1,1 @@
+export const ACTION_GET_RECIPES = 'ACTION_GET_RECIPES';
