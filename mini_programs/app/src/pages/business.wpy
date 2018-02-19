@@ -72,6 +72,8 @@
 
       flex-flow: row nowrap;
 
+      border-bottom: 1px dashed #ccc;
+
       .recipes-item-img {
         width: 112rpx;
         height: 112rpx;
@@ -135,7 +137,7 @@
   height: 128rpx;
 
   bottom: 48rpx;
-  right: 24rpx;
+  right: 48rpx;
 
   background: white;
   border-radius: 50%;
