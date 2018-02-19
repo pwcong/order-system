@@ -7,7 +7,9 @@
 </template>
 
 <script>
+
 import wepy from 'wepy';
+
 export default class Recipe extends wepy.page {
   config = {
     navigationBarTitleText: '菜单详情'

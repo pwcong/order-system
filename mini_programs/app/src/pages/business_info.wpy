@@ -7,10 +7,12 @@
 </template>
 
 <script>
+
 import wepy from 'wepy';
+
 export default class BusinessInfo extends wepy.page {
   config = {
-    navigationBarTitleText: '菜单详情'
+    navigationBarTitleText: '店家信息'
   };
   components = {};
 
