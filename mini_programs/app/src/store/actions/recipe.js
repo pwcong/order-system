@@ -1,7 +1,7 @@
 import { createAction } from 'redux-actions';
-import { ACTION_GET_RECIPES } from '../types/recipe';
+import { ACTION_GET_RECIPES, ACTION_PLUS_RECIPE, ACTION_MINUS_RECIPE } from '../types/recipe';
 
-import { getAllRecipes, getRecipesByCategoryId } from '@/network/api/recipe';
+import { getAllRecipes, getRecipesWithCategoryId } from '@/network/api/recipe';
 
 export const asyncGetAllRecipes = createAction(ACTION_GET_RECIPES, id => {
   return new Promise((resolve, reject) => {
@@ -15,9 +15,9 @@ export const asyncGetAllRecipes = createAction(ACTION_GET_RECIPES, id => {
   });
 });
 
-export const asyncGetRecipesByCategoryId = createAction(ACTION_GET_RECIPES, params => {
+export const asyncGetRecipesWithCategoryId = createAction(ACTION_GET_RECIPES, params => {
   return new Promise((resolve, reject) => {
-    getRecipesByCategoryId(params.userId, params.categoryId)
+    getRecipesWithCategoryId(params.userId, params.categoryId)
       .then(res => {
         resolve(res.payload.data);
       })
@@ -26,3 +26,6 @@ export const asyncGetRecipesByCategoryId = createAction(ACTION_GET_RECIPES, para
       });
   });
 });
+
+export const asyncPlusRecipeInCart = createAction(ACTION_PLUS_RECIPE, recipe => recipe);
+export const asyncMinusRecipeInCart = createAction(ACTION_MINUS_RECIPE, recipe => recipe);

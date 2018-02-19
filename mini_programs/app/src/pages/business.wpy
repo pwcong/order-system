@@ -2,7 +2,7 @@
 .banner {
   position: relative;
   height: 320rpx;
-  
+
   .banner-item {
     height: 320rpx;
     width: 100%;
@@ -11,7 +11,7 @@
   #avatar {
     position: absolute;
     left: 24rpx;
-    bottom: -56rpx;
+    bottom: -42rpx;
     width: 156rpx;
     height: 156rpx;
     border-radius: 24rpx;
@@ -30,7 +30,28 @@
     top: 0;
     width: 30%;
     height: calc(100%);
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    box-sizing: border-box;
+    border-right: 1px solid #ccc;
+
+    padding-top: 72rpx;
+
+    .recipe-categories-item {
+      padding: 24rpx;
+      text-align: center;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+
+      transition: background-color 0.3s, color 0.3s;
+
+      &.active {
+        background-color: #47b248;
+        color: white;
+      }
+    }
   }
 
   .recipes {
@@ -38,7 +59,71 @@
     left: 30%;
     width: 70%;
     height: calc(100%);
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    box-sizing: border-box;
+    padding-bottom: 224rpx;
+
+    .recipes-item {
+      padding: 16rpx;
+
+      display: flex;
+
+      flex-flow: row nowrap;
+
+      .recipes-item-img {
+        width: 112rpx;
+        height: 112rpx;
+
+        min-width: 112rpx;
+
+        margin-right: 16rpx;
+
+        image {
+          max-width: 100%;
+          max-height: 100%;
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      .recipes-item-main {
+        flex: 1;
+
+        .recipes-item-title {
+          font-size: 42rpx;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          max-width: 328rpx;
+        }
+
+        .recipes-item-action {
+          margin-top: 16rpx;
+          display: flex;
+          flex-flow: row nowrap;
+          align-items: center;
+          justify-content: space-between;
+
+          .recipes-item-price {
+            color: #47b248;
+          }
+
+          .recipes-item-btn {
+            display: inline-block;
+            background-color: #47b248;
+            width: 48rpx;
+            height: 48rpx;
+            text-align: center;
+            line-height: 48rpx;
+            border-radius: 50%;
+            margin: 0 16rpx;
+            color: white;
+          }
+        }
+      }
+    }
   }
 }
 
@@ -84,7 +169,7 @@
 
       <swiper indicator-dots="{{bannerSetting.indicatorDots}}"
         autoplay="{{bannerSetting.autoplay}}" interval="{{bannerSetting.interval}}" duration="{{bannerSetting.duration}}">
-        <block wx:for="{{businessBanners}}">
+        <block wx:for="{{businessBanners}}" wx:key="banner-item-{{idx}}">
           <swiper-item>
             <image src="{{item}}" class="banner-item" mode="aspectFill"/>
           </swiper-item>
@@ -96,14 +181,55 @@
     </view>
     <view class="main">
 
-      <view class="recipe-categories"></view>
-      <view class="recipes"></view>
+      <view class="recipe-categories">
+
+        <view 
+          class="recipe-categories-item {{item.checked ? 'active': ''}}"
+          @tap="handleRCClick({{item}})"
+          wx:for="{{recipeCategories}}"
+          wx:key="recipe-categories-item-{{idx}}">
+
+          <text>{{item.name}}</text>
+
+        </view>
+
+      </view>
+      <view class="recipes">
+
+        <view class="recipes-item"
+          wx:for="{{recipes}}"
+          wx:key="recipes-item-{{idx}}">
+
+          <view class="recipes-item-img">
+            <image src="{{item.info.avatar}}"/>
+          </view>
+          <view class="recipes-item-main">
+            <view class="recipes-item-title">
+              {{item.info.name}}
+            </view>
+            <view class="recipes-item-action">
+              <view class="recipes-item-price">
+                ￥{{item.info.price}}
+              </view>
+              <view>
+                <view class="recipes-item-btn" wx:if="{{item.counts > 0}}" @tap="minusRecipeInCart({{item.info}})">-</view>
+                <text wx:if="{{item.counts > 0}}">{{item.counts}}</text>
+                <view class="recipes-item-btn" @tap="plusRecipeInCart({{item.info}})">+</view>
+              </view>
+            </view>
+
+          </view>
+
+
+        </view>
+
+      </view>
 
     </view>
 
-    <view id id="cartBtn" wx:if="{{showCartBtn}}" @tap="handleNavigate2Cart">
+    <view id id="cartBtn" wx:if="{{countsOfRecipesInCart > 0}}" @tap="handleNavigate2Cart">
       <image src="../assets/icons/cart.png" mode="aspectFill"></image>
-      <view id="cartBtnTips" wx:if="{{cartBtnTips}}">{{cartBtnTips}}</view>
+      <view id="cartBtnTips">{{countsOfRecipesInCart}}</view>
     </view>
 
   </view>
@@ -113,30 +239,71 @@
 import wepy from 'wepy';
 import { connect } from 'wepy-redux';
 
-import { BASE_API } from '@/const/config';
-@connect({
-  businessId(state) {
-    return state.user.business.id;
-  },
-  businessAvatar(state) {
-    const avatar = state.user.business.userInfo.avatar;
-    return avatar ? BASE_API + avatar : '../assets/imgs/avatar.png';
-  },
-  businessBanners(state) {
-    const t = state.user.business.userInfo.banner;
-    const res = t
-      ? t
-          .split(',')
-          .filter(b => !!b)
-          .map(b => BASE_API + b)
-      : ['../assets/imgs/banner.png'];
+import { getStore } from 'wepy-redux';
 
-    return res;
+import {
+  asyncGetRecipeCategories,
+  asyncSetRecipeCategoryChecked,
+  asyncGetAllRecipes,
+  asyncGetRecipesWithCategoryId,
+  asyncPlusRecipeInCart,
+  asyncMinusRecipeInCart
+} from '@/store/actions';
+
+import { BASE_API } from '@/const/config';
+@connect(
+  {
+    businessId(state) {
+      return state.user.business.id;
+    },
+    businessName(state) {
+      return state.user.business.userInfo.nickname;
+    },
+    businessAvatar(state) {
+      const avatar = state.user.business.userInfo.avatar;
+      return avatar ? BASE_API + avatar : '../assets/imgs/avatar.png';
+    },
+    businessBanners(state) {
+      const t = state.user.business.userInfo.banner;
+      const res = t
+        ? t
+            .split(',')
+            .filter(b => !!b)
+            .map(b => BASE_API + b)
+        : ['../assets/imgs/banner.png'];
+
+      return res;
+    },
+    recipeCategories(state) {
+      return state.recipeCategory.recipeCategories;
+    },
+    recipes(state) {
+      return state.recipe.recipes.map(r => ({
+        info: {
+          ...r,
+          avatar: BASE_API + r.avatar
+        },
+        counts: state.recipe.recipesInCart['' + r.id] ? state.recipe.recipesInCart['' + r.id].counts : 0
+      }));
+    },
+    countsOfRecipesInCart(state) {
+      const recipesInCart = state.recipe.recipesInCart;
+      let counts = 0;
+      for (let key in recipesInCart) {
+        counts += recipesInCart[key].counts;
+      }
+
+      return counts;
+    }
+  },
+  {
+    plusRecipeInCart: asyncPlusRecipeInCart,
+    minusRecipeInCart: asyncMinusRecipeInCart
   }
-})
+)
 export default class Business extends wepy.page {
   config = {
-    navigationBarTitleText: '商家'
+    navigationBarTitleText: '店家'
   };
   data = {
     bannerSetting: {
@@ -160,11 +327,80 @@ export default class Business extends wepy.page {
       wepy.navigateTo({
         url: '/pages/cart'
       });
+    },
+
+    handleRCClick(rc) {
+      const ctx = this;
+
+      getStore().dispatch(asyncSetRecipeCategoryChecked(rc.value));
+      if (rc.all) {
+        ctx.loadRecipes();
+      } else {
+        ctx.loadRecipes(rc.value);
+      }
     }
   };
 
   events = {};
 
-  onLoad() {}
+  loadRecipeCategories() {
+    const ctx = this;
+
+    getStore()
+      .dispatch(asyncGetRecipeCategories(ctx.businessId))
+      .then(res => {
+        if (res.error) {
+          wepy.showModal({
+            title: '提示',
+            showCancel: false,
+            content: res.payload.message
+          });
+        } else {
+        }
+      });
+  }
+
+  loadRecipes(categoryId) {
+    const ctx = this;
+    if (categoryId) {
+      getStore()
+        .dispatch(
+          asyncGetRecipesWithCategoryId({
+            userId: ctx.businessId,
+            categoryId
+          })
+        )
+        .then(res => {
+          if (res.error) {
+            wepy.showModal({
+              title: '提示',
+              showCancel: false,
+              content: res.payload.message
+            });
+          } else {
+          }
+        });
+    } else {
+      getStore()
+        .dispatch(asyncGetAllRecipes(ctx.businessId))
+        .then(res => {
+          if (res.error) {
+            wepy.showModal({
+              title: '提示',
+              showCancel: false,
+              content: res.payload.message
+            });
+          } else {
+          }
+        });
+    }
+  }
+
+  onLoad() {
+    this.loadRecipeCategories();
+    this.loadRecipes();
+
+    wepy.setNavigationBarTitle({ title: this.businessName });
+  }
 }
 </script>

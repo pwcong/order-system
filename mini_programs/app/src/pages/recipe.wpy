@@ -8,9 +8,9 @@
 
 <script>
 import wepy from 'wepy';
-export default class Order extends wepy.page {
+export default class Recipe extends wepy.page {
   config = {
-    navigationBarTitleText: '我的订单'
+    navigationBarTitleText: '菜单详情'
   };
   components = {};
 

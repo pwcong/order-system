@@ -4,6 +4,11 @@ import { ACTION_SEARCH_BUSINESS } from '../types/user';
 export default handleActions(
   {
     [ACTION_SEARCH_BUSINESS](state, action) {
+      if (action.error) {
+        return {
+          ...state
+        };
+      }
       return {
         ...state,
         business: action.payload
@@ -11,20 +16,6 @@ export default handleActions(
     }
   },
   {
-    business: {
-      id: 1,
-      type: 2,
-      userInfo: {
-        id: 1,
-        nickname: 'business',
-        birthday: null,
-        sex: 0,
-        address: '',
-        contact: '',
-        intro: '',
-        avatar: '',
-        banner: ''
-      }
-    }
+    business: {}
   }
 );

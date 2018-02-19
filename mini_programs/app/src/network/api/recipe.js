@@ -6,6 +6,6 @@ export function getAllRecipes(userId) {
   return request(`${BASE_API}/recipes/${userId}`, 'GET');
 }
 
-export function getRecipesByCategoryId(userId, categoryId) {
+export function getRecipesWithCategoryId(userId, categoryId) {
   return request(`${BASE_API}/recipes/${userId}/${categoryId}`, 'GET');
 }
