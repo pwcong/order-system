@@ -11,7 +11,7 @@ export default handleActions(
       }
       return {
         ...state,
-        recipes: action.payload
+        recipes: action.payload.filter(r => r.status === 0 && r.recipe_category.status === 0)
       };
     },
     [ACTION_PLUS_RECIPE](state, action) {

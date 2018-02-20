@@ -33,7 +33,7 @@ export function login(username, password) {
 
 export function check(token) {
   return request(
-    `${BASE_API}/user/login`,
+    `${BASE_API}/user/check`,
     'POST',
     {
       'X-Token': token

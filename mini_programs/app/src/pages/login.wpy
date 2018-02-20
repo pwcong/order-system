@@ -1,13 +1,124 @@
 <style lang="scss">
+.bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100%);
+}
 
+.main {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100%);
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+  padding: 0 64rpx;
+
+  .main-form {
+    margin-top: 64rpx;
+
+    background-color: white;
+    box-sizing: border-box;
+    width: 100%;
+
+    padding: 32rpx;
+
+    border-radius: 16rpx;
+
+    .main-form-item {
+      position: relative;
+
+      .main-form-item-icon {
+        position: absolute;
+        left: 16rpx;
+        top: 24rpx;
+        width: 48rpx;
+        height: 48rpx;
+      }
+    }
+
+    input {
+      height: 96rpx;
+      line-height: 96rpx;
+
+      border-bottom: 1px solid #ccc;
+
+      padding-left: 96rpx;
+    }
+
+    button {
+      margin-top: 24rpx;
+      font-size: 36rpx;
+    }
+  }
+}
 </style>
 <template>
   <view class="container">
+
+    <image class="bg" src="{{bgImg}}" mode="scaleToFill"></image>
+    <view class="main">
+
+      <view>
+        <image src="{{logoImg}}" style="width: 462rpx; height: 172rpx;"></image>
+      </view>
+      <view wx:if="{{toLogin}}" class="main-form">
+        <form @submit="submitLoginForm">
+
+          <view class="main-form-item">
+            <image src="{{usernameIcon}}" class="main-form-item-icon"/>
+            <input name="username" placeholder="请输入账号" />
+          </view>
+          <view class="main-form-item">
+            <image src="{{passwordIcon}}" class="main-form-item-icon"/>
+            <input name="password" placeholder="请输入密码" type="password"/>
+          </view>
+          <view class="main-form-item">
+            <button formType="submit" type="primary">登录</button>
+            <button type="info" @tap="handle2Register">没有账号? 注册一个吧~</button>
+          </view>
+        </form>
+      </view>
+
+      <view wx:if="{{!toLogin}}" class="main-form">
+        <form @submit="submitRegisterForm">
+
+          <view class="main-form-item">
+            <image src="{{usernameIcon}}" class="main-form-item-icon"/>
+            <input name="username" placeholder="请输入账号" />
+          </view>
+          <view class="main-form-item">
+            <image src="{{passwordIcon}}" class="main-form-item-icon"/>
+            <input name="password" placeholder="请输入密码" type="password"/>
+          </view>
+          <view class="main-form-item">
+            <input name="password2" placeholder="请再次输入密码" type="password"/>
+          </view>
+          <view class="main-form-item">
+            <button formType="submit" type="primary">注册</button>
+            <button type="info" @tap="handle2Login">返回</button>
+          </view>
+        </form>
+      </view>
+
+    </view>
+
   </view>
 </template>
 
 <script>
 import wepy from 'wepy';
+
+import { getStore } from 'wepy-redux';
+
+import { asyncLogin, asyncRegister } from '@/store/actions';
 
 export default class Login extends wepy.page {
   config = {
@@ -17,11 +128,96 @@ export default class Login extends wepy.page {
 
   mixins = [];
 
-  data = {};
+  data = {
+    toLogin: true,
+    bgImg: '/assets/imgs/bg.jpg',
+    logoImg: '/assets/imgs/logo.png',
+    usernameIcon: '/assets/icons/username.png',
+    passwordIcon: '/assets/icons/password.png'
+  };
 
   computed = {};
 
-  methods = {};
+  methods = {
+    submitLoginForm(e) {
+      const { username, password } = e.detail.value;
+
+      if (!username || !password) {
+        wepy.showToast({
+          title: '用户名和密码不能为空',
+          icon: 'none'
+        });
+        return;
+      }
+
+      wepy.showLoading({
+        title: '登陆中'
+      });
+
+      getStore()
+        .dispatch(asyncLogin({ username, password }))
+        .then(res => {
+          wepy.hideLoading();
+
+          if (res.error) {
+            wepy.showModal({
+              showCancel: false,
+              content: res.payload.message,
+              title: '登陆失败'
+            });
+          } else {
+            wepy.navigateBack();
+          }
+        });
+    },
+    submitRegisterForm(e) {
+      const { username, password, password2 } = e.detail.value;
+
+      if (!username || !password || !password2) {
+        wepy.showToast({
+          title: '请填写所有表单内容',
+          icon: 'none'
+        });
+        return;
+      }
+
+      if (password !== password2) {
+        wepy.showToast({
+          title: '密码不一致',
+          icon: 'none'
+        });
+        return;
+      }
+
+      wepy.showLoading({
+        title: '注册中'
+      });
+
+      getStore()
+        .dispatch(asyncRegister({ username, password }))
+        .then(res => {
+          wepy.hideLoading();
+
+          if (res.error) {
+            wepy.showModal({
+              showCancel: false,
+              content: res.payload.message,
+              title: '注册失败'
+            });
+          } else {
+            wepy.navigateBack();
+          }
+        });
+    },
+    handle2Register(e) {
+      this.toLogin = false;
+      wepy.setNavigationBarTitle({ title: '注册' });
+    },
+    handle2Login(e) {
+      this.toLogin = true;
+      wepy.setNavigationBarTitle({ title: '登录' });
+    }
+  };
 
   events = {};
 

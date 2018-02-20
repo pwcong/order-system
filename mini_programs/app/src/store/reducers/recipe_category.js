@@ -15,11 +15,11 @@ export default handleActions(
         recipeCategories: [
           { name: '全部', value: -1, all: true, checked: true },
           ...action.payload.map(rc => ({
-            name: rc.name,
+            ...rc,
             value: rc.id,
             all: false,
             checked: false
-          }))
+          })).filter(rc => rc.status === 0)
         ]
       };
     },
