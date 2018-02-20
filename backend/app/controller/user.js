@@ -54,9 +54,10 @@ class UserController extends Controller {
         code: ctx.code.STATUS_OK,
         payload: {
           token,
-          id,
-          type,
-          timestamp
+          id: res.user.id,
+          type: res.user.type,
+          timestamp,
+          userInfo: res.user.user_info
         }
       };
     } catch (err) {
@@ -108,8 +109,8 @@ class UserController extends Controller {
         code: ctx.code.STATUS_OK,
         payload: {
           token,
-          id,
-          type,
+          id: res.user.id,
+          type: res.user.type,
           timestamp,
           userInfo: res.user.user_info
         }

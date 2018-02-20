@@ -60,7 +60,7 @@ curl -X POST \
 方法：`POST`
 请求参数：
 
-* upe: 用户名，手机，邮箱
+* username: 用户名
 * password: 密码
 
 请求示例：
@@ -70,7 +70,7 @@ curl -X POST \
   $API_BASE/user/login \
   -H 'Content-Type: application/json' \
   -d '{
-    "upe": "xxx",
+    "username": "xxx",
     "password": "yyy"
   }'
 ```

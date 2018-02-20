@@ -1,13 +1,64 @@
 <style lang="scss">
+.tips-login-needed {
+  position: absolute;
+  width: 100%;
+  height: calc(100%);
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
 
+  #loginBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-flow: row nowrap;
+    width: 280rpx;
+    height: 280rpx;
+    border: 1px dashed #ccc;
+
+    font-size: 180rpx;
+
+    position: relative;
+    top: -72rpx;
+  }
+}
 </style>
 <template>
   <view class="container">
+
+    <view wx:if="{{!userCheck}}" class="tips-login-needed">
+
+      <view>
+        <image id="loginBtn" src="{{loginImg}}" @tap="handle2Login"></image>
+      </view>
+      <view>
+        <icon style="position: relative; top: 8rpx; margin-right: 16rpx;" type="info" size="16"/><text>您还未登录</text>
+      </view>
+
+    </view>
+
   </view>
 </template>
 
 <script>
 import wepy from 'wepy';
+
+import { connect } from 'wepy-redux';
+
+import { getStore } from 'wepy-redux';
+
+@connect(
+  {
+    userId(state) {
+      return state.user.id;
+    },
+    userCheck(state) {
+      return state.user.check;
+    }
+  },
+  {}
+)
 export default class Order extends wepy.page {
   config = {
     navigationBarTitleText: '我的订单'
@@ -16,11 +67,19 @@ export default class Order extends wepy.page {
 
   mixins = [];
 
-  data = {};
+  data = {
+    loginImg: '/assets/imgs/login.png'
+  };
 
   computed = {};
 
-  methods = {};
+  methods = {
+    handle2Login() {
+      wepy.navigateTo({
+        url: '/pages/login'
+      });
+    }
+  };
 
   events = {};
 

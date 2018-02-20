@@ -13,22 +13,25 @@
 import wepy from 'wepy';
 import 'wepy-async-function';
 
-import { setStore } from 'wepy-redux';
+import { setStore, getStore } from 'wepy-redux';
 import configStore from './store';
 
 const store = configStore();
 setStore(store);
 
+import { asyncCheck } from '@/store/actions';
+
 export default class extends wepy.app {
   config = {
     pages: [
       'pages/index',
-      'pages/home',
       'pages/order',
+      'pages/home',
       'pages/business',
       'pages/business_info',
       'pages/cart',
-      'pages/recipe'
+      'pages/recipe',
+      'pages/login'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -71,7 +74,19 @@ export default class extends wepy.app {
     this.use('requestfix');
   }
 
-  onLaunch() {}
+  checkToken() {
+    const token = wepy.getStorageSync('token');
+
+    if (!token) {
+      return;
+    }
+
+    getStore().dispatch(asyncCheck(token));
+  }
+
+  onLaunch() {
+    this.checkToken();
+  }
 }
 </script>
  

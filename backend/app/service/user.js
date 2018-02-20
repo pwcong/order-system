@@ -21,12 +21,14 @@ class UserService extends Service {
 
         const salt = uuidv1();
 
-        _user = await app.model.User.create({
+        await app.model.User.create({
           username,
           password: uuidv5(password, salt),
           password_salt: salt,
           type
         });
+
+        _user = await app.model.User.findByUsername(username);
 
         if (!_user) {
           throw new Error('注册失败');

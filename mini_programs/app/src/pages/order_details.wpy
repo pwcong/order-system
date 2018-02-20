@@ -1,0 +1,30 @@
+<style lang="scss">
+
+</style>
+<template>
+  <view class="container">
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+
+export default class OrderDetails extends wepy.page {
+  config = {
+    navigationBarTitleText: '菜单详情'
+  };
+  components = {};
+
+  mixins = [];
+
+  data = {};
+
+  computed = {};
+
+  methods = {};
+
+  events = {};
+
+  onLoad() {}
+}
+</script>

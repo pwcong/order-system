@@ -20,7 +20,7 @@
     font-size: 180rpx;
 
     position: relative;
-    top: -128rpx;
+    top: -72rpx;
   }
 }
 </style>
@@ -43,6 +43,7 @@
 </template>
 
 <script>
+
 import wepy from 'wepy';
 
 import { getStore } from 'wepy-redux';
