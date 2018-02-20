@@ -4,10 +4,12 @@ import {
   ACTION_LOGIN,
   ACTION_REGISTER,
   ACTION_CHECK,
-  ACTION_MODIFYPWD
+  ACTION_MODIFYPWD,
+  ACTION_MODIFYINFO,
+  ACTION_LOGOUT
 } from '../types/user';
 
-import { searchBusiness, register, login, check, modifyPWD } from '@/network/api/user';
+import { searchBusiness, register, login, logout, check, modifyPWD, modifyInfo } from '@/network/api/user';
 
 export const asyncSearchBusiness = createAction(ACTION_SEARCH_BUSINESS, id => {
   return new Promise((resolve, reject) => {
@@ -58,4 +60,20 @@ export const asyncCheck = createAction(ACTION_CHECK, token => {
 
 export const asyncModifyPWD = createAction(ACTION_MODIFYPWD, params => {
   return modifyPWD(params.token, params.password);
+});
+
+export const asyncModifyInfo = createAction(ACTION_MODIFYINFO, params => {
+  return new Promise((resolve, reject) => {
+    modifyInfo(params.token, params.userInfo)
+      .then(res => {
+        resolve(res.payload);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
+});
+
+export const asyncLogout = createAction(ACTION_LOGOUT, token => {
+  return logout(token);
 });

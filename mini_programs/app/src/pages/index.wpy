@@ -36,7 +36,7 @@
       </view>
 
       <view>
-        <icon style="position: relative; top: 8rpx; margin-right: 16rpx;" type="search" size="16"/><text>请扫描二维码进入点餐</text>
+        <icon style="position: relative; top: 6rpx; margin-right: 16rpx;" type="search" size="16"/><text>请扫描二维码进入点餐</text>
       </view>
 
     </view>

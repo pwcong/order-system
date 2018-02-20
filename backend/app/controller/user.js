@@ -150,6 +150,8 @@ class UserController extends Controller {
     const { ctx, service } = this;
 
     try {
+      const token = ctx.get('X-Token');
+
       const { id, type, timestamp } = ctx.user;
 
       const res = await service.userInfo.queryById(id);
@@ -161,6 +163,7 @@ class UserController extends Controller {
         payload: {
           id,
           type,
+          token,
           timestamp,
           userInfo: res.userInfo
         }

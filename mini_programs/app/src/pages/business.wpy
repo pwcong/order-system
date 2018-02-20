@@ -183,7 +183,7 @@
     </view>
     <view class="main">
 
-      <view class="recipe-categories">
+      <scroll-view class="recipe-categories">
 
         <view 
           class="recipe-categories-item {{item.checked ? 'active': ''}}"
@@ -195,8 +195,8 @@
 
         </view>
 
-      </view>
-      <view class="recipes">
+      </scroll-view>
+      <scroll-view class="recipes">
 
         <view class="recipes-item"
           wx:for="{{recipes}}"
@@ -225,7 +225,7 @@
 
         </view>
 
-      </view>
+      </scroll-view>
 
     </view>
 
@@ -253,6 +253,7 @@ import {
 } from '@/store/actions';
 
 import { BASE_API } from '@/const/config';
+
 @connect(
   {
     businessId(state) {

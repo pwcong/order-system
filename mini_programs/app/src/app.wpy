@@ -5,6 +5,8 @@
   height: 100%;
   box-sizing: border-box;
   overflow: hidden;
+  margin: 0;
+  padding: 0;
 }
 </style>
 
@@ -25,15 +27,15 @@ export default class extends wepy.app {
   config = {
     pages: [
       'pages/index',
-      'pages/login',
       'pages/order',
-      'pages/order_details',
       'pages/home',
+      'pages/order_details',
+      'pages/setting',
       'pages/business',
       'pages/business_info',
       'pages/cart',
       'pages/recipe',
-      'pages/setting'
+      'pages/login',
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -42,6 +44,7 @@ export default class extends wepy.app {
       navigationBarTextStyle: 'white'
     },
 
+    
     tabBar: {
       backgroundColor: '#fff',
       color: '#333',
@@ -67,6 +70,7 @@ export default class extends wepy.app {
         }
       ]
     }
+    
   };
 
   globalData = {};

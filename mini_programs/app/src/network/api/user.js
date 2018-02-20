@@ -54,3 +54,20 @@ export function modifyPWD(token, password) {
     }
   );
 }
+
+export function modifyInfo(token, userInfo) {
+  return request(
+    `${BASE_API}/user/info`,
+    'POST',
+    {
+      'X-Token': token
+    },
+    userInfo
+  );
+}
+
+export function logout(token) {
+  return request(`${BASE_API}/user/logout `, 'POST', {
+    'X-Token': token
+  });
+}

@@ -7,9 +7,18 @@
         <image id="loginBtn" src="{{loginImg}}" bindtap="handle2Login"/>
       </view>
       <view>
-        <icon style="position: relative; top: 8rpx; margin-right: 16rpx;" type="info" size="16"/><text>您还未登录</text>
+        <icon style="position: relative; top: 6rpx; margin-right: 16rpx;" type="info" size="16"/><text>您还未登录</text>
       </view>
 
     </view>
+
+    
+    <view class="toolbar"  wx:if="{{userCheck}}">
+
+    </view>
+
+    <scroll-view class="main" wx:if="{{userCheck}}">
+
+    </scroll-view>
 
   </view>

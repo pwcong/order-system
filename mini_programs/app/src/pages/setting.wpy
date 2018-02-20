@@ -1,30 +1,348 @@
 <style lang="scss">
 .container {
+  background-color: #e5e5e5;
+}
+
+.main {
+  width: 100%;
+  height: calc(100%);
+  position: relative;
+}
+
+.main-form-item {
+  background-color: white;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx;
+  border-bottom: 1px solid #ccc;
+
+  .main-form-item-title {
+    min-width: 128rpx;
+    white-space: nowrap;
+    color: #666;
+  }
+
+  .main-form-item-field {
+    flex: 1;
+    text-align: right;
+  }
+
+  image {
+    width: 96rpx;
+    height: 96rpx;
+  }
+
+  label {
+    margin-left: 32rpx;
+  }
+
+  button {
+    font-size: 36rpx;
+  }
 }
 </style>
+
 <template>
+
   <view class="container">
+
+    <scroll-view class="main">
+      <form class="main-form" @submit="formSubmit">
+        <view class="main-form-item">
+          <view class="main-form-item-title">头像</view>
+          <view class="main-form-item-field">
+            <image src="{{userAvatarUrl}}" mode="aspectFill" @tap="handleUploadAvatar"></image>
+          </view>
+        </view>
+        <view class="main-form-item" style="margin-top: 32rpx;">
+          <view class="main-form-item-title">昵称</view>
+          <input class="main-form-item-field" placeholder="请输入昵称" name="nickname" value="{{userNickname}}"/>
+        </view>
+        <view class="main-form-item">
+          <view class="main-form-item-title">性别</view>
+          <radio-group name="sex" class="main-form-item-field">
+            <label><radio value="1" checked="{{userSex === 1}}"/>男</label>
+            <label><radio value="2" checked="{{userSex === 2}}"/>女</label>
+          </radio-group>
+        </view>
+        <view class="main-form-item">
+          <view class="main-form-item-title">简介</view>
+          <input class="main-form-item-field" placeholder="请输入简介" name="intro" value="{{userIntro}}"/>
+        </view>
+
+        <view class="main-form-item" style="padding-top: 72rpx; padding-bottom: 32rpx;">
+          <button class="main-form-item-field" style="text-align: center;" formType="submit" type="primary">提交</button>
+        </view>
+
+        <view class="main-form-item" style="margin-top: 64rpx; border: none; padding-bottom: 0;">
+          <button class="main-form-item-field" style="text-align: center;" @tap="handle2ModifyPWD">修改密码</button>
+        </view>
+        <view class="main-form-item">
+          <button class="main-form-item-field" style="text-align: center;" type="warn" @tap="handle2Logout">注销</button>
+        </view>
+      </form>
+
+    </scroll-view>
+
+    <Modal :show.sync="modifyPWDModalVisiable" style="padding: 128rpx 64rpx 0 64rpx;">
+
+      <form class="main-form" @submit="modifyPWDFormSubmit">
+        <view class="main-form-item">
+          <input class="main-form-item-field" style="text-align: left;" type="password" name="password" placeholder="请输入新密码" />
+        </view>
+        <view class="main-form-item">
+          <input class="main-form-item-field" style="text-align: left;" type="password" name="password2" placeholder="请再次输入新密码" />
+        </view>
+
+        <view class="main-form-item">
+          <button class="main-form-item-field" style="text-align: center; margin-right: 32rpx;" @tap="handleCancelModifyPWD">取消</button>
+          <button class="main-form-item-field" style="text-align: center;" type="primary" formType="submit">确定</button>
+        </view>
+
+
+      </form>
+
+    </Modal>
+
   </view>
 </template>
 
 <script>
 import wepy from 'wepy';
+
+import { connect } from 'wepy-redux';
+
+import { getStore } from 'wepy-redux';
+
+import { asyncModifyInfo, asyncLogout, asyncModifyPWD } from '@/store/actions';
+
+import { BASE_API } from '@/const/config';
+
+import Modal from '@/components/modal';
+
+@connect(
+  {
+    userId(state) {
+      return state.user.id;
+    },
+    userCheck(state) {
+      return state.user.check;
+    },
+    userToken(state) {
+      return state.user.token;
+    },
+    userNickname(state) {
+      return state.user.userInfo.nickname;
+    },
+    userSex(state) {
+      return state.user.userInfo.sex;
+    },
+    userAvatar(state) {
+      return state.user.userInfo.avatar;
+    },
+    userAvatarUrl(state) {
+      const { avatar } = state.user.userInfo;
+      return avatar ? BASE_API + avatar : '/assets/imgs/avatar.png';
+    },
+    userIntro(state) {
+      return state.user.userInfo.intro;
+    }
+  },
+  {}
+)
 export default class Setting extends wepy.page {
   config = {
     navigationBarTitleText: '设置'
   };
-  components = {};
+  components = {
+    Modal
+  };
 
   mixins = [];
 
-  data = {};
+  data = {
+    modifyPWDModalVisiable: false,
+    password: '',
+    password2: ''
+  };
 
   computed = {};
 
-  methods = {};
+  methods = {
+    handle2ModifyPWD() {
+      this.modifyPWDModalVisiable = true;
+    },
+    handleCancelModifyPWD() {
+      this.modifyPWDModalVisiable = false;
+    },
+    modifyPWDFormSubmit(e) {
+      const ctx = this;
+      const { password, password2 } = e.detail.value;
+
+      if (!password || !password2) {
+        wepy.showToast({
+          title: '请填写所有表单内容',
+          icon: 'none'
+        });
+        return;
+      }
+
+      if (password !== password2) {
+        wepy.showToast({
+          title: '两次密码输入不一致',
+          icon: 'none'
+        });
+        return;
+      }
+
+      wepy.showLoading({
+        title: '修改中'
+      });
+      getStore()
+        .dispatch(
+          asyncModifyPWD({
+            token: ctx.userToken,
+            password
+          })
+        )
+        .then(res => {
+          wepy.hideLoading();
+          if (res.error) {
+            wepy.showModal({
+              showCancel: false,
+              title: '提示',
+              content: res.payload.message
+            });
+            return;
+          }
+
+          wepy.showModal({
+            showCancel: false,
+            title: '提示',
+            content: '密码修改成功，请重新登陆',
+            success() {
+              getStore()
+                .dispatch(asyncLogout())
+                .then(() => {
+                  wepy.navigateBack();
+                });
+            }
+          });
+        });
+
+      ctx.modifyPWDModalVisiable = false;
+    },
+    formSubmit(e) {
+      const ctx = this;
+
+      if (!e.detail.value.nickname) {
+        wepy.showToast({
+          title: '昵称不能为空',
+          icon: 'none'
+        });
+        return;
+      }
+
+      if (e.detail.value.sex) {
+        e.detail.value.sex = parseInt(e.detail.value.sex) || 0;
+      }
+
+      wepy.showLoading({
+        title: '提交中'
+      });
+
+      getStore()
+        .dispatch(asyncModifyInfo({ token: ctx.userToken, userInfo: e.detail.value }))
+        .then(resss => {
+          wepy.hideLoading();
+          if (resss.error) {
+            wepy.showToast({
+              title: '修改失败',
+              icon: 'none'
+            });
+            return;
+          }
+          wepy.showToast({
+            title: '修改成功',
+            icon: 'success'
+          });
+        });
+    },
+    handleUploadAvatar() {
+      const ctx = this;
+      wepy.chooseImage({
+        count: 1,
+        success(res) {
+          wepy.uploadFile({
+            url: BASE_API + '/attachment/upload',
+            filePath: res.tempFilePaths[0],
+            name: 'avatar',
+            header: {
+              'X-Token': ctx.userToken
+            },
+            success(ress) {
+              if (ress.statusCode !== 200) {
+                wepy.showModal({
+                  title: '提示',
+                  showCancel: false,
+                  content: ress.errMsg
+                });
+
+                return;
+              }
+
+              const data = JSON.parse(ress.data);
+
+              if (data.code !== 20000) {
+                wepy.showModal({
+                  title: '提示',
+                  showCancel: false,
+                  content: data.message
+                });
+
+                return;
+              }
+              getStore()
+                .dispatch(asyncModifyInfo({ token: ctx.userToken, userInfo: { avatar: data.payload.url } }))
+                .then(resss => {
+                  if (resss.error) {
+                    wepy.showToast({
+                      title: '头像修改失败',
+                      icon: 'none'
+                    });
+                    return;
+                  }
+                  wepy.showToast({
+                    title: '头像修改成功',
+                    icon: 'success'
+                  });
+                });
+            },
+            fail(err) {
+              console.log(err);
+            }
+          });
+        }
+      });
+    },
+    handle2Logout() {
+      const ctx = this;
+      getStore()
+        .dispatch(asyncLogout(ctx.userToken))
+        .then(() => {
+          wepy.navigateBack();
+        });
+    }
+  };
 
   events = {};
 
-  onLoad() {}
+  onLoad() {
+    if (!this.userCheck) {
+      wepy.navigateBack();
+    }
+  }
 }
 </script>

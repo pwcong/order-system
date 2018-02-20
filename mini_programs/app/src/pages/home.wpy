@@ -1,14 +1,144 @@
 <style lang="scss">
 .container {
+  background-color: #e5e5e5;
+}
+
+.info {
+  background-color: white;
+
+  height: 224rpx;
+  width: 100%;
+
+  box-sizing: border-box;
+  padding: 0 32rpx;
+
+  display: flex;
+  align-items: center;
+  flex-flow: row nowrap;
+  box-shadow: 0 0 16rpx #ccc;
+
+  image {
+    width: 156rpx;
+    height: 156rpx;
+    border-radius: 50%;
+  }
+
+  .info-nickname {
+    font-size: 48rpx;
+    margin-bottom: 16rpx;
+
+    text {
+      overflow: hidden;
+      max-width: 380rpx;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    image {
+      width: 48rpx;
+      height: 48rpx;
+      position: relative;
+      top: 8rpx;
+      margin-left: 16rpx;
+    }
+  }
+
+  .info-intro {
+    color: #888;
+
+    text {
+      overflow: hidden;
+      max-width: 380rpx;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+}
+
+.main {
+  margin-top: 32rpx;
+  height: calc(100% - 256rpx);
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
+
+  .main-item {
+    background-color: white;
+    padding: 32rpx 64rpx;
+
+    transition: background-color 0.3s;
+
+    &:active {
+      background-color: #f5f5f5;
+    }
+  }
 }
 </style>
 <template>
   <view class="container">
+
+    <view class="info" @tap="handle2Login">
+      <view>
+        <image src="{{userAvatar}}" mode="aspectFill"></image>
+      </view>
+      <view style="flex: 1; margin-left: 16rpx;">
+        <view class="info-nickname">
+          <text wx:if="{{userCheck}}">{{userNickname}}</text>
+          <text wx:if="{{!userCheck}}">您还未登录</text>
+          <image src="/assets/icons/male.png" mode="scaleToFill" wx:if="{{userCheck && userSex === 1}}"/>
+          <image src="/assets/icons/female.png" mode="scaleToFill" wx:if="{{userCheck && userSex === 2}}"/>  
+        </view>
+        <view class="info-intro">
+          <text wx:if="{{userCheck}}">{{userIntro}}</text>
+        </view>
+      </view>
+    </view>
+
+    <scroll-view class="main" wx:if="{{userCheck}}">
+      <view class="main-item" @tap="handle2Setting">
+        <text>设置</text>
+      </view>
+    </scroll-view>
+
   </view>
 </template>
 
 <script>
 import wepy from 'wepy';
+
+import { connect } from 'wepy-redux';
+
+import { getStore } from 'wepy-redux';
+
+import { BASE_API } from '@/const/config';
+
+@connect(
+  {
+    userId(state) {
+      return state.user.id;
+    },
+    userCheck(state) {
+      return state.user.check;
+    },
+    userNickname(state) {
+      return state.user.userInfo.nickname;
+    },
+    userIntro(state) {
+      return state.user.userInfo.intro || '没有自我介绍~';
+    },
+    userSex(state) {
+      return state.user.userInfo.sex || 0;
+    },
+    userAvatar(state) {
+      const { avatar } = state.user.userInfo;
+
+      return avatar ? BASE_API + avatar : '/assets/imgs/avatar.png';
+    }
+  },
+  {}
+)
 export default class Home extends wepy.page {
   config = {
     navigationBarTitleText: '个人中心'
@@ -21,7 +151,22 @@ export default class Home extends wepy.page {
 
   computed = {};
 
-  methods = {};
+  methods = {
+    handle2Login() {
+      if (this.userCheck) {
+        return;
+      }
+
+      wepy.navigateTo({
+        url: '/pages/login'
+      });
+    },
+    handle2Setting() {
+      wepy.navigateTo({
+        url: '/pages/setting'
+      });
+    }
+  };
 
   events = {};
 

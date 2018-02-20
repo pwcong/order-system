@@ -6,7 +6,9 @@ import {
   ACTION_LOGIN,
   ACTION_REGISTER,
   ACTION_CHECK,
-  ACTION_MODIFYPWD
+  ACTION_MODIFYPWD,
+  ACTION_MODIFYINFO,
+  ACTION_LOGOUT
 } from '../types/user';
 
 export default handleActions(
@@ -76,6 +78,30 @@ export default handleActions(
     [ACTION_MODIFYPWD](state, action) {
       return {
         ...state
+      };
+    },
+    [ACTION_MODIFYINFO](state, action) {
+      if (action.error) {
+        return {
+          ...state
+        };
+      }
+
+      return {
+        ...state,
+        userInfo: action.payload
+      };
+    },
+    [ACTION_LOGOUT](state, action) {
+      wepy.removeStorageSync('token');
+
+      return {
+        ...state,
+        check: false,
+        token: null,
+        id: null,
+        type: null,
+        userInfo: {}
       };
     }
   },

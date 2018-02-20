@@ -25,6 +25,20 @@
     top: -72rpx;
   }
 }
+
+.toolbar {
+  height: 64rpx;
+  width: 100%;
+}
+
+.main {
+  height: calc(100% - 64rpx);
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
+}
 </style>
 <template>
   <view class="container">
@@ -35,15 +49,25 @@
         <image id="loginBtn" src="{{loginImg}}" @tap="handle2Login"></image>
       </view>
       <view>
-        <icon style="position: relative; top: 8rpx; margin-right: 16rpx;" type="info" size="16"/><text>您还未登录</text>
+        <icon style="position: relative; top: 6rpx; margin-right: 16rpx;" type="info" size="16"/><text>您还未登录</text>
       </view>
 
     </view>
+
+    
+    <view class="toolbar" wx:if="{{userCheck}}">
+
+    </view>
+
+    <scroll-view class="main" wx:if="{{userCheck}}">
+
+    </scroll-view>
 
   </view>
 </template>
 
 <script>
+
 import wepy from 'wepy';
 
 import { connect } from 'wepy-redux';
