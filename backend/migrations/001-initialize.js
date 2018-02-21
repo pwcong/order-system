@@ -367,6 +367,15 @@ module.exports = {
         }
       },
 
+      sender_info_id: {
+        type: INTEGER,
+        allowNull: false,
+        references: {
+          model: 'user_infos',
+          key: 'id'
+        }
+      },
+
       /**
        * 订单接收人ID
        */
@@ -375,6 +384,15 @@ module.exports = {
         allowNull: false,
         references: {
           model: 'users',
+          key: 'id'
+        }
+      },
+
+      receiver_info_id: {
+        type: INTEGER,
+        allowNull: false,
+        references: {
+          model: 'user_infos',
           key: 'id'
         }
       },

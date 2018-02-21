@@ -130,9 +130,6 @@ import Modal from '@/components/modal';
     userCheck(state) {
       return state.user.check;
     },
-    userToken(state) {
-      return state.user.token;
-    },
     userNickname(state) {
       return state.user.userInfo.nickname;
     },
@@ -203,7 +200,7 @@ export default class Setting extends wepy.page {
       getStore()
         .dispatch(
           asyncModifyPWD({
-            token: ctx.userToken,
+            token: wepy.getStorageSync('token'),
             password
           })
         )
@@ -254,7 +251,7 @@ export default class Setting extends wepy.page {
       });
 
       getStore()
-        .dispatch(asyncModifyInfo({ token: ctx.userToken, userInfo: e.detail.value }))
+        .dispatch(asyncModifyInfo({ token: wepy.getStorageSync('token'), userInfo: e.detail.value }))
         .then(resss => {
           wepy.hideLoading();
           if (resss.error) {
@@ -280,7 +277,7 @@ export default class Setting extends wepy.page {
             filePath: res.tempFilePaths[0],
             name: 'avatar',
             header: {
-              'X-Token': ctx.userToken
+              'X-Token': wepy.getStorageSync('token')
             },
             success(ress) {
               if (ress.statusCode !== 200) {
@@ -305,7 +302,12 @@ export default class Setting extends wepy.page {
                 return;
               }
               getStore()
-                .dispatch(asyncModifyInfo({ token: ctx.userToken, userInfo: { avatar: data.payload.url } }))
+                .dispatch(
+                  asyncModifyInfo({
+                    token: wepy.getStorageSync('token'),
+                    userInfo: { avatar: data.payload.url }
+                  })
+                )
                 .then(resss => {
                   if (resss.error) {
                     wepy.showToast({
@@ -330,7 +332,7 @@ export default class Setting extends wepy.page {
     handle2Logout() {
       const ctx = this;
       getStore()
-        .dispatch(asyncLogout(ctx.userToken))
+        .dispatch(asyncLogout(wepy.getStorageSync('token')))
         .then(() => {
           wepy.navigateBack();
         });

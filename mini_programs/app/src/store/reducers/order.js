@@ -18,7 +18,7 @@ export default handleActions(
 
       return {
         ...state,
-        orders: action.payload
+        orders: action.payload.data
       };
     },
     [ACTION_CREATE_ORDER](state, action) {

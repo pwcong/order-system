@@ -19,8 +19,18 @@
       </view>
     </view>
 
-    <scroll-view class="main" wx:if="{{userCheck}}" bindscrolltolower="handleLoadMore">
+    <scroll-view class="orders" wx:if="{{userCheck}}" bindscrolltolower="handleLoadMore">
+      <view wx:for="{{orders}}" wx:key="orders-item-{{idx}}">
+        <view>
+          <text>
+            {{item.name}}
+          </text>
+          <text>
+            {{item.statusValue}}
+          </text>
+        </view>
 
+      </view>
     </scroll-view>
 
   </view>

@@ -10,6 +10,9 @@ class UserService extends Service {
     const { app } = this;
 
     return new Promise(async (resolve, reject) => {
+      /************ 开启事务 ************/
+      const t = await app.model.transaction();
+
       try {
         let _user = null;
 
@@ -21,23 +24,50 @@ class UserService extends Service {
 
         const salt = uuidv1();
 
-        await app.model.User.create({
-          username,
-          password: uuidv5(password, salt),
-          password_salt: salt,
-          type
-        });
-
-        _user = await app.model.User.findByUsername(username);
+        _user = await app.model.User.create(
+          {
+            username,
+            password: uuidv5(password, salt),
+            password_salt: salt,
+            type
+          },
+          {
+            transaction: t
+          }
+        );
 
         if (!_user) {
-          throw new Error('注册失败');
+          throw new Error('用户创建失败');
+        }
+
+        const _userInfo = await app.model.UserInfo.create(
+          {
+            id: _user.id,
+            nickname: _user.username
+          },
+          {
+            transaction: t
+          }
+        );
+
+        if (!_userInfo) {
+          throw new Error('用户信息创建失败');
+        }
+
+        await t.commit();
+
+        const __user = await app.model.User.findByUsername(username);
+
+        if (!__user) {
+          throw new Error('用户注册失败');
         }
 
         resolve({
-          user: _user
+          user: __user
         });
       } catch (err) {
+        await t.rollback();
+
         reject({
           message: err.message
         });

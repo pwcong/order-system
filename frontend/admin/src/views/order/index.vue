@@ -269,14 +269,7 @@ export default {
             address: row.address,
             amount: row.amount,
             nickname: res.payload.nickname,
-            details: row.nameValue.split('&').map(recipe => {
-              const t = recipe.split('#');
-              return {
-                id: t[0],
-                name: t[1],
-                counts: t[2]
-              };
-            })
+            details: JSON.parse(row.details)
           };
           ctx.orderContentVisiable = true;
         })
@@ -335,14 +328,6 @@ export default {
         Object.assign({}, order, {
           status: ORDER_STATUS[order.status],
           statusValue: order.status,
-          name: order.name
-            .split('&')
-            .map(_name => {
-              const t = _name.split('#');
-              return t[1] + '*' + t[2];
-            })
-            .join(' & '),
-          nameValue: order.name,
           created_at: moment(order.created_at).format('YYYY-MM-DD hh:mm:ss'),
           amount: '￥' + order.amount
         })

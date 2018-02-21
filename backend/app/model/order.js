@@ -26,6 +26,15 @@ module.exports = app => {
       }
     },
 
+    sender_info_id: {
+      type: INTEGER,
+      allowNull: false,
+      references: {
+        model: app.model.UserInfo,
+        key: 'id'
+      }
+    },
+
     /**
      * 订单接收人ID
      */
@@ -34,6 +43,15 @@ module.exports = app => {
       allowNull: false,
       references: {
         model: app.model.User,
+        key: 'id'
+      }
+    },
+
+    receiver_info_id: {
+      type: INTEGER,
+      allowNull: false,
+      references: {
+        model: app.model.UserInfo,
         key: 'id'
       }
     },
@@ -118,6 +136,17 @@ module.exports = app => {
       defaultValue: 0
     }
   });
+
+  Order.associate = function() {
+    this.belongsTo(app.model.UserInfo, {
+      as: 'receiver_info',
+      foreignKey: 'receiver_info_id'
+    });
+    this.belongsTo(app.model.UserInfo, {
+      as: 'sender_info',
+      foreignKey: 'sender_info_id'
+    });
+  };
 
   return Order;
 };

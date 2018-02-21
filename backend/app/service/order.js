@@ -45,8 +45,11 @@ class OrderService extends Service {
             continue;
           }
 
+          details[i].name = _recipe.name;
+          details[i].price = _recipe.price;
+
           amount += _recipe.price * parseInt(item.counts);
-          recipes.push(_recipe.id + '#' + _recipe.name + '#' + item.counts);
+          recipes.push(_recipe.name + '*' + item.counts);
         }
 
         if (recipes.length <= 0) {
@@ -56,8 +59,10 @@ class OrderService extends Service {
         const _order = await app.model.Order.create({
           id: generateOrderId(),
           sender_id,
+          sender_info_id: sender_id,
           receiver_id,
-          name: recipes.join('&'),
+          receiver_info_id: receiver_id,
+          name: recipes.join(' + '),
           details: JSON.stringify(details),
           address,
           amount
@@ -93,7 +98,13 @@ class OrderService extends Service {
 
         const _orders = await app.model.Order.findAll({
           where: condition,
-          order: [['created_at', 'DESC']]
+          order: [['created_at', 'DESC']],
+          include: [
+            {
+              model: app.model.UserInfo,
+              as: 'receiver_info'
+            }
+          ]
         });
 
         resolve({
@@ -122,7 +133,13 @@ class OrderService extends Service {
 
         const _orders = await app.model.Order.findAll({
           where: condition,
-          order: [['created_at', 'DESC']]
+          order: [['created_at', 'DESC']],
+          include: [
+            {
+              model: app.model.UserInfo,
+              as: 'sender_info'
+            }
+          ]
         });
 
         resolve({

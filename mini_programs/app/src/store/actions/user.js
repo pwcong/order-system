@@ -39,7 +39,15 @@ export const asyncLogin = createAction(ACTION_LOGIN, params => {
   });
 });
 export const asyncRegister = createAction(ACTION_REGISTER, params => {
-  return register(params.username, params.password, 1);
+  return new Promise((resolve, reject) => {
+    register(params.username, params.password, 1)
+      .then(res => {
+        resolve(res.payload);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
 });
 
 export const asyncCheck = createAction(ACTION_CHECK, token => {
