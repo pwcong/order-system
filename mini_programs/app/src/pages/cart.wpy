@@ -207,6 +207,9 @@ import { BASE_API } from '@/const/config';
     businessId(state) {
       return state.user.business.id;
     },
+    userCheck(state) {
+      return state.user.check;
+    },
     recipesInCart(state) {
       const ric = state.recipe.recipesInCart;
       let res = [];
@@ -254,6 +257,13 @@ export default class Cart extends wepy.page {
 
   methods = {
     beforeSubmit() {
+      if (!this.userCheck) {
+        wepy.navigateTo({
+          url: '/pages/login'
+        });
+        return;
+      }
+
       this.submitModalVisiable = true;
     },
     handleCancelSubmit() {

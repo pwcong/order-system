@@ -555,6 +555,9 @@ export default class Order extends wepy.page {
   events = {};
 
   onShow() {
+    if (!this.userCheck) {
+      return;
+    }
     this.loadOrders();
   }
 }
