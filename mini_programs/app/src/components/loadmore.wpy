@@ -1,0 +1,32 @@
+<style lang="scss">
+.loadmore {
+  text-align: center;
+  font-size: 28rpx;
+  color: #888;
+  padding: 24rpx;
+}
+</style>
+
+<template>
+  <view class="loadmore">
+    <text wx:if="{{hasMore && loadingMore}}">加载中...</text>
+    <text wx:if="{{hasMore && !loadingMore}}">上拉加载更多</text>
+    <text wx:if="{{!hasMore}}">没有啦~(￣▽￣)"~</text>
+  </view>
+</template>
+<script>
+import wepy from 'wepy';
+
+export default class LoadMore extends wepy.component {
+  props = {
+    hasMore: {
+      type: [Boolean],
+      default: true
+    },
+    loadingMore: {
+      type: [Boolean],
+      default: false
+    }
+  };
+}
+</script>

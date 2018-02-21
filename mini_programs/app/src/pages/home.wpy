@@ -18,8 +18,8 @@
   box-shadow: 0 0 16rpx #ccc;
 
   image {
-    width: 156rpx;
-    height: 156rpx;
+    width: 128rpx;
+    height: 128rpx;
     border-radius: 50%;
   }
 
@@ -101,7 +101,7 @@
       </view>
     </view>
 
-    <scroll-view class="main" wx:if="{{userCheck}}">
+    <scroll-view class="main" wx:if="{{userCheck}}" scroll-y>
       <view class="main-item" @tap="handle2Bill">
         <text>账单</text>
       </view>

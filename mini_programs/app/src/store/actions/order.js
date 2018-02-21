@@ -4,12 +4,25 @@ import {
   ACTION_PAY_ORDER,
   ACTION_CANCEL_ORDER,
   ACTION_FINISH_ORDER,
-  ACTION_CREATE_ORDER
+  ACTION_CREATE_ORDER,
+  ACTION_GET_MORE_ORDERS
 } from '../types/order';
 
 import { createOrder, getOrders } from '@/network/api/order';
 
 export const asyncGetOrders = createAction(ACTION_GET_ORDERS, params => {
+  return new Promise((resolve, reject) => {
+    getOrders(params.token, params.status, params.pageSize, params.pageNo)
+      .then(res => {
+        resolve(res.payload);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
+});
+
+export const asyncGetMoreOrders = createAction(ACTION_GET_MORE_ORDERS, params => {
   return new Promise((resolve, reject) => {
     getOrders(params.token, params.status, params.pageSize, params.pageNo)
       .then(res => {

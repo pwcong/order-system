@@ -183,7 +183,7 @@
     </view>
     <view class="main">
 
-      <scroll-view class="recipe-categories">
+      <scroll-view class="recipe-categories" scroll-y>
 
         <view 
           class="recipe-categories-item {{item.checked ? 'active': ''}}"
@@ -196,7 +196,7 @@
         </view>
 
       </scroll-view>
-      <scroll-view class="recipes">
+      <scroll-view class="recipes" scroll-y>
 
         <view class="recipes-item"
           wx:for="{{recipes}}"

@@ -31,6 +31,7 @@
   width: 100%;
 
   box-shadow: 0 0 16rpx #ccc;
+  border-bottom: 1px solid #ccc;
 
   display: flex;
   flex-flow: row nowrap;
@@ -57,9 +58,105 @@
   height: calc(100% - 96rpx);
   width: 100%;
   box-sizing: border-box;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: auto;
   position: relative;
+  box-sizing: border-box;
+  padding: 0 16rpx;
+  background-color: #e5e5e5;
+
+  .orders-item {
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 32rpx;
+    background-color: white;
+    border-radius: 16rpx;
+    margin: 16rpx 0;
+
+    .orders-item-top {
+      display: flex;
+
+      align-items: center;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+
+      padding-bottom: 32rpx;
+      border-bottom: 1px solid #ccc;
+
+      image {
+        margin-right: 32rpx;
+        display: inline-block;
+        width: 96rpx;
+        height: 96rpx;
+      }
+
+      .orders-item-status {
+        &[data-status='0'] {
+          color: grey;
+        }
+        &[data-status='1'] {
+          color: deepskyblue;
+        }
+        &[data-status='2'] {
+          color: #47b248;
+        }
+        &[data-status='3'] {
+          color: orangered;
+        }
+        &[data-status='4'] {
+          color: red;
+        }
+      }
+
+      .orders-item-name {
+        display: flex;
+        align-items: center;
+        flex-flow: row nowrap;
+        max-width: 480rpx;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    .orders-item-details {
+      padding-left: 128rpx;
+
+      .orders-item-details-row {
+        padding: 16rpx 0;
+        font-size: 32rpx;
+        color: #888;
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+
+        text {
+          &:nth-child(1) {
+            flex: 1;
+            max-width: 450rpx;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+          }
+        }
+
+        &:last-child {
+          border-bottom: 1px solid #ccc;
+        }
+      }
+    }
+
+    .orders-item-action {
+      padding-top: 32rpx;
+      text-align: right;
+
+      button {
+        display: inline-block;
+        font-size: 24rpx;
+        margin-left: 32rpx;
+      }
+    }
+  }
 }
 </style>
 <template>
@@ -87,18 +184,42 @@
       </view>
     </view>
 
-    <scroll-view class="orders" wx:if="{{userCheck}}" bindscrolltolower="handleLoadMore">
-      <view wx:for="{{orders}}" wx:key="orders-item-{{idx}}">
-        <view>
-          <text>
-            {{item.name}}
-          </text>
-          <text>
-            {{item.statusValue}}
-          </text>
+    <scroll-view class="orders" scroll-y wx:if="{{userCheck}}" bindscrolltolower="handleLoadMore">
+      <view 
+        wx:for="{{orders}}" 
+        wx:key="orders-item-{{idx}}"
+        class="orders-item">
+        <view class="orders-item-top">
+          <view class="orders-item-name">
+            <image src="{{item.avatar}}" />
+            <text>{{item.businessName}}&gt;</text>
+          </view>
+          <text class="orders-item-status" data-status="{{item.status}}">{{item.statusValue}}</text>
+        </view>
+        <view class="orders-item-details">
+
+          <view class="orders-item-details-row" 
+            wx:for="{{item.details}}"
+            wx:for-index="sidx" 
+            wx:for-item="sitem"
+            wx:key="orders-item-details-row-{{sidx}}">
+
+            <text>{{sitem.name}}</text>
+            <text>x{{sitem.counts}}</text>
+
+          </view>
+
+        </view>
+        <view class="orders-item-action">
+          <button wx:if="{{item.status === 0}}" class="btn-pay">支付</button>
+          <button wx:if="{{item.status === 0 || item.status === 1}}" class="btn-cancel" type="warn">取消</button>
+          <button wx:if="{{item.status === 1}}" type="primary" class="btn-finish">完成</button>
         </view>
 
       </view>
+
+      <LoadMore :loadingMore.sync="loadingMore" :hasMore.sync="hasMore"/>
+
     </scroll-view>
 
   </view>
@@ -110,9 +231,11 @@ import wepy from 'wepy';
 import { connect } from 'wepy-redux';
 
 import { getStore } from 'wepy-redux';
-import { asyncGetOrders } from '@/store/actions';
+import { asyncGetOrders, asyncGetMoreOrders } from '@/store/actions';
 
 import { BASE_API } from '@/const/config';
+
+import LoadMore from '@/components/loadmore';
 
 const STATUS_VALUE = {
   '0': '发起',
@@ -131,44 +254,42 @@ const STATUS_VALUE = {
       return state.user.check;
     },
     orders(state) {
-      return state.order.orders.map(order => {
-        const t = order.name.split('&').filter(t => !!t);
-        let i,
-          l = t.length,
-          rs = [];
-        for (i = 0; i < l; i++) {
-          let tt = t[i].split('#');
-          rs.push(tt[1] + '*' + tt[2]);
-        }
-
-        return {
-          ...order,
-          name: rs.join('+'),
-          statusValue: STATUS_VALUE['' + order.status]
-        };
-      });
+      return state.order.orders.map(order => ({
+        ...order,
+        details: JSON.parse(order.details),
+        businessName: order.receiver_info.nickname,
+        avatar: order.receiver_info.avatar
+          ? BASE_API + order.receiver_info.avatar
+          : '/assets/imgs/avatar.png',
+        statusValue: STATUS_VALUE['' + order.status]
+      }));
     }
   },
   {}
 )
 export default class Order extends wepy.page {
   config = {
-    navigationBarTitleText: '我的订单'
+    navigationBarTitleText: '我的订单',
+    enablePullDownRefresh: true
   };
-  components = {};
+  components = {
+    LoadMore
+  };
 
   mixins = [];
 
   data = {
     loginImg: '/assets/imgs/login.png',
     toolbars: [
-      { label: '进行中', checked: true, value: [1, 2, 4] },
-      { label: '已完成', checked: false, value: [3] },
-      { label: '已取消', checked: false, value: [5] }
+      { label: '进行中', checked: true, value: [0, 1, 3] },
+      { label: '已完成', checked: false, value: [2] },
+      { label: '已取消', checked: false, value: [4] }
     ],
-    pageSize: 15,
+    pageSize: 5,
     pageNo: 1,
-    status: [1, 2, 4]
+    status: [0, 1, 3],
+    loadingMore: false,
+    hasMore: true
   };
 
   computed = {};
@@ -187,15 +308,68 @@ export default class Order extends wepy.page {
           t.checked = false;
         }
       });
+
+      this.status = item.value;
+      this.pageNo = 1;
+      this.loadOrders();
     },
     handleLoadMore() {
-      console.log('more');
+      const ctx = this;
+
+      if (!ctx.hasMore || ctx.loadingMore) {
+        return;
+      }
+
+      ctx.pageNo++;
+
+      ctx.loadingMore = true;
+      getStore()
+        .dispatch(
+          asyncGetMoreOrders({
+            token: wepy.getStorageSync('token'),
+            status: ctx.status,
+            pageSize: ctx.pageSize,
+            pageNo: ctx.pageNo
+          })
+        )
+        .then(res => {
+          wepy.stopPullDownRefresh();
+          ctx.loadingMore = false;
+          ctx.$apply();
+
+          if (res.error) {
+            wepy.showToast({
+              title: res.payload.message,
+              icon: 'none'
+            });
+            return;
+          }
+
+          if ((res.payload.data || []).length < ctx.pageSize) {
+            ctx.hasMore = false;
+          } else {
+            ctx.hasMore = true;
+          }
+          ctx.$apply();
+        });
     }
   };
 
-  loadOrders() {
+  onPullDownRefresh() {
     const ctx = this;
 
+    ctx.pageNo = 1;
+    ctx.$apply();
+
+    ctx.loadOrders();
+  }
+
+  loadOrders(fb) {
+    const ctx = this;
+
+    wepy.showLoading({
+      title: '加载中'
+    });
     getStore()
       .dispatch(
         asyncGetOrders({
@@ -206,6 +380,8 @@ export default class Order extends wepy.page {
         })
       )
       .then(res => {
+        wepy.hideLoading();
+        wepy.stopPullDownRefresh();
         if (res.error) {
           wepy.showToast({
             title: res.payload.message,
@@ -214,13 +390,18 @@ export default class Order extends wepy.page {
           return;
         }
 
-        console.log(res);
+        if ((res.payload.data || []).length < ctx.pageSize) {
+          ctx.hasMore = false;
+        } else {
+          ctx.hasMore = true;
+        }
+        ctx.$apply();
       });
   }
 
   events = {};
 
-  onLoad() {
+  onShow() {
     this.loadOrders();
   }
 }

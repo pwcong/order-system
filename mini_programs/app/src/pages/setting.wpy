@@ -48,7 +48,7 @@
 
   <view class="container">
 
-    <scroll-view class="main">
+    <scroll-view class="main" scroll-y>
       <form class="main-form" @submit="formSubmit">
         <view class="main-form-item">
           <view class="main-form-item-title">头像</view>

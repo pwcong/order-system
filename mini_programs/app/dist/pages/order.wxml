@@ -19,18 +19,41 @@
       </view>
     </view>
 
-    <scroll-view class="orders" wx:if="{{userCheck}}" bindscrolltolower="handleLoadMore">
-      <view wx:for="{{orders}}" wx:key="orders-item-{{idx}}">
-        <view>
-          <text>
-            {{item.name}}
-          </text>
-          <text>
-            {{item.statusValue}}
-          </text>
+    <scroll-view class="orders" scroll-y wx:if="{{userCheck}}" bindscrolltolower="handleLoadMore">
+      <view wx:for="{{orders}}" wx:key="orders-item-{{idx}}" class="orders-item">
+        <view class="orders-item-top">
+          <view class="orders-item-name">
+            <image src="{{item.avatar}}"/>
+            <text>{{item.businessName}}></text>
+          </view>
+          <text class="orders-item-status" data-status="{{item.status}}">{{item.statusValue}}</text>
+        </view>
+        <view class="orders-item-details">
+
+          <view class="orders-item-details-row" wx:for="{{item.details}}" wx:for-index="sidx" wx:for-item="sitem" wx:key="orders-item-details-row-{{sidx}}">
+
+            <text>{{sitem.name}}</text>
+            <text>x{{sitem.counts}}</text>
+
+          </view>
+
+        </view>
+        <view class="orders-item-action">
+          <button wx:if="{{item.status === 0}}" class="btn-pay">支付</button>
+          <button wx:if="{{item.status === 0 || item.status === 1}}" class="btn-cancel" type="warn">取消</button>
+          <button wx:if="{{item.status === 1}}" type="primary" class="btn-finish">完成</button>
         </view>
 
       </view>
+
+      
+  <view class="loadmore">
+    <text  wx:if="{{$LoadMore$hasMore && $LoadMore$loadingMore}}">加载中...</text>
+    <text  wx:if="{{$LoadMore$hasMore && !$LoadMore$loadingMore}}">上拉加载更多</text>
+    <text wx:if="{{!$LoadMore$hasMore}}">没有啦~(￣▽￣)"~</text>
+  </view>
+
+
     </scroll-view>
 
   </view>
