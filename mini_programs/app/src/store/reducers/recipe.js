@@ -73,13 +73,6 @@ export default handleActions(
   },
   {
     recipes: [],
-    recipesInCart: {
-      // 'id': {
-      //   counts: 0,
-      //   info: {
-      //     ...
-      //   }
-      // }
-    }
+    recipesInCart: {}
   }
 );

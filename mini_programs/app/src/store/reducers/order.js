@@ -33,11 +33,6 @@ export default handleActions(
         ...state,
         orders: state.orders.concat(action.payload.data)
       };
-    },
-    [ACTION_CREATE_ORDER](state, action) {
-      return {
-        ...state
-      };
     }
   },
   {

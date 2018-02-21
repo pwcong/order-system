@@ -1,28 +1,313 @@
 <style lang="scss">
+.main {
+  height: calc(100% - 128rpx);
+  width: 100%;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  padding: 0 16rpx;
+  background-color: #e5e5e5;
 
+  .main-item {
+    display: flex;
+    flex-flow: row nowrap;
+
+    border-radius: 16rpx;
+
+    background-color: white;
+    padding: 32rpx;
+    margin: 16rpx 0;
+
+    .main-item-img {
+      width: 128rpx;
+      height: 128rpx;
+
+      margin-right: 16rpx;
+
+      image {
+        width: 128rpx;
+        height: 128rpx;
+      }
+    }
+
+    .main-item-content {
+      flex: 1;
+    }
+
+    .main-item-title {
+      font-size: 42rpx;
+      max-width: 500rpx;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .main-item-action {
+      margin-top: 24rpx;
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+      align-items: center;
+
+      .main-item-btn {
+        display: inline-block;
+        background-color: #47b248;
+        width: 48rpx;
+        height: 48rpx;
+        text-align: center;
+        line-height: 48rpx;
+        border-radius: 50%;
+        margin: 0 16rpx;
+        color: white;
+      }
+    }
+  }
+}
+
+.toolbar {
+  display: flex;
+  height: 128rpx;
+  width: 100%;
+  position: relative;
+  align-items: center;
+  padding: 0 256rpx 0 32rpx;
+  box-sizing: border-box;
+  .toolbar-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 256rpx;
+    height: 100%;
+    line-height: 128rpx;
+    text-align: center;
+    color: white;
+    background-color: #47b248;
+
+    transition: background-color 0.3s;
+
+    &:active {
+      background-color: #36a137;
+    }
+  }
+}
+
+.main-form-item {
+  background-color: white;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx;
+  border-bottom: 1px solid #ccc;
+
+  .main-form-item-title {
+    min-width: 128rpx;
+    white-space: nowrap;
+    color: #666;
+  }
+
+  .main-form-item-field {
+    flex: 1;
+    text-align: right;
+  }
+
+  image {
+    width: 96rpx;
+    height: 96rpx;
+  }
+
+  label {
+    margin-left: 32rpx;
+  }
+
+  button {
+    font-size: 36rpx;
+  }
+}
 </style>
 <template>
   <view class="container">
+
+    <scroll-view class="main" scroll-y>
+      
+      <view class="main-item"
+        wx:for="{{recipesInCart}}"
+        wx:key="main-item-{{idx}}">
+        <view class="main-item-img">
+            <image src="{{item.avatarUrl}}"></image>
+        </view>
+        <view class="main-item-content">
+
+          <view class="main-item-title">
+            <text>{{item.info.name}}</text>
+          </view>
+            
+          <view class="main-item-action">
+            <view>
+              <view class="main-item-btn" wx:if="{{item.counts > 0}}" @tap="minusRecipeInCart({{item.info}})">-</view>
+              <text wx:if="{{item.counts > 0}}">{{item.counts}}</text>
+              <view class="main-item-btn" @tap="plusRecipeInCart({{item.info}})">+</view>
+            </view>
+            <text>￥{{item.totalPrice}}</text>
+          </view>
+        </view>
+      </view>
+
+    </scroll-view>
+
+    <view class="toolbar">
+
+      <view>
+        总价：<text style="font-size: 56rpx; color: #47b248;">￥{{totalPrice}}</text>
+      </view>
+
+      <view @tap="beforeSubmit" class="toolbar-btn" wx:if="{{totalPrice > 0}}">确认</view>
+
+    </view>
+
+    <Modal :show.sync="submitModalVisiable" style="padding: 128rpx 64rpx 0 64rpx;">
+
+      <form class="main-form" @submit="submitOrder" style="border-radius: 16rpx; overflow: hidden; display: block;">
+        <view class="main-form-item">
+          <textarea class="main-form-item-field" style="text-align: left;" name="address" placeholder="请输入送餐地址" />
+        </view>
+
+        <view class="main-form-item" style="border-bottom: none;">
+          <button class="main-form-item-field" style="text-align: center; margin-right: 32rpx;" @tap="handleCancelSubmit">取消</button>
+          <button class="main-form-item-field" style="text-align: center;" type="primary" formType="submit">确定</button>
+        </view>
+
+      </form>
+
+    </Modal>
+
   </view>
 </template>
 
 <script>
-
 import wepy from 'wepy';
+import { connect } from 'wepy-redux';
 
+import { getStore } from 'wepy-redux';
+
+import Modal from '@/components/modal';
+
+import { asyncPlusRecipeInCart, asyncMinusRecipeInCart, asyncCreateOrder } from '@/store/actions';
+
+import { BASE_API } from '@/const/config';
+
+@connect(
+  {
+    businessId(state) {
+      return state.user.business.id;
+    },
+    recipesInCart(state) {
+      const ric = state.recipe.recipesInCart;
+      let res = [];
+      for (let key in ric) {
+        const t = ric[key];
+        res.push({
+          id: key,
+          counts: t.counts,
+          info: t.info,
+          avatarUrl: BASE_API + t.info.avatar,
+          totalPrice: (parseFloat(t.info.price) * t.counts).toFixed(2)
+        });
+      }
+      return res;
+    },
+    totalPrice(state) {
+      const ric = state.recipe.recipesInCart;
+      let price = 0;
+      for (let key in ric) {
+        const t = ric[key];
+        price += (parseFloat(t.info.price) || 0) * t.counts;
+      }
+      return price.toFixed(2);
+    }
+  },
+  {
+    plusRecipeInCart: asyncPlusRecipeInCart,
+    minusRecipeInCart: asyncMinusRecipeInCart
+  }
+)
 export default class Cart extends wepy.page {
   config = {
     navigationBarTitleText: '购物车'
   };
-  components = {};
+  components = { Modal };
 
   mixins = [];
 
-  data = {};
+  data = {
+    submitModalVisiable: false,
+    address: ''
+  };
 
   computed = {};
 
-  methods = {};
+  methods = {
+    beforeSubmit() {
+      this.submitModalVisiable = true;
+    },
+    handleCancelSubmit() {
+      this.submitModalVisiable = false;
+    },
+    submitOrder(e) {
+      const ctx = this;
+      const { address } = e.detail.value;
+
+      if (!address) {
+        wepy.showToast({
+          icon: 'none',
+          title: '请输入送餐地址'
+        });
+        return;
+      }
+
+      wepy.showLoading({
+        title: '订单创建中'
+      });
+      getStore()
+        .dispatch(
+          asyncCreateOrder({
+            token: wepy.getStorageSync('token'),
+            id: ctx.businessId,
+            details: ctx.recipesInCart.map(ric => ({
+              id: ric.id,
+              counts: ric.counts
+            })),
+            address
+          })
+        )
+        .then(res => {
+          wepy.hideLoading();
+
+          if (res.error) {
+            wepy.showModal({
+              showCancel: false,
+              content: res.payload.message,
+              title: '订单创建失败'
+            });
+            return;
+          }
+
+          wepy.showModal({
+            showCancel: false,
+            content: '订单创建成功，点击确定返回首页',
+            title: '提示',
+            success() {
+              wepy.navigateBack({
+                delta: 2
+              });
+            }
+          });
+        });
+
+      ctx.submitModalVisiable = false;
+    }
+  };
 
   events = {};
 
