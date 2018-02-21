@@ -39,9 +39,9 @@
 
         </view>
         <view class="orders-item-action">
-          <button wx:if="{{item.status === 0}}" class="btn-pay">支付</button>
-          <button wx:if="{{item.status === 0 || item.status === 1}}" class="btn-cancel" type="warn">取消</button>
-          <button wx:if="{{item.status === 1}}" type="primary" class="btn-finish">完成</button>
+          <button wx:if="{{item.status === 0}}" class="btn-pay" bindtap="handlePayOrder" data-wpyhandlepayorder-a="{{item}}">支付</button>
+          <button wx:if="{{item.status === 0 || item.status === 1}}" class="btn-cancel" bindtap="handleCancelOrder" type="warn" data-wpyhandlecancelorder-a="{{item}}">取消</button>
+          <button wx:if="{{item.status === 1}}" type="primary" class="btn-finish" bindtap="handleFinishOrder" data-wpyhandlefinishorder-a="{{item}}">完成</button>
         </view>
 
       </view>

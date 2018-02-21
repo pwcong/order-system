@@ -27,6 +27,8 @@ module.exports = app => {
 
   router.post('/user/check', authTokenMiddleware, controller.user.check);
 
+  router.post('/user/balance', authTokenMiddleware, controller.user.queryBalance);
+
   router.post('/user/lock/:id', authTokenMiddleware, authUserTypeMiddleware([999]), controller.user.lock);
   router.post(
     '/user/unlock/:id',

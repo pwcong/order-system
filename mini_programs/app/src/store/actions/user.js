@@ -6,14 +6,36 @@ import {
   ACTION_CHECK,
   ACTION_MODIFYPWD,
   ACTION_MODIFYINFO,
-  ACTION_LOGOUT
+  ACTION_LOGOUT,
+  ACTION_QUERY_BALANCE
 } from '../types/user';
 
-import { searchBusiness, register, login, logout, check, modifyPWD, modifyInfo } from '@/network/api/user';
+import {
+  queryBalance,
+  searchBusiness,
+  register,
+  login,
+  logout,
+  check,
+  modifyPWD,
+  modifyInfo
+} from '@/network/api/user';
 
 export const asyncSearchBusiness = createAction(ACTION_SEARCH_BUSINESS, id => {
   return new Promise((resolve, reject) => {
     searchBusiness(id)
+      .then(res => {
+        resolve(res.payload);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
+});
+
+export const asyncQueryBalance = createAction(ACTION_QUERY_BALANCE, token => {
+  return new Promise((resolve, reject) => {
+    queryBalance(token)
       .then(res => {
         resolve(res.payload);
       })

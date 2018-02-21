@@ -7,8 +7,8 @@
 * 锁定用户（需管理员权限）
 * 解锁用户（需管理员权限）
 * 注销用户（需管理员权限）
-
 * 查询店家
+* 查询余额
 
 ## 用户注册
 
@@ -335,6 +335,39 @@ curl -X GET \
     "user_info": {
       ...
     }
+  }
+}
+```
+
+---
+
+## 查询余额
+
+路径：`/user/balance`
+方法：`POST`
+
+请求头：
+
+* X-Token: 用户令牌
+
+
+请求示例：
+
+```shell
+curl -X POST \
+  $API_BASE/user/balance \
+  -H 'X-Token: 10000:xxxxxxxxxxxxx'
+```
+
+返回值：
+
+```json
+{
+  "success": true,
+  "code": 20000,
+  "message": "修改成功",
+  "payload": {
+    "balance": "10.00"
   }
 }
 ```

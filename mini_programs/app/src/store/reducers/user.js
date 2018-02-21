@@ -8,7 +8,8 @@ import {
   ACTION_CHECK,
   ACTION_MODIFYPWD,
   ACTION_MODIFYINFO,
-  ACTION_LOGOUT
+  ACTION_LOGOUT,
+  ACTION_QUERY_BALANCE
 } from '../types/user';
 
 export default handleActions(
@@ -22,6 +23,17 @@ export default handleActions(
       return {
         ...state,
         business: action.payload
+      };
+    },
+    [ACTION_QUERY_BALANCE](state, action) {
+      if (action.error) {
+        return {
+          ...state
+        };
+      }
+      return {
+        ...state,
+        balance: action.payload.balance
       };
     },
     [ACTION_LOGIN](state, action) {
@@ -111,6 +123,7 @@ export default handleActions(
     token: null,
     id: null,
     type: null,
-    userInfo: {}
+    userInfo: {},
+    balance: '0.00'
   }
 );

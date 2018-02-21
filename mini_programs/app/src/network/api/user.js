@@ -6,6 +6,10 @@ export function searchBusiness(id) {
   return request(`${BASE_API}/user/business/${id}`, 'GET');
 }
 
+export function queryBalance(token) {
+  return request(`${BASE_API}/user/balance`, 'POST', { 'X-Token': token });
+}
+
 export function register(username, password) {
   return request(
     `${BASE_API}/user/register`,

@@ -28,3 +28,19 @@ export function getOrders(token, status, pageSize = 15, pageNo = 1) {
     }
   );
 }
+
+export function payOrder(token, id) {
+  return request(`${BASE_API}/order/pay/${id}`, 'POST', {
+    'X-Token': token
+  });
+}
+export function cancelOrder(token, id) {
+  return request(`${BASE_API}/order/cancel/${id}`, 'POST', {
+    'X-Token': token
+  });
+}
+export function finishOrder(token, id) {
+  return request(`${BASE_API}/order/finish/${id}`, 'POST', {
+    'X-Token': token
+  });
+}

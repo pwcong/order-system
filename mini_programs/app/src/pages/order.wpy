@@ -211,9 +211,9 @@
 
         </view>
         <view class="orders-item-action">
-          <button wx:if="{{item.status === 0}}" class="btn-pay">支付</button>
-          <button wx:if="{{item.status === 0 || item.status === 1}}" class="btn-cancel" type="warn">取消</button>
-          <button wx:if="{{item.status === 1}}" type="primary" class="btn-finish">完成</button>
+          <button wx:if="{{item.status === 0}}" class="btn-pay" @tap="handlePayOrder({{item}})">支付</button>
+          <button wx:if="{{item.status === 0 || item.status === 1}}" class="btn-cancel" @tap="handleCancelOrder({{item}})" type="warn">取消</button>
+          <button wx:if="{{item.status === 1}}" type="primary" class="btn-finish" @tap="handleFinishOrder({{item}})">完成</button>
         </view>
 
       </view>
@@ -231,7 +231,13 @@ import wepy from 'wepy';
 import { connect } from 'wepy-redux';
 
 import { getStore } from 'wepy-redux';
-import { asyncGetOrders, asyncGetMoreOrders } from '@/store/actions';
+import {
+  asyncGetOrders,
+  asyncGetMoreOrders,
+  asyncPayOrder,
+  asyncCancelOrder,
+  asyncFinishOrder
+} from '@/store/actions';
 
 import { BASE_API } from '@/const/config';
 
@@ -352,6 +358,120 @@ export default class Order extends wepy.page {
           }
           ctx.$apply();
         });
+    },
+    handlePayOrder(item) {
+      const ctx = this;
+      wepy.showModal({
+        title: '提示',
+        content: '是否确认支付该订单?',
+        success(res) {
+          if (!res.confirm) {
+            return;
+          }
+
+          wepy.showLoading({
+            title: '支付中'
+          });
+          getStore()
+            .dispatch(
+              asyncPayOrder({
+                token: wepy.getStorageSync('token'),
+                id: item.id
+              })
+            )
+            .then(res => {
+              wepy.hideLoading();
+              if (res.error) {
+                wepy.showModal({
+                  title: '支付失败',
+                  content: res.payload.message,
+                  showCancel: false
+                });
+                return;
+              }
+
+              ctx.pageNo = 1;
+              ctx.$apply();
+              ctx.loadOrders();
+            });
+        }
+      });
+    },
+    handleCancelOrder(item) {
+      const ctx = this;
+      wepy.showModal({
+        title: '提示',
+        content: '是否确认取消该订单?',
+        success(res) {
+          if (!res.confirm) {
+            return;
+          }
+
+          wepy.showLoading({
+            title: '取消中'
+          });
+          getStore()
+            .dispatch(
+              asyncCancelOrder({
+                token: wepy.getStorageSync('token'),
+                id: item.id
+              })
+            )
+            .then(res => {
+              wepy.hideLoading();
+              if (res.error) {
+                wepy.showModal({
+                  title: '取消失败',
+                  content: res.payload.message,
+                  showCancel: false
+                });
+                return;
+              }
+
+              ctx.pageNo = 1;
+              ctx.$apply();
+              ctx.loadOrders();
+            });
+        }
+      });
+    },
+    handleFinishOrder(item) {
+      const ctx = this;
+      wepy.showModal({
+        title: '提示',
+        content: '是否确认该订单已完成?',
+        success(res) {
+          if (!res.confirm) {
+            return;
+          }
+
+          wepy.showLoading({
+            title: '提交中'
+          });
+          getStore()
+            .dispatch(
+              asyncFinishOrder({
+                token: wepy.getStorageSync('token'),
+                id: item.id
+              })
+            )
+            .then(res => {
+              wepy.hideLoading();
+              if (res.error) {
+                wepy.showModal({
+                  title: '提交失败',
+                  content: res.payload.message,
+                  showCancel: false
+                });
+                return;
+              }
+
+              ctx.pageNo = 1;
+              ctx.$apply();
+              ctx.loadOrders();
+            });
+        }
+      });
     }
   };
 

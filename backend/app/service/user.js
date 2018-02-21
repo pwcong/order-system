@@ -120,6 +120,40 @@ class UserService extends Service {
     });
   }
 
+  async searchById(id) {
+    const { app } = this;
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        let _user = null;
+
+        _user = await app.model.User.findOne({
+          where: {
+            id
+          },
+          include: [
+            {
+              model: app.model.UserInfo,
+              as: 'user_info'
+            }
+          ]
+        });
+        
+        if (!_user) {
+          throw new Error('用户不存在');
+        }
+
+        resolve({
+          user: _user
+        });
+      } catch (err) {
+        reject({
+          message: err.message
+        });
+      }
+    });
+  }
+
   async modifyPWD(id, password) {
     const { app } = this;
 

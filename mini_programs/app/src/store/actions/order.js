@@ -8,7 +8,7 @@ import {
   ACTION_GET_MORE_ORDERS
 } from '../types/order';
 
-import { createOrder, getOrders } from '@/network/api/order';
+import { createOrder, getOrders, payOrder, cancelOrder, finishOrder } from '@/network/api/order';
 
 export const asyncGetOrders = createAction(ACTION_GET_ORDERS, params => {
   return new Promise((resolve, reject) => {
@@ -44,4 +44,14 @@ export const asyncCreateOrder = createAction(ACTION_CREATE_ORDER, params => {
         reject(err);
       });
   });
+});
+
+export const asyncPayOrder = createAction(ACTION_PAY_ORDER, params => {
+  return payOrder(params.token, params.id);
+});
+export const asyncCancelOrder = createAction(ACTION_CANCEL_ORDER, params => {
+  return cancelOrder(params.token, params.id);
+});
+export const asyncFinishOrder = createAction(ACTION_FINISH_ORDER, params => {
+  return finishOrder(params.token, params.id);
 });

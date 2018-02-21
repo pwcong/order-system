@@ -324,5 +324,33 @@ class UserController extends Controller {
       };
     }
   }
+
+  /**
+   * 查询店家
+   */
+  async queryBalance() {
+    const { ctx, service } = this;
+
+    try {
+      const { id } = ctx.user;
+
+      const res = await service.user.searchById(id);
+
+      ctx.body = {
+        success: true,
+        code: ctx.code.STATUS_OK,
+        message: '查询成功',
+        payload: {
+          balance: res.user.balance
+        }
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
 }
 module.exports = UserController;
