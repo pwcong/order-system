@@ -165,7 +165,7 @@
     <view wx:if="{{!userCheck}}" class="tips-login-needed">
 
       <view>
-        <image id="loginBtn" src="{{loginImg}}" @tap="handle2Login"></image>
+        <image id="loginBtn" src="{{loginImg}}" @tap="handleToLogin"></image>
       </view>
       <view>
         <icon style="position: relative; top: 6rpx; margin-right: 16rpx;" type="info" size="16"/><text>您还未登录</text>
@@ -189,12 +189,15 @@
         wx:for="{{orders}}" 
         wx:key="orders-item-{{idx}}"
         class="orders-item">
+
         <view class="orders-item-top">
-          <view class="orders-item-name">
-            <image src="{{item.avatar}}" />
+
+          <view class="orders-item-name" @tap="handleToBI({{item}})">
+            <image src="{{item.avatar}}"></image>
             <text>{{item.businessName}}&gt;</text>
           </view>
           <text class="orders-item-status" data-status="{{item.status}}">{{item.statusValue}}</text>
+
         </view>
         <view class="orders-item-details">
 
@@ -218,7 +221,11 @@
 
       </view>
 
-      <LoadMore :loadingMore.sync="loadingMore" :hasMore.sync="hasMore"/>
+      <view wx:if="{{ordersLength <= 0}}" style="text-align: center; font-size: 28rpx; color: #888; padding: 32rpx;">
+        空空如也(*/ω＼*)
+      </view>
+
+      <LoadMore wx:if="{{ordersLength > 0}}" :loadingMore.sync="loadingMore" :hasMore.sync="hasMore"/>
 
     </scroll-view>
 
@@ -236,7 +243,8 @@ import {
   asyncGetMoreOrders,
   asyncPayOrder,
   asyncCancelOrder,
-  asyncFinishOrder
+  asyncFinishOrder,
+  asyncSearchBusiness
 } from '@/store/actions';
 
 import { BASE_API } from '@/const/config';
@@ -269,6 +277,9 @@ const STATUS_VALUE = {
           : '/assets/imgs/avatar.png',
         statusValue: STATUS_VALUE['' + order.status]
       }));
+    },
+    ordersLength(state) {
+      return state.order.orders.length;
     }
   },
   {}
@@ -301,7 +312,7 @@ export default class Order extends wepy.page {
   computed = {};
 
   methods = {
-    handle2Login() {
+    handleToLogin() {
       wepy.navigateTo({
         url: '/pages/login'
       });
@@ -472,6 +483,23 @@ export default class Order extends wepy.page {
             });
         }
       });
+    },
+    handleToBI(item) {
+      getStore()
+        .dispatch(asyncSearchBusiness(item.receiver_id))
+        .then(res => {
+          if (res.error) {
+            wepy.showModal({
+              title: '提示',
+              showCancel: false,
+              content: res.payload.message
+            });
+          } else {
+            wepy.navigateTo({
+              url: '/pages/business_info'
+            });
+          }
+        });
     }
   };
 
@@ -515,6 +543,8 @@ export default class Order extends wepy.page {
         } else {
           ctx.hasMore = true;
         }
+
+        ctx.loadingMore = false;
         ctx.$apply();
       });
   }

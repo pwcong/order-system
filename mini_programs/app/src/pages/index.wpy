@@ -45,12 +45,11 @@
 </template>
 
 <script>
-
 import wepy from 'wepy';
 
 import { getStore } from 'wepy-redux';
 
-import { asyncSearchBusiness } from '@/store/actions';
+import { asyncSearchBusiness, asyncClearRecipeInCart } from '@/store/actions';
 
 export default class Index extends wepy.page {
   config = {
@@ -80,6 +79,7 @@ export default class Index extends wepy.page {
                   content: res.payload.message
                 });
               } else {
+                getStore().dispatch(asyncClearRecipeInCart());
                 wepy.navigateTo({
                   url: '/pages/business'
                 });

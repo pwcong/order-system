@@ -178,7 +178,7 @@
         </block>
       </swiper>
 
-      <image id="avatar" src="{{businessAvatar}}" mode="aspectFill"></image>
+      <image id="avatar" @tap="handle2BusinessInfo" src="{{businessAvatar}}" mode="aspectFill"></image>
 
     </view>
     <view class="main">
@@ -341,6 +341,11 @@ export default class Business extends wepy.page {
       } else {
         ctx.loadRecipes(rc.value);
       }
+    },
+    handle2BusinessInfo() {
+      wepy.navigateTo({
+        url: '/pages/business_info'
+      });
     }
   };
 

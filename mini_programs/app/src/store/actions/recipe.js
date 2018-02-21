@@ -1,5 +1,10 @@
 import { createAction } from 'redux-actions';
-import { ACTION_GET_RECIPES, ACTION_PLUS_RECIPE, ACTION_MINUS_RECIPE } from '../types/recipe';
+import {
+  ACTION_GET_RECIPES,
+  ACTION_PLUS_RECIPE,
+  ACTION_MINUS_RECIPE,
+  ACTION_CLEAR_RECIPESINCART
+} from '../types/recipe';
 
 import { getAllRecipes, getRecipesWithCategoryId } from '@/network/api/recipe';
 
@@ -29,3 +34,5 @@ export const asyncGetRecipesWithCategoryId = createAction(ACTION_GET_RECIPES, pa
 
 export const asyncPlusRecipeInCart = createAction(ACTION_PLUS_RECIPE, recipe => recipe);
 export const asyncMinusRecipeInCart = createAction(ACTION_MINUS_RECIPE, recipe => recipe);
+
+export const asyncClearRecipeInCart = createAction(ACTION_CLEAR_RECIPESINCART, () => ({}));

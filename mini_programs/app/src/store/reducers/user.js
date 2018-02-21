@@ -118,7 +118,9 @@ export default handleActions(
     }
   },
   {
-    business: {},
+    business: {
+      userInfo: {}
+    },
     check: false,
     token: null,
     id: null,

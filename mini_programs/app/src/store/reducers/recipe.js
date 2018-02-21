@@ -1,5 +1,10 @@
 import { handleActions } from 'redux-actions';
-import { ACTION_GET_RECIPES, ACTION_PLUS_RECIPE, ACTION_MINUS_RECIPE } from '../types/recipe';
+import {
+  ACTION_GET_RECIPES,
+  ACTION_PLUS_RECIPE,
+  ACTION_MINUS_RECIPE,
+  ACTION_CLEAR_RECIPESINCART
+} from '../types/recipe';
 
 export default handleActions(
   {
@@ -57,6 +62,12 @@ export default handleActions(
       return {
         ...state,
         recipesInCart
+      };
+    },
+    [ACTION_CLEAR_RECIPESINCART](state, action) {
+      return {
+        ...state,
+        recipesInCart: {}
       };
     }
   },
