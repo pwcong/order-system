@@ -88,7 +88,7 @@
 
     <Modal :show.sync="modifyPWDModalVisiable" style="padding: 128rpx 64rpx 0 64rpx;">
 
-      <form class="main-form" @submit="modifyPWDFormSubmit">
+      <form class="main-form" @submit="modifyPWDFormSubmit" style="border-radius: 16rpx; overflow: hidden; display: block;">
         <view class="main-form-item">
           <input class="main-form-item-field" style="text-align: left;" type="password" name="password" placeholder="请输入新密码" />
         </view>
@@ -96,7 +96,7 @@
           <input class="main-form-item-field" style="text-align: left;" type="password" name="password2" placeholder="请再次输入新密码" />
         </view>
 
-        <view class="main-form-item">
+        <view class="main-form-item" style="border-bottom: none;">
           <button class="main-form-item-field" style="text-align: center; margin-right: 32rpx;" @tap="handleCancelModifyPWD">取消</button>
           <button class="main-form-item-field" style="text-align: center;" type="primary" formType="submit">确定</button>
         </view>

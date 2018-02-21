@@ -66,12 +66,17 @@
 
   .main-item {
     background-color: white;
+
     padding: 32rpx 64rpx;
 
     transition: background-color 0.3s;
 
     &:active {
       background-color: #f5f5f5;
+    }
+
+    &:not(:last-child) {
+      border-bottom: 1px solid #ccc;
     }
   }
 }
@@ -97,6 +102,9 @@
     </view>
 
     <scroll-view class="main" wx:if="{{userCheck}}">
+      <view class="main-item" @tap="handle2Bill">
+        <text>账单</text>
+      </view>
       <view class="main-item" @tap="handle2Setting">
         <text>设置</text>
       </view>
@@ -164,6 +172,13 @@ export default class Home extends wepy.page {
     handle2Setting() {
       wepy.navigateTo({
         url: '/pages/setting'
+      });
+    },
+    handle2Bill() {
+      wepy.showModal({
+        showCancel: false,
+        title: '提示',
+        content: '账单页正在建设中/(ㄒoㄒ)/~~'
       });
     }
   };

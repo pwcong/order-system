@@ -19,6 +19,9 @@
     </view>
 
     <scroll-view class="main" wx:if="{{userCheck}}">
+      <view class="main-item" bindtap="handle2Bill">
+        <text>账单</text>
+      </view>
       <view class="main-item" bindtap="handle2Setting">
         <text>设置</text>
       </view>

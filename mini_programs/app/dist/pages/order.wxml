@@ -14,10 +14,12 @@
 
     
     <view class="toolbar"  wx:if="{{userCheck}}">
-
+      <view wx:for="{{toolbars}}" class="toolbar-item {{item.checked ? 'active' : ''}}" wx:key="toolbar-item-{{idx}}" bindtap="handleToolbarChange" data-wpyhandletoolbarchange-a="{{item}}">
+        <text>{{item.label}}</text>
+      </view>
     </view>
 
-    <scroll-view class="main" wx:if="{{userCheck}}">
+    <scroll-view class="main" wx:if="{{userCheck}}" bindscrolltolower="handleLoadMore">
 
     </scroll-view>
 

@@ -16,6 +16,20 @@ export default function(socket) {
         });
         store.dispatch('LoadOrders', { pageNo: 1 });
         break;
+      case 'BUSINESS_CANCEL_ORDER':
+        Notification.warning({
+          title: '提醒',
+          message: payload.message
+        });
+        store.dispatch('LoadOrders', { pageNo: 1 });
+        break;
+      case 'BUSINESS_PAY_ORDER':
+        Notification.success({
+          title: '提醒',
+          message: payload.message
+        });
+        store.dispatch('LoadOrders', { pageNo: 1 });
+        break;
       default:
         break;
     }

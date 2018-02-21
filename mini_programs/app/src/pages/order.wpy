@@ -27,12 +27,34 @@
 }
 
 .toolbar {
-  height: 64rpx;
+  height: 96rpx;
   width: 100%;
+
+  box-shadow: 0 0 16rpx #ccc;
+
+  display: flex;
+  flex-flow: row nowrap;
+
+  .toolbar-item {
+    flex: 1;
+    height: 96rpx;
+    line-height: 96rpx;
+    text-align: center;
+
+    border-bottom: 1px solid transparent;
+
+    transition: border-bottom 0.3s, color 0.3s;
+    font-size: 32rpx;
+
+    &.active {
+      color: #47b248;
+      border-bottom: 1px solid #47b248;
+    }
+  }
 }
 
 .main {
-  height: calc(100% - 64rpx);
+  height: calc(100% - 96rpx);
   width: 100%;
   box-sizing: border-box;
   overflow-x: hidden;
@@ -56,10 +78,16 @@
 
     
     <view class="toolbar" wx:if="{{userCheck}}">
-
+      <view 
+        wx:for="{{toolbars}}" 
+        class="toolbar-item {{item.checked ? 'active' : ''}}" 
+        wx:key="toolbar-item-{{idx}}"
+        @tap="handleToolbarChange({{item}})">
+        <text>{{item.label}}</text>
+      </view>
     </view>
 
-    <scroll-view class="main" wx:if="{{userCheck}}">
+    <scroll-view class="main" wx:if="{{userCheck}}" bindscrolltolower="handleLoadMore">
 
     </scroll-view>
 
@@ -67,7 +95,6 @@
 </template>
 
 <script>
-
 import wepy from 'wepy';
 
 import { connect } from 'wepy-redux';
@@ -81,6 +108,9 @@ import { getStore } from 'wepy-redux';
     },
     userCheck(state) {
       return state.user.check;
+    },
+    orders(state) {
+      return state.order.orders;
     }
   },
   {}
@@ -94,7 +124,12 @@ export default class Order extends wepy.page {
   mixins = [];
 
   data = {
-    loginImg: '/assets/imgs/login.png'
+    loginImg: '/assets/imgs/login.png',
+    toolbars: [
+      { label: '进行中', checked: true, value: [1, 2, 4] },
+      { label: '已完成', checked: false, value: [3] },
+      { label: '已取消', checked: false, value: [5] }
+    ]
   };
 
   computed = {};
@@ -104,6 +139,18 @@ export default class Order extends wepy.page {
       wepy.navigateTo({
         url: '/pages/login'
       });
+    },
+    handleToolbarChange(item) {
+      this.toolbars.forEach(t => {
+        if (t.label === item.label) {
+          t.checked = true;
+        } else {
+          t.checked = false;
+        }
+      });
+    },
+    handleLoadMore(){
+      console.log('more');
     }
   };
 

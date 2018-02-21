@@ -112,13 +112,23 @@ class OrderController extends Controller {
    * 确认订单（余额付款）
    */
   async pay() {
-    const { ctx, service } = this;
+    const { ctx, service, app } = this;
 
     try {
       const { id } = ctx.params;
       const sender_id = ctx.user.id;
 
       const res = await service.order.pay(id, sender_id, 1);
+
+      app.io
+        .of('/business')
+        .to(res.order.receiver_id + '')
+        .emit('msg', {
+          type: 'BUSINESS_PAY_ORDER',
+          success: true,
+          message: '确认新的订单!',
+          code: ctx.code.STATUS_OK
+        });
 
       ctx.body = {
         success: true,
@@ -167,13 +177,23 @@ class OrderController extends Controller {
    * 取消订单
    */
   async cancel() {
-    const { ctx, service } = this;
+    const { ctx, service, app } = this;
 
     try {
       const { id } = ctx.params;
       const sender_id = ctx.user.id;
 
       const res = await service.order.cancel(id, sender_id);
+
+      app.io
+        .of('/business')
+        .to(res.order.receiver_id + '')
+        .emit('msg', {
+          type: 'BUSINESS_CANCEL_ORDER',
+          success: true,
+          message: '取消新的订单!',
+          code: ctx.code.STATUS_OK
+        });
 
       ctx.body = {
         success: true,
