@@ -3,7 +3,8 @@ import {
   ACTION_GET_RECIPES,
   ACTION_PLUS_RECIPE,
   ACTION_MINUS_RECIPE,
-  ACTION_CLEAR_RECIPESINCART
+  ACTION_CLEAR_RECIPESINCART,
+  ACTION_VIEW_RECIPE
 } from '../types/recipe';
 
 export default handleActions(
@@ -69,10 +70,17 @@ export default handleActions(
         ...state,
         recipesInCart: {}
       };
+    },
+    [ACTION_VIEW_RECIPE](state, action) {
+      return {
+        ...state,
+        viewRecipe: action.payload
+      };
     }
   },
   {
     recipes: [],
-    recipesInCart: {}
+    recipesInCart: {},
+    viewRecipe: {}
   }
 );

@@ -203,7 +203,7 @@
           wx:key="recipes-item-{{idx}}">
 
           <view class="recipes-item-img">
-            <image src="{{item.info.avatarUrl}}"/>
+            <image src="{{item.info.avatarUrl}}" @tap="handleViewRecipe({{item.info}})"/>
           </view>
           <view class="recipes-item-main">
             <view class="recipes-item-title">
@@ -249,7 +249,8 @@ import {
   asyncGetAllRecipes,
   asyncGetRecipesWithCategoryId,
   asyncPlusRecipeInCart,
-  asyncMinusRecipeInCart
+  asyncMinusRecipeInCart,
+  asyncViewRecipe
 } from '@/store/actions';
 
 import { BASE_API } from '@/const/config';
@@ -284,7 +285,7 @@ import { BASE_API } from '@/const/config';
       return state.recipe.recipes.map(r => ({
         info: {
           ...r,
-          avatarUrl: BASE_API + r.avatar,
+          avatarUrl: BASE_API + r.avatar
         },
         counts: state.recipe.recipesInCart['' + r.id] ? state.recipe.recipesInCart['' + r.id].counts : 0
       }));
@@ -345,6 +346,12 @@ export default class Business extends wepy.page {
     handle2BusinessInfo() {
       wepy.navigateTo({
         url: '/pages/business_info'
+      });
+    },
+    handleViewRecipe(recipe) {
+      getStore().dispatch(asyncViewRecipe(recipe));
+      wepy.navigateTo({
+        url: '/pages/recipe'
       });
     }
   };

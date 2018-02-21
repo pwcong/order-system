@@ -135,7 +135,7 @@
         wx:for="{{recipesInCart}}"
         wx:key="main-item-{{idx}}">
         <view class="main-item-img">
-            <image src="{{item.avatarUrl}}"></image>
+            <image src="{{item.avatarUrl}}" @tap="handleViewRecipe({{item.info}})"></image>
         </view>
         <view class="main-item-content">
 
@@ -193,7 +193,12 @@ import { getStore } from 'wepy-redux';
 
 import Modal from '@/components/modal';
 
-import { asyncPlusRecipeInCart, asyncMinusRecipeInCart, asyncCreateOrder } from '@/store/actions';
+import {
+  asyncPlusRecipeInCart,
+  asyncMinusRecipeInCart,
+  asyncCreateOrder,
+  asyncViewRecipe
+} from '@/store/actions';
 
 import { BASE_API } from '@/const/config';
 
@@ -306,6 +311,12 @@ export default class Cart extends wepy.page {
         });
 
       ctx.submitModalVisiable = false;
+    },
+    handleViewRecipe(recipe) {
+      getStore().dispatch(asyncViewRecipe(recipe));
+      wepy.navigateTo({
+        url: '/pages/recipe'
+      });
     }
   };
 

@@ -1,15 +1,101 @@
 <style lang="scss">
+.banner {
+  position: relative;
+  height: 320rpx;
 
+  .banner-item {
+    height: 320rpx;
+    width: 100%;
+  }
+}
+
+.main {
+  height: calc(100% - 320rpx);
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  box-sizing: border-box;
+  padding: 32rpx;
+
+  background-color: #e5e5e5;
+
+  .main-item {
+    background-color: white;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 32rpx 64rpx;
+
+    border-bottom: 1px solid #ccc;
+
+    &:first-child {
+      border-top-left-radius: 16rpx;
+      border-top-right-radius: 16rpx;
+    }
+
+    &:last-child {
+      border-bottom-left-radius: 16rpx;
+      border-bottom-right-radius: 16rpx;
+    }
+
+    .main-item-title {
+      color: #888;
+      min-width: 128rpx;
+    }
+  }
+
+  #avatar {
+    width: 156rpx;
+    height: 156rpx;
+    border-radius: 24rpx;
+    background-color: white;
+    box-shadow: 0 0 16rpx #ccc;
+  }
+}
 </style>
 <template>
   <view class="container">
+    <view class="banner">
+      <image src="{{viewRecipe.avatarUrl}}" class="banner-item" mode="aspectFill"/>
+    </view>
+    <view class="main">
+      <view class="main-item">
+        <text class="main-item-title">名称</text>
+        <text>{{viewRecipe.name}}</text>
+      </view>
+      <view class="main-item">
+        <text class="main-item-title">单价</text>
+        <text>￥{{viewRecipe.price}}</text>
+      </view>
+      <view class="main-item">
+        <text class="main-item-title">分类</text>
+        <text>{{viewRecipe.recipe_category.name}}</text>
+      </view>
+      <view class="main-item">
+        <text class="main-item-title">简介</text>
+        <text>{{viewRecipe.content}}</text>
+      </view>
+
+    </view>
   </view>
 </template>
 
 <script>
-
 import wepy from 'wepy';
 
+import { connect } from 'wepy-redux';
+
+import { BASE_API } from '@/const/config';
+
+@connect(
+  {
+    viewRecipe(state) {
+      return state.recipe.viewRecipe;
+    }
+  },
+  {}
+)
 export default class Recipe extends wepy.page {
   config = {
     navigationBarTitleText: '菜单详情'

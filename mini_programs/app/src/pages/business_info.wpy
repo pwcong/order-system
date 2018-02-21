@@ -14,7 +14,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
-
+  box-sizing: border-box;
   padding: 32rpx;
 
   background-color: #e5e5e5;
@@ -41,6 +41,7 @@
 
     .main-item-title {
       color: #888;
+      min-width: 128rpx;
     }
   }
 
