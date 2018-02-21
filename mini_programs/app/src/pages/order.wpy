@@ -212,6 +212,9 @@
 
           </view>
 
+          <view class="orders-item-details-row" style="font-size: 28rpx;">
+            订单号<text style="margin-left: 36rpx;">{{item.id}}</text>
+          </view>
         </view>
         <view class="orders-item-action">
           <button wx:if="{{item.status === 0}}" class="btn-pay" @tap="handlePayOrder({{item}})">支付</button>
