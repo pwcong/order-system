@@ -27,16 +27,16 @@ export default class extends wepy.app {
   config = {
     pages: [
       'pages/index',
-      'pages/order',
       'pages/home',
+      'pages/order',
       'pages/order_details',
+      'pages/bill',
       'pages/setting',
       'pages/business',
       'pages/business_info',
       'pages/cart',
       'pages/recipe',
-      'pages/login',
-      'pages/bill'
+      'pages/login'
     ],
     window: {
       backgroundTextStyle: 'light',

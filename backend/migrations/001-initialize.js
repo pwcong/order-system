@@ -267,6 +267,14 @@ module.exports = {
           key: 'id'
         }
       },
+      user_info_id: {
+        type: INTEGER,
+        allowNull: false,
+        references: {
+          model: 'user_infos',
+          key: 'id'
+        }
+      },
       recipe_id: {
         type: INTEGER,
         allowNull: false,

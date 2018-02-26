@@ -24,7 +24,9 @@ export default function(url, method = 'GET', header = {}, data = {}) {
         }
       },
       fail(err) {
-        reject(err);
+        reject({
+          message: err.errMsg
+        });
       }
     });
   });

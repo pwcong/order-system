@@ -67,7 +67,7 @@
     <view class="main">
 
       <view>
-        <image src="{{logoImg}}" style="width: 462rpx; height: 172rpx;"></image>
+        <image src="{{logoImg}}" style="width: 462rpx; height: 156rpx;"></image>
       </view>
       <view wx:if="{{toLogin}}" class="main-form">
         <form @submit="submitLoginForm">

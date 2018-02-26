@@ -138,7 +138,7 @@ class UserService extends Service {
             }
           ]
         });
-        
+
         if (!_user) {
           throw new Error('用户不存在');
         }
@@ -266,6 +266,51 @@ class UserService extends Service {
           user: _user
         });
       } catch (err) {
+        reject({
+          message: err.message
+        });
+      }
+    });
+  }
+
+  async recharge(id, amount) {
+    const { app } = this;
+
+    return new Promise(async (resolve, reject) => {
+      /************ 开启事务 ************/
+      const t = await app.model.transaction();
+
+      try {
+        const _user = await app.model.User.findById(id);
+        if (!_user || _user.status !== 0) {
+          throw new Error('充值账户无效');
+        }
+
+        /************ 更新充值账户 ************/
+        const rechargeAmount = parseFloat(amount);
+        const userBalance = parseFloat(_user.balance);
+
+        _user.balance = userBalance + rechargeAmount;
+        await _user.save({ transaction: t });
+
+        /** ********** 新建充值账单 ************/
+
+        await app.model.Bill.create(
+          {
+            user_id: id,
+            name: '充值',
+            amount: rechargeAmount,
+            type: 0
+          },
+          { transaction: t }
+        );
+
+        await t.commit();
+
+        resolve({});
+      } catch (err) {
+        await t.rollback();
+
         reject({
           message: err.message
         });

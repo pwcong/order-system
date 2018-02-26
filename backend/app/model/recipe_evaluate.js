@@ -17,6 +17,14 @@ module.exports = app => {
         key: 'id'
       }
     },
+    user_info_id: {
+      type: INTEGER,
+      allowNull: false,
+      references: {
+        model: app.model.UserInfo,
+        key: 'id'
+      }
+    },
     recipe_id: {
       type: INTEGER,
       allowNull: false,

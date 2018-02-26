@@ -67,6 +67,8 @@ module.exports = {
         const d = new Date(item.created_at);
 
         switch (true) {
+          case /^all$/.test(f):
+            return true;
           case /^today$/.test(f):
             return (
               now.getFullYear() === d.getFullYear() &&

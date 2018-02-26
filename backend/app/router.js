@@ -9,13 +9,24 @@ module.exports = app => {
   const authTokenMiddleware = middlewares.auth.authToken(app.config.auth);
   const authUserTypeMiddleware = middlewares.auth.authUserType;
 
+  /******** 页面路由 ********/
   router.redirect('/', '/index.html', 302);
   router.redirect('/admin', '/admin/index.html', 302);
   router.redirect('/app', '/app/index.html', 302);
 
+  /******** 测试接口 ********/
   router.get('/test', controller.test.default);
   router.post('/test', controller.test.default);
+  if (app.config.testApi.recharge) {
+    router.post(
+      '/test/recharge',
+      authTokenMiddleware,
+      authUserTypeMiddleware([1]),
+      controller.test.recharge
+    );
+  }
 
+  /******** 正式接口 ********/
   router.post('/user/login', controller.user.login);
   router.post('/user/logout', controller.user.logout);
 
@@ -179,6 +190,18 @@ module.exports = app => {
     authTokenMiddleware,
     authUserTypeMiddleware([1, 2]),
     controller.bill.search
+  );
+  router.get(
+    '/bills/statistics/:filter',
+    authTokenMiddleware,
+    authUserTypeMiddleware([1, 2]),
+    controller.bill.statistics
+  );
+  router.get(
+    '/bills/statistics',
+    authTokenMiddleware,
+    authUserTypeMiddleware([1, 2]),
+    controller.bill.statistics
   );
 
   router.post('/attachment/upload', authTokenMiddleware, controller.attachment.upload);

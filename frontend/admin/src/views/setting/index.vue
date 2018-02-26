@@ -2,7 +2,7 @@
   <div class="setting-container">
 
     <el-row class="banner" :gutter="20">
-      <el-col :span="16">
+      <el-col :sm="24" :md="16" :lg="16" style="margin-bottom: 20px;">
         <el-row>
           <el-col :span="24">
             <el-card>
@@ -54,7 +54,7 @@
 
       </el-col>
 
-      <el-col :span="8">
+      <el-col :sm="24" :md="8" :lg="8">
         <el-card>
           <div slot="header" class="clearfix">
             <span>入口二维码</span>
@@ -79,6 +79,7 @@ import QRCode from 'qrcode';
 import config from '@/const/config.js';
 
 import banner from '@/assets/images/banner.jpg';
+import defaultAvatar from '@/assets/images/avatar.png';
 
 export default {
   name: 'Setting-Preview',
@@ -102,7 +103,7 @@ export default {
     form() {
       const userInfo = this.$store.getters.userInfo;
       return Object.assign({}, userInfo, {
-        avatar: config.BASE_API + userInfo.avatar
+        avatar: userInfo.avatar ? config.BASE_API + userInfo.avatar : defaultAvatar
       });
     }
   },

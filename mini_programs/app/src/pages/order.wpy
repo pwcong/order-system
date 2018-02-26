@@ -290,7 +290,8 @@ const STATUS_VALUE = {
 export default class Order extends wepy.page {
   config = {
     navigationBarTitleText: '我的订单',
-    enablePullDownRefresh: true
+    enablePullDownRefresh: true,
+    backgroundTextStyle: 'dark'
   };
   components = {
     LoadMore

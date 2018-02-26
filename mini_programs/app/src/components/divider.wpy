@@ -1,0 +1,35 @@
+<style lang="scss">
+.divider {
+  width: 100%;
+  padding: 32rpx;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-align: center;
+  box-sizing: border-box;
+  font-size: 36rpx;
+  color: #888;
+}
+</style>
+
+<template>
+  <view class="divider" style="{{style}}">
+    - {{label}} -
+  </view>
+</template>
+<script>
+import wepy from 'wepy';
+
+export default class Divider extends wepy.component {
+  props = {
+    style: {
+      type: [String],
+      default: ''
+    },
+    label: {
+      type: [String],
+      default: ''
+    }
+  };
+}
+</script>

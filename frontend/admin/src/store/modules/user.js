@@ -4,6 +4,8 @@ import { getToken, setToken, removeToken } from '@/utils/auth';
 import io from 'socket.io-client';
 import handler from '@/io/handler';
 
+import { BASE_API } from '@/const/config';
+
 const user = {
   state: {
     checked: false,
@@ -114,7 +116,7 @@ const user = {
 
             commit('USER_SET_USERINFO', userInfo);
 
-            const socket = io('http://127.0.0.1:7001/business', {
+            const socket = io(`${BASE_API}/business`, {
               query: {
                 token: getToken()
               }

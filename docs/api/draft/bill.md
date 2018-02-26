@@ -4,7 +4,7 @@
 
 ## 查询账单
 
-路径：`/bills`
+路径：`/bills/:filter`
 方法: `POST`
 
 请求头：
@@ -51,6 +51,39 @@ curl -X POST \
     "totalNo": 1,
     "pageSize": 50,
     "totalSize": 1
+  }
+}
+```
+
+---
+## 账单统计
+
+路径：`/bills/statistics`
+方法: `GET`
+
+请求头：
+
+* X-Token: 用户令牌
+
+请求示例：
+
+```shell
+curl -X GET \
+  $API_BASE/bills/statistics \
+  -H 'Content-Type: application/json' \
+  -H 'X-Token: 10001:xxxxxxxxxxxxx'
+```
+
+返回值：
+
+```json
+{
+  "success": true,
+  "message": "获取成功",
+  "code": 20000,
+  "payload": {
+    "in": "90.00",
+    "out": "180.00"
   }
 }
 ```

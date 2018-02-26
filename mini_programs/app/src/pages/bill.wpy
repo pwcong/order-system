@@ -1,30 +1,677 @@
 <style lang="scss">
+.main {
+  width: 100%;
+  height: calc(100%);
 
+  background-color: #e5e5e5;
+
+  .info {
+    background-color: white;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16rpx 32rpx;
+
+    button {
+      font-size: 32rpx;
+    }
+
+    .info-balance {
+      max-width: 500rpx;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    text {
+      font-size: 42rpx;
+      font-weight: bold;
+    }
+  }
+
+  .tools {
+    background-color: white;
+    padding: 32rpx 24rpx;
+
+    .tools-info {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      justify-content: space-around;
+
+      padding-bottom: 26rpx;
+      text {
+        font-weight: bold;
+      }
+    }
+
+    .tools-type {
+      display: flex;
+      flex-flow: row nowrap;
+
+      padding: 26rpx 0;
+      border-bottom: 1px dashed #ccc;
+      border-top: 1px dashed #ccc;
+
+      .tools-type-item {
+        flex: 1;
+        padding: 8rpx 16rpx;
+        border: 1px solid #47b248;
+        border-radius: 8rpx;
+        text-align: center;
+        margin: 16rpx;
+        color: #47b248;
+
+        &.active {
+          background-color: #47b248;
+          color: white;
+        }
+      }
+    }
+
+    .tools-filter {
+      margin-top: 26rpx;
+      display: flex;
+      flex-flow: row nowrap;
+
+      .tools-filter-item {
+        flex: 1;
+        padding: 8rpx 16rpx;
+        border: 1px solid #47b248;
+        border-radius: 8rpx;
+        text-align: center;
+        margin: 16rpx;
+        color: #47b248;
+
+        &.active {
+          background-color: #47b248;
+          color: white;
+        }
+      }
+    }
+
+    .tools-picker {
+      .tools-picker-item {
+        display: none;
+
+        view {
+          padding: 16rpx 16rpx;
+          display: flex;
+          flex-flow: row nowrap;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        &.active {
+          display: block;
+        }
+      }
+    }
+  }
+
+  .bills {
+    padding: 24rpx;
+    background-color: white;
+
+    .bills-item {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+
+      padding: 32rpx 0 48rpx 0;
+      position: relative;
+      border-bottom: 1px solid #ccc;
+
+      .bills-item-time {
+        position: absolute;
+        right: 0;
+        bottom: 4rpx;
+        color: #888;
+        font-size: 28rpx;
+      }
+
+      .bills-item-title {
+        flex: 1;
+        max-width: 400rpx;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      .bills-item-amount {
+        flex: 1;
+        font-weight: bold;
+        text-align: right;
+      }
+    }
+  }
+}
+
+.recharge-form {
+  .recharge-form-item {
+    background-color: white;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 32rpx;
+    border-bottom: 1px solid #ccc;
+
+    .recharge-form-item-title {
+      min-width: 128rpx;
+      white-space: nowrap;
+      color: #666;
+    }
+
+    .recharge-form-item-field {
+      flex: 1;
+      text-align: right;
+    }
+
+    image {
+      width: 96rpx;
+      height: 96rpx;
+    }
+
+    label {
+      margin-left: 32rpx;
+    }
+
+    button {
+      font-size: 36rpx;
+    }
+  }
+}
 </style>
 <template>
   <view class="container">
+    <scroll-view class="main" scroll-y bindscrolltolower="handleLoadMore">
+      
+      <view class="info">
+        <view class="info-balance">
+          当前余额：<text>￥{{userBalance}}</text>
+        </view>
+        <view>
+          <button @tap="handleToRecharge" type="primary">充值</button>
+        </view>
+      </view>
+
+      <FilterDivider label="账单筛选"/>
+      <view class="tools">
+        <view class="tools-info">
+          <view>收入：<text style="color: #47B248;">￥{{billsIn}}</text></view>
+          <view>支出：<text style="color: #E64340;">￥{{billsOut}}</text></view>
+        </view>
+        <view class="tools-type">
+          <view class="tools-type-item {{type === 'all' ? 'active' : ''}}" @tap="handleTypeChange('all')">全部</view>
+          <view class="tools-type-item {{type === 'in' ? 'active' : ''}}" @tap="handleTypeChange('in')">收入</view>
+          <view class="tools-type-item {{type === 'out' ? 'active' : ''}}" @tap="handleTypeChange('out')">支出</view>
+        </view>
+
+        <view class="tools-filter">
+          <view class="tools-filter-item {{filter === 'all' ? 'active' : ''}}" @tap="handleFilterChange('all')">全部</view>
+          <view class="tools-filter-item {{filter === 'year' ? 'active' : ''}}" @tap="handleFilterChange('year')">年</view>
+          <view class="tools-filter-item {{filter === 'month' ? 'active' : ''}}" @tap="handleFilterChange('month')">月</view>
+          <view class="tools-filter-item {{filter === 'date' ? 'active' : ''}}" @tap="handleFilterChange('date')">日</view>
+        </view>
+
+        <view class="tools-picker">
+          <view class="tools-picker-item {{filter === 'date' ? 'active' : ''}}">
+            <picker mode="date" value="{{filterD}}" fields="day" @change="handleDateChange">
+              <view>
+                选择日期: <text>{{filterD || '请选择'}}</text>
+              </view>
+            </picker>
+          </view>
+          <view class="tools-picker-item {{filter === 'month' ? 'active' : ''}}">
+            <picker mode="date" value="{{filterM}}" fields="month" @change="handleMonthChange">
+              <view>
+                选择月份: <text>{{filterM || '请选择'}}</text>
+              </view>
+            </picker>
+          </view>
+          <view class="tools-picker-item {{filter === 'year' ? 'active' : ''}}">
+            <picker mode="date" value="{{filterY}}" fields="year" @change="handleYearChange">
+              <view>
+                选择年份: <text>{{filterY || '请选择'}}</text>
+              </view>
+            </picker>
+          </view>
+        </view>
+      </view>
+
+      <BillDivider label="帐单列表"/>
+      <view class="bills">
+
+        <view 
+          wx:for="{{bills}}"
+          wx:key="bills-item-{{idx}}"
+          class="bills-item">
+
+          <view class="bills-item-time">
+            {{item.created_at}}
+          </view>
+          <view class="bills-item-title">
+            {{item.name}}
+          </view>
+          <view class="bills-item-amount" style="color: {{item.type === 0 ? '#47B248' : '#E64340'}}">
+            ￥{{item.amount}}
+          </view>
+
+        </view>
+
+        <view wx:if="{{billsLength <= 0}}" style="background-color: white; text-align: center; font-size: 28rpx; color: #888; padding: 32rpx;">
+          空空如也(*/ω＼*)
+        </view>
+
+        <LoadMore wx:if="{{billsLength > 0}}" :loadingMore.sync="loadingMore" :hasMore.sync="hasMore"/>
+      </view>
+    </scroll-view>
+
+    <Modal :show.sync="rechargeModalVisiable" style="padding: 128rpx 64rpx 0 64rpx;">
+
+      <form class="recharge-form" @submit="rechargeFormSubmit" style="border-radius: 16rpx; overflow: hidden; display: block;">
+        <view class="recharge-form-item">
+          <input class="recharge-form-item-field" style="text-align: left;" type="number" name="amount" placeholder="请输入充值金额" />
+        </view>
+
+        <view class="recharge-form-item" style="border-bottom: none;">
+          <button class="recharge-form-item-field" style="text-align: center; margin-right: 32rpx;" @tap="handleCancelRecharge">取消</button>
+          <button class="recharge-form-item-field" style="text-align: center;" type="primary" formType="submit">充值</button>
+        </view>
+
+
+      </form>
+
+    </Modal>
+
   </view>
 </template>
 
 <script>
 import wepy from 'wepy';
+import { connect } from 'wepy-redux';
 
+import { getStore } from 'wepy-redux';
+import { asyncQueryBalance, asyncGetBills, asyncGetMoreBills, asyncBillsStatistics } from '@/store/actions';
+
+import { BASE_API } from '@/const/config';
+
+import LoadMore from '@/components/loadmore';
+import Divider from '@/components/divider';
+import Modal from '@/components/modal';
+
+import { recharge } from '@/network/api/test';
+
+import * as timeUtils from '@/utils/time.js';
+
+const TYPE_VALUE = {
+  all: [0, 1],
+  in: [0],
+  out: [1]
+};
+
+@connect({
+  userId(state) {
+    return state.user.id;
+  },
+  userCheck(state) {
+    return state.user.check;
+  },
+  userBalance(state) {
+    return (parseFloat(state.user.balance) || 0).toFixed(2);
+  },
+  bills(state) {
+    return (state.bill.bills || []).map(bill => ({
+      ...bill,
+      created_at: timeUtils.formatDateTime(bill.created_at)
+    }));
+  },
+  billsLength(state) {
+    return state.bill.bills.length;
+  },
+  billsIn(state) {
+    return state.bill.in || '0.00';
+  },
+  billsOut(state) {
+    return state.bill.out || '0.00';
+  }
+})
 export default class Bill extends wepy.page {
   config = {
-    navigationBarTitleText: '账单'
+    navigationBarTitleText: '账单',
+    enablePullDownRefresh: true,
+    backgroundTextStyle: 'dark'
   };
-  components = {};
+  components = { LoadMore, FilterDivider: Divider, BillDivider: Divider, Modal };
 
   mixins = [];
 
-  data = {};
+  data = {
+    rechargeModalVisiable: false,
+    amount: '',
+    pageSize: 15,
+    pageNo: 1,
+    filter: 'all',
+    filterD: '',
+    filterM: '',
+    filterY: '',
+    type: 'all',
+    loadingMore: false,
+    hasMore: true
+  };
 
   computed = {};
 
-  methods = {};
+  methods = {
+    handleToRecharge() {
+      this.rechargeModalVisiable = true;
+    },
+    handleCancelRecharge() {
+      this.rechargeModalVisiable = false;
+    },
+    rechargeFormSubmit(e) {
+      const ctx = this;
+      const { amount } = e.detail.value;
+
+      if (!/^(([1-9][0-9]*)|(([0]\.\d{0,2}|[1-9][0-9]*\.\d{0,2})))$/.test(amount)) {
+        wepy.showToast({
+          title: '输入金额有误',
+          icon: 'none'
+        });
+        return;
+      }
+
+      if (parseFloat(amount) > 1000) {
+        wepy.showToast({
+          title: '最大充值金额不能超过1000元',
+          icon: 'none'
+        });
+        return;
+      }
+
+      wepy.showModal({
+        title: '提示',
+        content: '充值接口暂未开放，此次充值操作将通过测试接口完成',
+        showCancel: false,
+        success() {
+          wepy.showLoading({
+            title: '充值中'
+          });
+
+          recharge(wepy.getStorageSync('token'), amount)
+            .then(res => {
+              wepy.hideLoading();
+              wepy.showToast({
+                title: '充值成功',
+                icon: 'success'
+              });
+
+              setTimeout(() => {
+                ctx.pageNo = 0;
+                ctx.$apply();
+                ctx.loadBills();
+                ctx.loadBillsStatistics();
+                ctx.loadBalance();
+              }, 1500);
+            })
+            .catch(err => {
+              wepy.hideLoading();
+
+              wepy.showModal({
+                title: '充值失败',
+                content: err.message,
+                showCancel: false
+              });
+            });
+        }
+      });
+
+      ctx.rechargeModalVisiable = false;
+    },
+
+    handleLoadMore() {
+      const ctx = this;
+
+      if (!ctx.hasMore || ctx.loadingMore) {
+        return;
+      }
+
+      let filter = null;
+      switch (ctx.filter) {
+        case 'all':
+          filter = 'all';
+          break;
+        case 'year':
+          filter = ctx.filterY;
+          break;
+        case 'month':
+          filter = ctx.filterM;
+          break;
+        case 'date':
+          filter = ctx.filterD;
+          break;
+
+        default:
+          filter = 'all';
+          break;
+      }
+
+      ctx.pageNo++;
+
+      ctx.loadingMore = true;
+      getStore()
+        .dispatch(
+          asyncGetMoreBills({
+            token: wepy.getStorageSync('token'),
+            type: TYPE_VALUE[ctx.type],
+            filter,
+            pageSize: ctx.pageSize,
+            pageNo: ctx.pageNo
+          })
+        )
+        .then(res => {
+          wepy.stopPullDownRefresh();
+          ctx.loadingMore = false;
+          ctx.$apply();
+
+          if (res.error) {
+            wepy.showToast({
+              title: res.payload.message,
+              icon: 'none'
+            });
+            return;
+          }
+
+          if ((res.payload.data || []).length < ctx.pageSize) {
+            ctx.hasMore = false;
+          } else {
+            ctx.hasMore = true;
+          }
+          ctx.$apply();
+        });
+    },
+
+    handleFilterChange(filter) {
+      this.filter = filter;
+      this.pageNo = 1;
+      this.loadBills();
+      this.loadBillsStatistics();
+    },
+    handleDateChange(e) {
+      this.filterD = e.detail.value;
+      this.pageNo = 1;
+      this.loadBills();
+      this.loadBillsStatistics();
+    },
+    handleMonthChange(e) {
+      this.filterM = e.detail.value;
+      this.pageNo = 1;
+      this.loadBills();
+      this.loadBillsStatistics();
+    },
+    handleYearChange(e) {
+      this.filterY = e.detail.value;
+      this.pageNo = 1;
+      this.loadBills();
+      this.loadBillsStatistics();
+    },
+    handleTypeChange(type) {
+      this.type = type;
+      this.pageNo = 1;
+      this.loadBills();
+      this.loadBillsStatistics();
+    }
+  };
 
   events = {};
 
-  onLoad() {}
+  initFilter() {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = now.getMonth() + 1;
+    const d = now.getDate();
+    this.filterY = '' + y;
+    this.filterM = '' + y + '-' + timeUtils.formatNum(m);
+    this.filterD = '' + y + '-' + timeUtils.formatNum(m) + '-' + timeUtils.formatNum(d);
+    this.$apply();
+  }
+
+  loadBalance() {
+    getStore()
+      .dispatch(asyncQueryBalance(wepy.getStorageSync('token')))
+      .then(res => {
+        if (res.error) {
+          wepy.showToast({
+            icon: 'none',
+            title: res.payload.message
+          });
+        }
+      });
+  }
+
+  loadBills() {
+    const ctx = this;
+
+    wepy.showLoading({
+      title: '加载中'
+    });
+
+    let filter = null;
+    switch (ctx.filter) {
+      case 'all':
+        filter = 'all';
+        break;
+      case 'year':
+        filter = ctx.filterY;
+        break;
+      case 'month':
+        filter = ctx.filterM;
+        break;
+      case 'date':
+        filter = ctx.filterD;
+        break;
+
+      default:
+        filter = 'all';
+        break;
+    }
+
+    getStore()
+      .dispatch(
+        asyncGetBills({
+          token: wepy.getStorageSync('token'),
+          type: TYPE_VALUE[ctx.type],
+          filter,
+          pageSize: ctx.pageSize,
+          pageNo: ctx.pageNo
+        })
+      )
+      .then(res => {
+        wepy.hideLoading();
+        wepy.stopPullDownRefresh();
+        if (res.error) {
+          wepy.showToast({
+            title: res.payload.message,
+            icon: 'none'
+          });
+          return;
+        }
+
+        if ((res.payload.data || []).length < ctx.pageSize) {
+          ctx.hasMore = false;
+        } else {
+          ctx.hasMore = true;
+        }
+
+        ctx.loadingMore = false;
+        ctx.$apply();
+      });
+  }
+
+  loadBillsStatistics() {
+    const ctx = this;
+
+    let filter = null;
+    switch (ctx.filter) {
+      case 'all':
+        filter = 'all';
+        break;
+      case 'year':
+        filter = ctx.filterY;
+        break;
+      case 'month':
+        filter = ctx.filterM;
+        break;
+      case 'date':
+        filter = ctx.filterD;
+        break;
+
+      default:
+        filter = 'all';
+        break;
+    }
+
+    getStore()
+      .dispatch(
+        asyncBillsStatistics({
+          token: wepy.getStorageSync('token'),
+          filter
+        })
+      )
+      .then(res => {
+        if (res.error) {
+          wepy.showToast({
+            title: res.payload.message,
+            icon: 'none'
+          });
+          return;
+        }
+      });
+  }
+
+  onPullDownRefresh() {
+    const ctx = this;
+
+    ctx.pageNo = 1;
+    ctx.$apply();
+
+    ctx.loadBills();
+  }
+
+  onShow() {
+    this.loadBalance();
+  }
+
+  onLoad() {
+    if (!this.userCheck) {
+      return;
+    }
+
+    this.initFilter();
+    this.loadBills();
+    this.loadBillsStatistics();
+  }
 }
 </script>

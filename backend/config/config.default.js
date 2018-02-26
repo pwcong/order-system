@@ -13,6 +13,11 @@ module.exports = appInfo => {
     csrf: { enable: false }
   };
 
+  // 开启测试接口
+  config.testApi = {
+    recharge: true
+  };
+
   // 启用超级管理员
   config.admin = {
     enable: true,

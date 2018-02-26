@@ -6,7 +6,7 @@
 .info {
   background-color: white;
 
-  height: 224rpx;
+  height: 172rpx;
   width: 100%;
 
   box-sizing: border-box;
@@ -18,13 +18,13 @@
   box-shadow: 0 0 16rpx #ccc;
 
   image {
-    width: 128rpx;
-    height: 128rpx;
+    width: 96rpx;
+    height: 96rpx;
     border-radius: 50%;
   }
 
   .info-nickname {
-    font-size: 48rpx;
+    font-size: 42rpx;
     margin-bottom: 16rpx;
 
     text {
@@ -45,7 +45,7 @@
 
   .info-intro {
     color: #888;
-
+    font-size: 32rpx;
     text {
       overflow: hidden;
       max-width: 380rpx;
@@ -57,7 +57,7 @@
 
 .main {
   margin-top: 32rpx;
-  height: calc(100% - 256rpx);
+  height: calc(100% - 204rpx);
   width: 100%;
   box-sizing: border-box;
   overflow-x: hidden;
@@ -67,7 +67,7 @@
   .main-item {
     background-color: white;
 
-    padding: 32rpx 64rpx 32rpx 18rpx;
+    padding: 24rpx 48rpx 24rpx 18rpx;
 
     transition: background-color 0.3s;
 
@@ -200,10 +200,8 @@ export default class Home extends wepy.page {
       });
     },
     handle2Bill() {
-      wepy.showModal({
-        showCancel: false,
-        title: '提示',
-        content: '账单页正在建设中/(ㄒoㄒ)/~~'
+      wepy.navigateTo({
+        url: '/pages/bill'
       });
     }
   };
