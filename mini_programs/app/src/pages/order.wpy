@@ -60,7 +60,6 @@
   box-sizing: border-box;
   overflow: auto;
   position: relative;
-  box-sizing: border-box;
   padding: 0 16rpx;
   background-color: #e5e5e5;
 
