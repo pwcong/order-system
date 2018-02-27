@@ -1,9 +1,9 @@
 'use strict';
 
 module.exports = app => {
-  const { STRING, INTEGER, DATE, TEXT } = app.Sequelize;
+  const { STRING, INTEGER, BOOLEAN } = app.Sequelize;
 
-  const UserEvaluate = app.model.define('user_evaluate', {
+  const RecipeEvaluation = app.model.define('recipe_evaluation', {
     id: {
       type: INTEGER,
       primaryKey: true,
@@ -29,7 +29,7 @@ module.exports = app => {
       type: INTEGER,
       allowNull: false,
       references: {
-        model: app.model.User,
+        model: app.model.Recipe,
         key: 'id'
       }
     },
@@ -52,6 +52,15 @@ module.exports = app => {
     },
 
     /**
+     * 是否自动评价
+     */
+    is_auto: {
+      type: BOOLEAN,
+      allowNull: false,
+      defaultValue: 0
+    },
+
+    /**
      * 状态
      * 0.正常 1.删除
      */
@@ -62,12 +71,12 @@ module.exports = app => {
     }
   });
 
-  UserEvaluate.associate = function() {
+  RecipeEvaluation.associate = function() {
     this.belongsTo(app.model.UserInfo, {
       as: 'user_info',
       foreignKey: 'user_info_id'
     });
   };
 
-  return UserEvaluate;
+  return RecipeEvaluation;
 };

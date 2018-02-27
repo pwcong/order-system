@@ -184,6 +184,13 @@ module.exports = app => {
   );
   router.post('/order/close/:id', authTokenMiddleware, authUserTypeMiddleware([2]), controller.order.close);
 
+  router.post(
+    '/order/evaluate/:id',
+    authTokenMiddleware,
+    authUserTypeMiddleware([1]),
+    controller.evaluation.evaluateOrder
+  );
+
   router.post('/bills', authTokenMiddleware, authUserTypeMiddleware([1, 2]), controller.bill.search);
   router.post(
     '/bills/:filter',

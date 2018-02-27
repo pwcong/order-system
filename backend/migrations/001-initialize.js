@@ -156,7 +156,7 @@ module.exports = {
     });
 
     /********** 用户点评表 **********/
-    await queryInterface.createTable('user_evaluates', {
+    await queryInterface.createTable('user_evaluations', {
       id: {
         type: INTEGER,
         primaryKey: true,
@@ -210,6 +210,15 @@ module.exports = {
        */
       status: {
         type: INTEGER,
+        allowNull: false,
+        defaultValue: 0
+      },
+
+      /**
+       * 是否自动评价
+       */
+      is_auto: {
+        type: BOOLEAN,
         allowNull: false,
         defaultValue: 0
       },
@@ -324,7 +333,7 @@ module.exports = {
     });
 
     /********** 菜单点评表 **********/
-    await queryInterface.createTable('recipe_evaluates', {
+    await queryInterface.createTable('recipe_evaluations', {
       id: {
         type: INTEGER,
         primaryKey: true,
@@ -370,6 +379,15 @@ module.exports = {
       content: {
         type: STRING,
         allowNull: false
+      },
+
+      /**
+       * 是否自动评价
+       */
+      is_auto: {
+        type: BOOLEAN,
+        allowNull: false,
+        defaultValue: 0
       },
 
       /**
@@ -664,10 +682,10 @@ module.exports = {
     await queryInterface.dropTable('bills');
     await queryInterface.dropTable('orders');
     await queryInterface.dropTable('payment_types');
-    await queryInterface.dropTable('recipe_evaluates');
+    await queryInterface.dropTable('recipe_evaluations');
     await queryInterface.dropTable('recipes');
     await queryInterface.dropTable('recipe_categories');
-    await queryInterface.dropTable('user_evaluates');
+    await queryInterface.dropTable('user_evaluations');
     await queryInterface.dropTable('user_infos');
     await queryInterface.dropTable('users');
     await queryInterface.dropTable('user_types');

@@ -45,11 +45,13 @@ class OrderService extends Service {
             continue;
           }
 
-          details[i].name = _recipe.name;
-          details[i].price = _recipe.price;
-
-          amount += _recipe.price * parseInt(item.counts);
-          recipes.push(_recipe.name + '*' + item.counts);
+          amount += parseFloat(_recipe.price) * parseInt(item.counts);
+          recipes.push({
+            id: parseInt(item.id),
+            counts: item.counts,
+            name: _recipe.name,
+            price: parseFloat(_recipe.price)
+          });
         }
 
         if (recipes.length <= 0) {
@@ -62,8 +64,8 @@ class OrderService extends Service {
           sender_info_id: sender_id,
           receiver_id,
           receiver_info_id: receiver_id,
-          name: recipes.join(' + '),
-          details: JSON.stringify(details),
+          name: recipes.map(r => r.name + '*' + r.counts).join(' + '),
+          details: JSON.stringify(recipes),
           address,
           amount
         });

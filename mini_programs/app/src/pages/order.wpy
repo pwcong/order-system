@@ -91,10 +91,10 @@
 
       .orders-item-status {
         &[data-status='0'] {
-          color: grey;
+          color: #47b248;
         }
         &[data-status='1'] {
-          color: deepskyblue;
+          color: royalblue;
         }
         &[data-status='2'] {
           color: #47b248;
@@ -151,7 +151,7 @@
 
       button {
         display: inline-block;
-        font-size: 24rpx;
+        font-size: 28rpx;
         margin-left: 32rpx;
       }
     }
@@ -195,7 +195,9 @@
             <image src="{{item.avatar}}"></image>
             <text>{{item.businessName}}&gt;</text>
           </view>
-          <text class="orders-item-status" data-status="{{item.status}}">{{item.statusValue}}</text>
+
+          <text class="orders-item-status" wx:if="{{item.status === 0}}" data-status="{{item.status}}">￥{{item.amount}}</text>
+          <text class="orders-item-status" wx:if="{{item.status !== 0}}" data-status="{{item.status}}">{{item.statusValue}}</text>
 
         </view>
         <view class="orders-item-details">

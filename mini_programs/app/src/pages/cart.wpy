@@ -290,7 +290,7 @@ export default class Cart extends wepy.page {
             token: wepy.getStorageSync('token'),
             id: ctx.businessId,
             details: ctx.recipesInCart.map(ric => ({
-              id: ric.id,
+              id: parseInt(ric.id),
               counts: ric.counts
             })),
             address

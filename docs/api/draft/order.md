@@ -7,6 +7,7 @@
 * 取消订单（需客户权限）
 * 完成订单（需客户权限）
 * 关闭订单（需商户权限）
+* 评价订单（需客户权限）
 
 ## 发起订单（需客户权限）
 
@@ -386,6 +387,63 @@ curl -X POST \
     "created_at": "2018-01-18T14:38:38.000Z",
     "updated_at": "2018-01-18T14:50:41.931Z"
   }
+}
+```
+
+---
+
+## 评价订单（需客户权限）
+
+路径：`/order/evaluate/:id`
+
+路径参数：
+
+* id: 订单 id
+
+方法: `POST`
+
+请求头：
+
+* X-Token: 用户令牌
+
+请求参数：
+
+* userEvaluation: 用户评价
+
+  * score: 评分（1-5）
+  * content: 评价内容
+
+* recipeEvaluation: 菜单评价，菜单 ID 作为键值，属性同上
+
+请求示例：
+
+```shell
+curl -X POST \
+  $API_BASE/order/evaluate/66002018011810523630515978 \
+  -H 'Content-Type: application/json' \
+  -H 'X-Token: 10001:73f0799c-ffdd-551c-90c3-cf063e66c0d0' \
+  -d '{
+    "userEvaluation": {
+      "score": 5,
+      "content": "xxx"
+    },
+    "recipeEvaluation": {
+      "1": {
+        "score": 1,
+        "content": "xxx"
+      }
+      ...
+    }
+  }'
+```
+
+返回值：
+
+```json
+{
+  "success": true,
+  "message": "评价成功",
+  "code": 20000
 }
 ```
 
