@@ -1,9 +1,9 @@
 'use strict';
 
 module.exports = app => {
-  const { STRING, INTEGER } = app.Sequelize;
+  const { STRING, INTEGER, DATE, TEXT } = app.Sequelize;
 
-  const RecipeEvaluate = app.model.define('recipe_evaluate', {
+  const UserEvaluate = app.model.define('user_evaluate', {
     id: {
       type: INTEGER,
       primaryKey: true,
@@ -29,7 +29,7 @@ module.exports = app => {
       type: INTEGER,
       allowNull: false,
       references: {
-        model: app.model.Recipe,
+        model: app.model.User,
         key: 'id'
       }
     },
@@ -62,12 +62,12 @@ module.exports = app => {
     }
   });
 
-  RecipeEvaluate.associate = function() {
+  UserEvaluate.associate = function() {
     this.belongsTo(app.model.UserInfo, {
       as: 'user_info',
       foreignKey: 'user_info_id'
     });
   };
 
-  return RecipeEvaluate;
+  return UserEvaluate;
 };

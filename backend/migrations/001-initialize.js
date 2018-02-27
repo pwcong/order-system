@@ -155,6 +155,77 @@ module.exports = {
       }
     });
 
+    /********** 用户点评表 **********/
+    await queryInterface.createTable('user_evaluates', {
+      id: {
+        type: INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
+      user_id: {
+        type: INTEGER,
+        allowNull: false,
+        references: {
+          model: 'users',
+          key: 'id'
+        }
+      },
+      user_info_id: {
+        type: INTEGER,
+        allowNull: false,
+        references: {
+          model: 'user_infos',
+          key: 'id'
+        }
+      },
+      target_id: {
+        type: INTEGER,
+        allowNull: false,
+        references: {
+          model: 'users',
+          key: 'id'
+        }
+      },
+
+      /**
+       * 评分（1-5）
+       */
+      score: {
+        type: INTEGER,
+        allowNull: false,
+        defaultValue: 5
+      },
+
+      /**
+       * 评价
+       */
+      content: {
+        type: STRING,
+        allowNull: false
+      },
+
+      /**
+       * 状态
+       * 0.正常 1.删除
+       */
+      status: {
+        type: INTEGER,
+        allowNull: false,
+        defaultValue: 0
+      },
+
+      created_at: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: new Date()
+      },
+      updated_at: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: new Date()
+      }
+    });
+
     /********** 菜单分类表 **********/
     await queryInterface.createTable('recipe_categories', {
       id: {
@@ -275,7 +346,7 @@ module.exports = {
           key: 'id'
         }
       },
-      recipe_id: {
+      target_id: {
         type: INTEGER,
         allowNull: false,
         references: {
@@ -596,6 +667,7 @@ module.exports = {
     await queryInterface.dropTable('recipe_evaluates');
     await queryInterface.dropTable('recipes');
     await queryInterface.dropTable('recipe_categories');
+    await queryInterface.dropTable('user_evaluates');
     await queryInterface.dropTable('user_infos');
     await queryInterface.dropTable('users');
     await queryInterface.dropTable('user_types');

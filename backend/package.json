@@ -47,9 +47,7 @@
     "autod": "autod",
     "migrate:new": "egg-sequelize migration:create",
     "migrate:up": "egg-sequelize db:migrate",
-    "migrate:up:prod": "cross-env NODE_ENV=production egg-sequelize db:migrate",
-    "migrate:down": "egg-sequelize db:migrate:undo",
-    "migrate:down:all": "egg-sequelize db:migrate:undo:all"
+    "migrate:down": "egg-sequelize db:migrate:undo:all"
   },
   "ci": {
     "version": "8"
