@@ -24,16 +24,15 @@ class UpdateCache extends Subscription {
 
       try {
         const content = jwt.decode(value, config.auth.secret);
-        const { timestamp } = content;
-        if (
-          !timestamp ||
-          !parseInt(timestamp) ||
-          (config.auth.checkExpired &&
-            new Date().getTime() - parseInt(timestamp) >= (config.auth.expiredTime * 1000 || 86400000))
-        ) {
-          await app.redis.del(key);
+
+        if (config.auth.checkExpired) {
+          const { exp } = content;
+          if (!exp || Date.now() / 1000 - exp >= 0) {
+            await app.redis.del(key);
+          }
         }
       } catch (err) {
+        console.log(err.message, value);
         await app.redis.del(key);
       }
     });

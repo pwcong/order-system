@@ -10,63 +10,47 @@ exports.authToken = options => {
   return async (ctx, next) => {
     const token = ctx.get('X-Token');
 
-    if (!token) {
-      ctx.body = {
-        success: false,
-        code: ctx.code.TOKEN_NEEDED,
-        message: '用户令牌缺失，请登录'
-      };
-      return;
-    }
-
     try {
+      if (!token) {
+        throw new Error(ctx.code.TOKEN_NEEDED);
+      }
+
       const value = await ctx.app.redis.get(token);
 
       if (!value) {
-        ctx.body = {
-          success: false,
-          code: ctx.code.TOKEN_EXPIRED,
-          message: '用户令牌失效，请重新登录'
-        };
-        return;
+        throw new Error(ctx.code.TOKEN_EXPIRED);
       }
 
-      const content = jwt.decode(value, options.secret);
+      let content = null;
+
+      try {
+        content = jwt.decode(value, options.secret);
+      } catch (err) {
+        throw new Error(ctx.code.TOKEN_EXPIRED);
+      }
+
+      if (!content) {
+        throw new Error(ctx.code.TOKEN_ERROR);
+      }
 
       const { id, type, timestamp } = content;
 
       if (!id || !type || !timestamp) {
-        ctx.body = {
-          success: false,
-          code: ctx.code.TOKEN_ERROR,
-          message: '用户令牌无效，请重新登录'
-        };
-        return;
+        throw new Error(ctx.code.TOKEN_ERROR);
       }
 
-      if (
-        options.checkExpired &&
-        new Date().getTime() - parseInt(timestamp) >= (options.expiredTime * 1000 || 86400000)
-      ) {
-        ctx.body = {
-          success: false,
-          code: ctx.code.TOKEN_EXPIRED,
-          message: '用户令牌失效，请重新登录'
-        };
-        return;
-      }
-
-      ctx.user = {};
-      ctx.user.id = id;
-      ctx.user.type = type;
-      ctx.user.timestamp = timestamp;
+      ctx.user = {
+        id,
+        type,
+        timestamp
+      };
 
       await next();
     } catch (err) {
       ctx.body = {
         success: false,
-        code: ctx.code.TOKEN_ERROR,
-        message: '用户令牌无效，请登录'
+        code: parseInt(err.message) || 40000,
+        message: '用户令牌验证失败'
       };
     }
   };

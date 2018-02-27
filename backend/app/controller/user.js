@@ -32,21 +32,22 @@ class UserController extends Controller {
       const { id } = res.user;
       const timestamp = new Date().getTime();
 
-      const salt = uuidv1();
-      const _token = uuidv5(id + ':' + type + ':' + timestamp, salt);
+      const _token = uuidv5(id + ':' + type + ':' + timestamp, uuidv1());
 
-      const content = jwt.encode(
-        {
-          id,
-          type,
-          timestamp
-        },
-        config.auth.secret
-      );
+      const content = {
+        id,
+        type,
+        timestamp
+      };
+
+      if (config.auth.checkExpired) {
+        content.exp = Date.now() / 1000 + (config.auth.expiredTime || 86400);
+      }
 
       const token = id + ':' + _token;
+      const encoded = jwt.encode(content, config.auth.secret);
 
-      await app.redis.set(token, content);
+      await app.redis.set(token, encoded);
 
       ctx.body = {
         success: true,
@@ -88,21 +89,23 @@ class UserController extends Controller {
 
       const timestamp = new Date().getTime();
 
-      const salt = uuidv1();
-      const _token = uuidv5(id + ':' + type + ':' + timestamp, salt);
+      const _token = uuidv5(id + ':' + type + ':' + timestamp, uuidv1());
 
-      const content = jwt.encode(
-        {
-          id,
-          type,
-          timestamp
-        },
-        config.auth.secret
-      );
+      const content = {
+        id,
+        type,
+        timestamp
+      };
+
+      if (config.auth.checkExpired) {
+        content.exp = Date.now() / 1000 + (config.auth.expiredTime || 86400);
+      }
 
       const token = id + ':' + _token;
+      const encoded = jwt.encode(content, config.auth.secret);
 
-      await app.redis.set(token, content);
+      await app.redis.set(token, encoded);
+
       ctx.body = {
         success: true,
         message: '登录成功',
@@ -147,12 +150,26 @@ class UserController extends Controller {
    * 验证Token
    */
   async check() {
-    const { ctx, service } = this;
+    const { ctx, service, config, app } = this;
 
     try {
       const token = ctx.get('X-Token');
 
       const { id, type, timestamp } = ctx.user;
+
+      const content = {
+        id,
+        type,
+        timestamp
+      };
+
+      if (config.auth.checkExpired) {
+        content.exp = Date.now() / 1000 + (config.auth.expiredTime || 86400);
+      }
+
+      const encoded = jwt.encode(content, config.auth.secret);
+
+      await app.redis.set(token, encoded);
 
       const res = await service.userInfo.queryById(id);
 

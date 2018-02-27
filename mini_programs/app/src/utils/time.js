@@ -4,11 +4,15 @@
  * @param {Number} l 位数
  */
 export function formatNum(n, l = 2) {
-  return (
-    Array.from(new Array(l - ('' + n).length))
-      .map(() => '0')
-      .join('') + n
-  );
+  try {
+    return (
+      Array.from(new Array(l - ('' + n).length))
+        .map(() => '0')
+        .join('') + n
+    );
+  } catch (err) {
+    return '' + n;
+  }
 }
 
 /**
@@ -16,7 +20,7 @@ export function formatNum(n, l = 2) {
  * @param {String} date
  */
 export function formatDate(date) {
-  const d = new Date();
+  const d = new Date(date);
 
   return `${d.getFullYear()}-${formatNum(d.getMonth() + 1)}-${formatNum(d.getDate())}`;
 }
@@ -26,11 +30,9 @@ export function formatDate(date) {
  * @param {String} datetime
  */
 export function formatDateTime(datetime) {
-  const d = new Date();
+  const d = new Date(datetime);
 
-  const res = `${d.getFullYear()}-${formatNum(d.getMonth() + 1)}-${formatNum(d.getDate())} ${formatNum(
+  return `${d.getFullYear()}-${formatNum(d.getMonth() + 1)}-${formatNum(d.getDate())} ${formatNum(
     d.getHours()
   )}:${formatNum(d.getMinutes())}:${formatNum(d.getSeconds())}`;
-
-  return res;
 }

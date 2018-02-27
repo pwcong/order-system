@@ -304,7 +304,7 @@ import Modal from '@/components/modal';
 
 import { recharge } from '@/network/api/test';
 
-import * as timeUtils from '@/utils/time.js';
+import { formatDateTime, formatNum } from '@/utils/time.js';
 
 const TYPE_VALUE = {
   all: [0, 1],
@@ -325,7 +325,7 @@ const TYPE_VALUE = {
   bills(state) {
     return (state.bill.bills || []).map(bill => ({
       ...bill,
-      created_at: timeUtils.formatDateTime(bill.created_at)
+      created_at: formatDateTime(bill.created_at)
     }));
   },
   billsLength(state) {
@@ -533,8 +533,8 @@ export default class Bill extends wepy.page {
     const m = now.getMonth() + 1;
     const d = now.getDate();
     this.filterY = '' + y;
-    this.filterM = '' + y + '-' + timeUtils.formatNum(m);
-    this.filterD = '' + y + '-' + timeUtils.formatNum(m) + '-' + timeUtils.formatNum(d);
+    this.filterM = '' + y + '-' + formatNum(m);
+    this.filterD = '' + y + '-' + formatNum(m) + '-' + formatNum(d);
     this.$apply();
   }
 
