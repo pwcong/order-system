@@ -61,6 +61,25 @@ module.exports = app => {
     controller.user.remove
   );
 
+  router.post(
+    '/user/lockBusiness/:id',
+    authTokenMiddleware,
+    authUserTypeMiddleware([3]),
+    controller.user.lockBusiness
+  );
+  router.post(
+    '/user/unlockBusiness/:id',
+    authTokenMiddleware,
+    authUserTypeMiddleware([3]),
+    controller.user.unlockBusiness
+  );
+  router.post(
+    '/user/removeBusiness/:id',
+    authTokenMiddleware,
+    authUserTypeMiddleware([3]),
+    controller.user.removeBusiness
+  );
+
   router.get('/user/info', authTokenMiddleware, controller.userInfo.search);
   router.get('/user/info/:id', authTokenMiddleware, controller.userInfo.search);
   router.post('/user/info', authTokenMiddleware, controller.userInfo.modifySelf);

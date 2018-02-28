@@ -297,26 +297,36 @@ class UserService extends Service {
     });
   }
 
-  async lock(id) {
-    return this.changeStatus(id, 1);
+  async lock(id, parent_id) {
+    return this.changeStatus(id, parent_id, 1);
   }
 
-  async unlock(id) {
-    return this.changeStatus(id, 0);
+  async unlock(id, parent_id) {
+    return this.changeStatus(id, parent_id, 0);
   }
 
-  async remove(id) {
-    return this.changeStatus(id, 2);
+  async remove(id, parent_id) {
+    return this.changeStatus(id, parent_id, 2);
   }
 
-  async changeStatus(id, status) {
+  async changeStatus(id, parent_id = null, status) {
     const { app } = this;
 
     return new Promise(async (resolve, reject) => {
       try {
         let _user = null;
 
-        _user = await app.model.User.findById(id);
+        const condition = {
+          id
+        };
+
+        if (parent_id) {
+          condition.parent_id = parent_id;
+        }
+
+        _user = await app.model.User.findOne({
+          where: condition
+        });
 
         if (!_user) {
           throw new Error('用户不存在');

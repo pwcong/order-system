@@ -9,6 +9,10 @@
 * 注销用户（需管理员权限）
 * 查询店家
 * 查询余额
+* 注册店家（需企业权限）
+* 锁定店家（需企业权限）
+* 解锁店家（需企业权限）
+* 注销店家（需企业权限）
 
 ## 用户注册
 
@@ -45,9 +49,13 @@ curl -X POST \
   "payload": {
     "token": "10000:xxxxxxxxxxxxx",
     "id": 10000,
+    "parentId": null,
     "type": 999,
     "timestamp": 1516008115906,
-    "user_info": {
+    "userInfo": {
+      ...
+    },
+    "userSecret": {
       ...
     }
   }
@@ -89,9 +97,13 @@ curl -X POST \
   "payload": {
     "token": "10000:xxxxxxxxxxxxx",
     "id": 10000,
+    "parentId": null,
     "type": 999,
     "timestamp": 1516008115906,
-    "user_info": {
+    "userInfo": {
+      ...
+    },
+    "userSecret": {
       ...
     }
   }
@@ -157,9 +169,13 @@ curl -X POST \
   "message": "验证成功",
   "payload": {
     "id": 10000,
+    "parentId": null,
     "type": 999,
     "timestamp": 1516008115906,
-    "user_info": {
+    "userInfo": {
+      ...
+    },
+    "userSecret": {
       ...
     }
   }
@@ -395,6 +411,173 @@ curl -X POST \
   "message": "修改成功",
   "payload": {
     "balance": "10.00"
+  }
+}
+```
+
+---
+
+## 注册店家（需企业权限）
+
+路径：`/user/registerBusiness`
+
+方法: `POST`
+
+请求头：
+
+* X-Token: 用户令牌
+
+请求参数:
+
+* username: 用户名
+* password: 密码
+
+请求示例：
+
+```shell
+curl -X POST \
+  $API_BASE/user/registerBusiness \
+  -H 'X-Token: 10000:xxxxxxxxxxxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "username": "xxx",
+    "password": "yyy"
+  }'
+```
+
+返回值：
+
+```json
+{
+  "success": true,
+  "message": "注册成功",
+  "code": 20000,
+  "payload": {
+    "token": "10000:xxxxxxxxxxxxx",
+    "id": 10000,
+    "parentId": null,
+    "type": 999,
+    "timestamp": 1516008115906,
+    "userInfo": {
+      ...
+    },
+    "userSecret": {
+      ...
+    }
+  }
+}
+```
+
+---
+
+## 锁定店家（需企业权限）
+
+路径：`/user/lockBusiness/:id`
+
+路径参数：
+
+* id：用户 ID
+
+方法：`POST`
+
+请求头：
+
+* X-Token: 用户令牌
+
+请求示例：
+
+```shell
+curl -X POST \
+  $API_BASE/user/lockBusiness/10001 \
+  -H 'X-Token: 10000:xxxxxxxxxxxxx' \
+  -H 'Content-Type: application/json'
+```
+
+返回值：
+
+```json
+{
+  "success": true,
+  "code": 20000,
+  "message": "锁定成功",
+  "payload": {
+    "id": 10001
+  }
+}
+```
+
+---
+
+## 解锁店家（需企业权限）
+
+路径：`/user/unlockBusiness/:id`
+
+路径参数：
+
+* id：用户 ID
+
+方法：`POST`
+
+请求头：
+
+* X-Token: 用户令牌
+
+请求示例：
+
+```shell
+curl -X POST \
+  $API_BASE/user/unlockBusiness/10001 \
+  -H 'X-Token: 10000:xxxxxxxxxxxxx' \
+  -H 'Content-Type: application/json'
+```
+
+返回值：
+
+```json
+{
+  "success": true,
+  "code": 20000,
+  "message": "解锁成功",
+  "payload": {
+    "id": 10001
+  }
+}
+```
+
+---
+
+## 注销店家（需企业权限）
+
+路径：`/user/removeBusiness/:id`
+
+路径参数：
+
+* id：用户 ID
+
+方法：`POST`
+
+请求头：
+
+* X-Token: 用户令牌
+
+请求示例：
+
+```shell
+curl -X POST \
+  $API_BASE/user/removeBusiness/10001 \
+  -H 'X-Token: 10000:xxxxxxxxxxxxx' \
+  -H 'Content-Type: application/json'
+```
+
+返回值：
+
+```json
+{
+  "success": true,
+  "code": 20000,
+  "message": "注销成功",
+  "payload": {
+    "id": 10001
   }
 }
 ```

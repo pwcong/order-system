@@ -266,6 +266,34 @@ class UserController extends Controller {
   }
 
   /**
+   * 锁定店家
+   */
+  async lockBusiness() {
+    const { ctx, service } = this;
+
+    const { id } = ctx.params;
+    const parent_id = ctx.user.id;
+
+    try {
+      await service.user.lock(id, parent_id);
+      ctx.body = {
+        success: true,
+        message: '锁定成功',
+        code: ctx.code.STATUS_OK,
+        payload: {
+          id
+        }
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
+
+  /**
    * 解锁用户
    */
   async unlock() {
@@ -293,6 +321,35 @@ class UserController extends Controller {
   }
 
   /**
+   * 解锁店家
+   */
+  async unlockBusiness() {
+    const { ctx, service } = this;
+
+    const { id } = ctx.params;
+
+    const parent_id = ctx.user.id;
+
+    try {
+      await service.user.unlock(id, parent_id);
+      ctx.body = {
+        success: true,
+        message: '解锁成功',
+        code: ctx.code.STATUS_OK,
+        payload: {
+          id
+        }
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
+
+  /**
    * 注销用户
    */
   async remove() {
@@ -302,6 +359,35 @@ class UserController extends Controller {
 
     try {
       await service.user.remove(id);
+      ctx.body = {
+        success: true,
+        message: '注销成功',
+        code: ctx.code.STATUS_OK,
+        payload: {
+          id
+        }
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
+
+  /**
+   * 注销店家
+   */
+  async removeBusiness() {
+    const { ctx, service } = this;
+
+    const { id } = ctx.params;
+
+    const parent_id = ctx.user.id;
+
+    try {
+      await service.user.remove(id, parent_id);
       ctx.body = {
         success: true,
         message: '注销成功',
