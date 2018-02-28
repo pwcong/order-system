@@ -13,6 +13,7 @@
 * 锁定店家（需企业权限）
 * 解锁店家（需企业权限）
 * 注销店家（需企业权限）
+* 查询企业旗下店家
 
 ## 用户注册
 
@@ -578,6 +579,64 @@ curl -X POST \
   "message": "注销成功",
   "payload": {
     "id": 10001
+  }
+}
+```
+
+---
+
+## 查询企业旗下店家
+
+路径：`/user/businesses/:id`
+
+路径参数：
+
+* id：用户 ID
+
+其他：
+
+* [x] 支持分页
+
+方法：`GET`
+
+请求示例：
+
+```shell
+curl -X GET \
+  $API_BASE/user/businesses/10001
+```
+
+返回值：
+
+```json
+{
+  "success": true,
+  "code": 20000,
+  "message": "修改成功",
+  "payload": {
+    "data": [
+      {
+        "id": 10007,
+        "type": 2,
+        "userInfo": {
+          "id": 10007,
+          "nickname": "business1",
+          "birthday": null,
+          "sex": 0,
+          "address": "",
+          "contact": "",
+          "intro": "",
+          "avatar": "",
+          "banner": "",
+          "created_at": "2018-02-28T08:22:53.000Z",
+          "updated_at": "2018-02-28T08:22:53.000Z"
+        }
+      }
+    ],
+    "pageNo": 1,
+    "totalNo": 3,
+    "pageSize": 1,
+    "totalSize": 2
   }
 }
 ```

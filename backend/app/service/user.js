@@ -211,6 +211,40 @@ class UserService extends Service {
     });
   }
 
+  async searchByParentId(parent_id) {
+    const { app } = this;
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        let _users = null;
+
+        _users = await app.model.User.findAll({
+          where: {
+            parent_id
+          },
+          include: [
+            {
+              model: app.model.UserInfo,
+              as: 'user_info'
+            },
+            {
+              model: app.model.UserSecret,
+              as: 'user_secret'
+            }
+          ]
+        });
+
+        resolve({
+          users: _users
+        });
+      } catch (err) {
+        reject({
+          message: err.message
+        });
+      }
+    });
+  }
+
   async modifyPWD(id, password) {
     const { app } = this;
 

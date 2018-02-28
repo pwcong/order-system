@@ -239,7 +239,7 @@ class UserController extends Controller {
   }
 
   /**
-   * 锁定用户
+   * 锁定用户（需管理员权限）
    */
   async lock() {
     const { ctx, service } = this;
@@ -266,7 +266,7 @@ class UserController extends Controller {
   }
 
   /**
-   * 锁定店家
+   * 锁定店家（需企业权限）
    */
   async lockBusiness() {
     const { ctx, service } = this;
@@ -294,7 +294,7 @@ class UserController extends Controller {
   }
 
   /**
-   * 解锁用户
+   * 解锁用户（需管理员权限）
    */
   async unlock() {
     const { ctx, service } = this;
@@ -321,7 +321,7 @@ class UserController extends Controller {
   }
 
   /**
-   * 解锁店家
+   * 解锁店家（需企业权限）
    */
   async unlockBusiness() {
     const { ctx, service } = this;
@@ -350,7 +350,7 @@ class UserController extends Controller {
   }
 
   /**
-   * 注销用户
+   * 注销用户（需管理员权限）
    */
   async remove() {
     const { ctx, service } = this;
@@ -377,7 +377,7 @@ class UserController extends Controller {
   }
 
   /**
-   * 注销店家
+   * 注销店家（需企业权限）
    */
   async removeBusiness() {
     const { ctx, service } = this;
@@ -462,6 +462,42 @@ class UserController extends Controller {
           type: res.user.type,
           userInfo: res.user.user_info
         }
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
+
+  /**
+   * 查询企业旗下店家
+   */
+  async searchBusinessOfEnterprise() {
+    const { ctx, service } = this;
+
+    try {
+      const { id } = ctx.params;
+
+      const { pageSize, pageNo } = ctx.query;
+
+      const res = await service.user.searchByParentId(id);
+
+      ctx.body = {
+        success: true,
+        code: ctx.code.STATUS_OK,
+        message: '查询成功',
+        payload: ctx.pager(
+          res.users.map(user => ({
+            id: user.id,
+            type: user.type,
+            userInfo: user.user_info
+          })),
+          pageSize,
+          pageNo
+        )
       };
     } catch (err) {
       ctx.body = {

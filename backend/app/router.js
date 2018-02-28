@@ -33,6 +33,7 @@ module.exports = app => {
   router.post('/user/register', controller.user.register);
 
   router.get('/user/business/:id', controller.user.searchBusiness);
+  router.get('/user/businesses/:id', controller.user.searchBusinessOfEnterprise);
 
   router.post(
     '/user/business/register',
