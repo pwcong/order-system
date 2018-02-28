@@ -30,15 +30,34 @@ module.exports = app => {
   router.post('/user/login', controller.user.login);
   router.post('/user/logout', controller.user.logout);
 
-  router.get('/user/business/:id', controller.user.searchBusiness);
-
   router.post('/user/register', controller.user.register);
 
+  router.get('/user/business/:id', controller.user.searchBusiness);
+
   router.post(
-    '/user/registerBusiness',
+    '/user/business/register',
     authTokenMiddleware,
     authUserTypeMiddleware([3]),
     controller.user.registerBusiness
+  );
+
+  router.post(
+    '/user/business/lock/:id',
+    authTokenMiddleware,
+    authUserTypeMiddleware([3]),
+    controller.user.lockBusiness
+  );
+  router.post(
+    '/user/business/unlock/:id',
+    authTokenMiddleware,
+    authUserTypeMiddleware([3]),
+    controller.user.unlockBusiness
+  );
+  router.post(
+    '/user/business/remove/:id',
+    authTokenMiddleware,
+    authUserTypeMiddleware([3]),
+    controller.user.removeBusiness
   );
 
   router.post('/user/modify/password', authTokenMiddleware, controller.user.modifyPWD);
@@ -59,25 +78,6 @@ module.exports = app => {
     authTokenMiddleware,
     authUserTypeMiddleware([999]),
     controller.user.remove
-  );
-
-  router.post(
-    '/user/lockBusiness/:id',
-    authTokenMiddleware,
-    authUserTypeMiddleware([3]),
-    controller.user.lockBusiness
-  );
-  router.post(
-    '/user/unlockBusiness/:id',
-    authTokenMiddleware,
-    authUserTypeMiddleware([3]),
-    controller.user.unlockBusiness
-  );
-  router.post(
-    '/user/removeBusiness/:id',
-    authTokenMiddleware,
-    authUserTypeMiddleware([3]),
-    controller.user.removeBusiness
   );
 
   router.get('/user/info', authTokenMiddleware, controller.userInfo.search);

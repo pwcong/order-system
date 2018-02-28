@@ -419,7 +419,7 @@ curl -X POST \
 
 ## 注册店家（需企业权限）
 
-路径：`/user/registerBusiness`
+路径：`/user/business/register`
 
 方法: `POST`
 
@@ -436,7 +436,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  $API_BASE/user/registerBusiness \
+  $API_BASE/user/business/register \
   -H 'X-Token: 10000:xxxxxxxxxxxxx' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -472,7 +472,7 @@ curl -X POST \
 
 ## 锁定店家（需企业权限）
 
-路径：`/user/lockBusiness/:id`
+路径：`/user/business/lock/:id`
 
 路径参数：
 
@@ -488,7 +488,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  $API_BASE/user/lockBusiness/10001 \
+  $API_BASE/user/business/lock/10001 \
   -H 'X-Token: 10000:xxxxxxxxxxxxx' \
   -H 'Content-Type: application/json'
 ```
@@ -510,7 +510,7 @@ curl -X POST \
 
 ## 解锁店家（需企业权限）
 
-路径：`/user/unlockBusiness/:id`
+路径：`/user/business/unlock/:id`
 
 路径参数：
 
@@ -526,7 +526,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  $API_BASE/user/unlockBusiness/10001 \
+  $API_BASE/user/business/unlock/10001 \
   -H 'X-Token: 10000:xxxxxxxxxxxxx' \
   -H 'Content-Type: application/json'
 ```
@@ -548,7 +548,7 @@ curl -X POST \
 
 ## 注销店家（需企业权限）
 
-路径：`/user/removeBusiness/:id`
+路径：`/user/business/remove/:id`
 
 路径参数：
 
@@ -564,7 +564,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  $API_BASE/user/removeBusiness/10001 \
+  $API_BASE/user/business/remove/10001 \
   -H 'X-Token: 10000:xxxxxxxxxxxxx' \
   -H 'Content-Type: application/json'
 ```
