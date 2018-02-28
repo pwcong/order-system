@@ -1,16 +1,6 @@
 <style lang="scss">
-.banner {
-  position: relative;
-  height: 320rpx;
-
-  .banner-item {
-    height: 320rpx;
-    width: 100%;
-  }
-}
-
 .main {
-  height: calc(100% - 320rpx);
+  height: calc(100%);
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
@@ -18,6 +8,16 @@
   padding: 32rpx;
 
   background-color: #e5e5e5;
+
+  .banner {
+    position: relative;
+    height: 320rpx;
+
+    .banner-item {
+      height: 320rpx;
+      width: 100%;
+    }
+  }
 
   .main-item {
     background-color: white;
@@ -56,10 +56,13 @@
 </style>
 <template>
   <view class="container">
-    <view class="banner">
-      <image src="{{viewRecipe.avatarUrl}}" class="banner-item" mode="aspectFill"/>
-    </view>
-    <view class="main">
+
+    <scroll-view scroll-y class="main">
+
+      <view class="banner">
+        <image src="{{viewRecipe.avatarUrl}}" class="banner-item" mode="aspectFill"/>
+      </view>
+
       <view class="main-item">
         <text class="main-item-title">名称</text>
         <text>{{viewRecipe.name}}</text>
@@ -77,7 +80,7 @@
         <text>{{viewRecipe.content}}</text>
       </view>
 
-    </view>
+    </scroll-view>
   </view>
 </template>
 

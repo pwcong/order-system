@@ -17,7 +17,7 @@ module.exports = app => {
   /******** 测试接口 ********/
   router.get('/test', controller.test.default);
   router.post('/test', controller.test.default);
-  if (app.config.testApi.recharge) {
+  if (app.config.testApi && app.config.testApi.recharge) {
     router.post(
       '/test/recharge',
       authTokenMiddleware,
@@ -33,6 +33,13 @@ module.exports = app => {
   router.get('/user/business/:id', controller.user.searchBusiness);
 
   router.post('/user/register', controller.user.register);
+
+  router.post(
+    '/user/registerBusiness',
+    authTokenMiddleware,
+    authUserTypeMiddleware([3]),
+    controller.user.registerBusiness
+  );
 
   router.post('/user/modify/password', authTokenMiddleware, controller.user.modifyPWD);
 

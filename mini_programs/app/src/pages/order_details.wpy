@@ -9,6 +9,18 @@
 <script>
 import wepy from 'wepy';
 
+import { connect } from 'wepy-redux';
+
+import { BASE_API } from '@/const/config';
+
+@connect(
+  {
+    selectedOrder(state) {
+      return state.order.selectedOrder;
+    }
+  },
+  {}
+)
 export default class OrderDetails extends wepy.page {
   config = {
     navigationBarTitleText: '菜单详情'

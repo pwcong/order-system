@@ -6,7 +6,7 @@ const uuidv1 = require('uuid/v1');
 const uuidv5 = require('uuid/v5');
 
 class UserService extends Service {
-  async register(username, password, type) {
+  async register(username, password, type, parent_id = null) {
     const { app } = this;
 
     return new Promise(async (resolve, reject) => {
@@ -29,7 +29,8 @@ class UserService extends Service {
             username,
             password: uuidv5(password, salt),
             password_salt: salt,
-            type
+            type,
+            parent_id
           },
           {
             transaction: t

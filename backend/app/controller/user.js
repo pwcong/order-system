@@ -56,8 +56,47 @@ class UserController extends Controller {
         payload: {
           token,
           id: res.user.id,
+          parentId: res.user.parent_id,
           type: res.user.type,
           timestamp,
+          userInfo: res.user.user_info,
+          userSecret: res.user.user_secret
+        }
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
+
+  /**
+   * 注册店家（需企业权限）
+   */
+  async registerBusiness() {
+    const { app, ctx, service, config } = this;
+
+    try {
+      const { username, password } = ctx.request.body;
+
+      if (!username || !password) {
+        throw new Error('参数不足');
+      }
+
+      const parent_id = ctx.user.id;
+
+      const res = await service.user.register(username, password, 2, parent_id);
+
+      ctx.body = {
+        success: true,
+        message: '注册成功',
+        code: ctx.code.STATUS_OK,
+        payload: {
+          id: res.user.id,
+          parentId: res.user.parent_id,
+          type: res.user.type,
           userInfo: res.user.user_info,
           userSecret: res.user.user_secret
         }
@@ -114,6 +153,7 @@ class UserController extends Controller {
         payload: {
           token,
           id: res.user.id,
+          parentId: res.user.parent_id,
           type: res.user.type,
           timestamp,
           userInfo: res.user.user_info,
@@ -181,6 +221,7 @@ class UserController extends Controller {
         message: '验证成功',
         payload: {
           id,
+          parentId: res.user.parent_id,
           type,
           token,
           timestamp,
