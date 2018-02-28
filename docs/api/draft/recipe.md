@@ -11,6 +11,7 @@
 ## 新建菜单（需商户权限）
 
 路径：`/recipe/create`
+
 方法: `POST`
 
 请求参数：
@@ -113,6 +114,11 @@ curl -X POST $API_BASE/recipe/1
 
 方法: `GET`
 
+其他：
+
+* [x] 分页支持
+* [x] 筛选支持
+
 请求示例：
 
 ```shell
@@ -155,6 +161,11 @@ curl -X POST $API_BASE/recipes/10000
 * category_id: 分类 id
 
 方法: `GET`
+
+其他：
+
+* [x] 分页支持
+* [x] 筛选支持
 
 请求示例：
 

@@ -13,7 +13,9 @@
 ## 用户注册
 
 路径：`/user/register`
+
 方法: `POST`
+
 请求参数:
 
 * username: 用户名
@@ -57,7 +59,9 @@ curl -X POST \
 ## 用户登录
 
 路径：`/user/login`
+
 方法：`POST`
+
 请求参数：
 
 * username: 用户名
@@ -99,6 +103,7 @@ curl -X POST \
 ## 用户登出
 
 路径：`/user/logout`
+
 方法：`POST`
 
 请求头：
@@ -128,6 +133,7 @@ curl -X POST \
 ## 验证令牌
 
 路径：`/user/check`
+
 方法：`POST`
 
 请求头：
@@ -165,6 +171,11 @@ curl -X POST \
 ## 锁定用户（需管理员权限）
 
 路径：`/user/lock/:id`
+
+路径参数：
+
+* id：用户 ID
+
 方法：`POST`
 
 请求头：
@@ -198,6 +209,11 @@ curl -X POST \
 ## 解锁用户（需管理员权限）
 
 路径：`/user/unlock/:id`
+
+路径参数：
+
+* id：用户 ID
+
 方法：`POST`
 
 请求头：
@@ -231,6 +247,11 @@ curl -X POST \
 ## 注销用户（需管理员权限）
 
 路径：`/user/remove/:id`
+
+路径参数：
+
+* id：用户 ID
+
 方法：`POST`
 
 请求头：
@@ -264,6 +285,11 @@ curl -X POST \
 ## 修改密码
 
 路径：`/user/modify/password`
+
+路径参数：
+
+* id：用户 ID
+
 方法：`POST`
 
 请求头：
@@ -309,11 +335,12 @@ curl -X POST \
 ## 查询店家
 
 路径：`/user/business/:id`
+
+路径参数：
+
+* id：用户 ID
+
 方法：`GET`
-
-请求参数：
-
-* id: 店家 id
 
 请求示例：
 
@@ -344,12 +371,12 @@ curl -X GET \
 ## 查询余额
 
 路径：`/user/balance`
+
 方法：`POST`
 
 请求头：
 
 * X-Token: 用户令牌
-
 
 请求示例：
 

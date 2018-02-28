@@ -5,7 +5,8 @@ import {
   ACTION_CANCEL_ORDER,
   ACTION_FINISH_ORDER,
   ACTION_CREATE_ORDER,
-  ACTION_GET_MORE_ORDERS
+  ACTION_GET_MORE_ORDERS,
+  ACTION_SELECT_ORDER
 } from '../types/order';
 
 export default handleActions(
@@ -33,9 +34,16 @@ export default handleActions(
         ...state,
         orders: state.orders.concat(action.payload.data)
       };
+    },
+    [ACTION_SELECT_ORDER](state, action) {
+      return {
+        ...state,
+        selectedOrder: action.payload
+      };
     }
   },
   {
-    orders: []
+    orders: [],
+    selectedOrder: {}
   }
 );

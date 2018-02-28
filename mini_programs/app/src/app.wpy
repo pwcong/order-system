@@ -30,6 +30,7 @@ export default class extends wepy.app {
       'pages/home',
       'pages/order',
       'pages/order_details',
+      'pages/order_evaluation',
       'pages/bill',
       'pages/setting',
       'pages/business',

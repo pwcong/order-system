@@ -11,7 +11,12 @@
 ## 获取指定菜单分类信息
 
 路径：`/recipe_category/:id`
+
 方法: `GET`
+
+路径参数：
+
+* id：菜单分类 ID
 
 请求示例：
 
@@ -42,7 +47,16 @@ curl -X GET $API_BASE/recipe_category/1
 ## 获取指定用户菜单分类列表
 
 路径：`/recipe_categories/:id`
+
 方法: `GET`
+
+路径参数：
+
+* id：用户 ID
+
+其他：
+
+* [x] 分页支持
 
 请求示例：
 
@@ -76,6 +90,11 @@ curl -X GET $API_BASE/recipe_categories/10000
 ## 修改指定菜单分类信息（需商户权限）
 
 路径：`/recipe_category/:id`
+
+路径参数：
+
+* id：菜单分类 ID
+
 方法: `POST`
 
 请求头：
@@ -119,6 +138,11 @@ curl -X POST \
 ## 上架指定菜单分类（需商户权限）
 
 路径：`/recipe_category/up/:id`
+
+路径参数：
+
+* id：菜单分类 ID
+
 方法: `POST`
 
 请求头：
@@ -145,11 +169,17 @@ curl -X POST \
   }
 }
 ```
+
 ---
 
 ## 下架指定菜单分类（需商户权限）
 
 路径：`/recipe_category/down/:id`
+
+路径参数：
+
+* id：菜单分类 ID
+
 方法: `POST`
 
 请求头：
@@ -178,9 +208,15 @@ curl -X POST \
 ```
 
 ---
+
 ## 删除指定菜单分类（需商户权限）
 
 路径：`/recipe_category/remove/:id`
+
+路径参数：
+
+* id：菜单分类 ID
+
 方法: `POST`
 
 请求头：
@@ -213,6 +249,11 @@ curl -X POST \
 ## 新建菜单分类（需商户权限）
 
 路径：`/recipe_category/create`
+
+路径参数：
+
+* id：菜单分类 ID
+
 方法: `POST`
 
 请求头：

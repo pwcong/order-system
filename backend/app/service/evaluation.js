@@ -86,6 +86,66 @@ class EvaluationService extends Service {
       }
     });
   }
+
+  async findUserEvaluations(id) {
+    const { app } = this;
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        const _evaluations = await app.model.UserEvaluation.findAll({
+          where: {
+            target_id: id,
+            status: 0
+          },
+          order: [['created_at', 'DESC']],
+          include: [
+            {
+              model: app.model.UserInfo,
+              as: 'user_info'
+            }
+          ]
+        });
+
+        resolve({
+          evaluations: _evaluations
+        });
+      } catch (err) {
+        reject({
+          message: err.message
+        });
+      }
+    });
+  }
+
+  async findRecipeEvaluations(id) {
+    const { app } = this;
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        const _evaluations = await app.model.RecipeEvaluation.findAll({
+          where: {
+            target_id: id,
+            status: 0
+          },
+          order: [['created_at', 'DESC']],
+          include: [
+            {
+              model: app.model.UserInfo,
+              as: 'user_info'
+            }
+          ]
+        });
+
+        resolve({
+          evaluations: _evaluations
+        });
+      } catch (err) {
+        reject({
+          message: err.message
+        });
+      }
+    });
+  }
 }
 
 module.exports = EvaluationService;

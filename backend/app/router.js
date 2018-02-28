@@ -213,6 +213,11 @@ module.exports = app => {
 
   router.post('/attachment/upload', authTokenMiddleware, controller.attachment.upload);
 
+  router.get('/evaluation/user/:id', controller.evaluation.queryUserEvaluations);
+  router.get('/evaluation/user/:id/:filter', controller.evaluation.queryUserEvaluations);
+  router.get('/evaluation/recipe/:id', controller.evaluation.queryRecipeEvaluations);
+  router.get('/evaluation/recipe/:id/:filter', controller.evaluation.queryRecipeEvaluations);
+
   router.get('/system/time', controller.system.time);
 
   app.io.of('/business').route('disconnecting', app.io.controller.business.disconnecting);

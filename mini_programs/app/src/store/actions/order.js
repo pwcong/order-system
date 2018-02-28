@@ -5,7 +5,8 @@ import {
   ACTION_CANCEL_ORDER,
   ACTION_FINISH_ORDER,
   ACTION_CREATE_ORDER,
-  ACTION_GET_MORE_ORDERS
+  ACTION_GET_MORE_ORDERS,
+  ACTION_SELECT_ORDER
 } from '../types/order';
 
 import { createOrder, getOrders, payOrder, cancelOrder, finishOrder } from '@/network/api/order';
@@ -55,3 +56,5 @@ export const asyncCancelOrder = createAction(ACTION_CANCEL_ORDER, params => {
 export const asyncFinishOrder = createAction(ACTION_FINISH_ORDER, params => {
   return finishOrder(params.token, params.id);
 });
+
+export const asyncSelectOrder = createAction(ACTION_SELECT_ORDER, order => order);
