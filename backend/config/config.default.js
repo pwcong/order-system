@@ -21,9 +21,7 @@ module.exports = appInfo => {
   // 启用超级管理员
   config.admin = {
     enable: true,
-    password: '123456',
-    phone: '13800138000',
-    email: 'pwcong@foxmail.com'
+    password: '123456'
   };
 
   // 中间件配置

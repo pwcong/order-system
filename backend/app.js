@@ -40,7 +40,6 @@ async function initDirs(app) {
 }
 
 async function initAdmin(app) {
-
   app.config.admin = app.config.admin || {};
 
   await app.model.User.destroy({
@@ -56,8 +55,6 @@ async function initAdmin(app) {
       id: 10000,
       type: 999,
       username: 'admin',
-      phone: app.config.admin.phone || '13000000000',
-      email: app.config.admin.email || 'admin@admin.com',
       password: uuidv5(app.config.admin.password || 'admin', salt),
       password_salt: salt
     });

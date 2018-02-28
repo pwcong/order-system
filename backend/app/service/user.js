@@ -54,6 +54,19 @@ class UserService extends Service {
           throw new Error('用户信息创建失败');
         }
 
+        const _userSecret = await app.model.UserSecret.create(
+          {
+            id: _user.id
+          },
+          {
+            transaction: t
+          }
+        );
+
+        if (!_userSecret) {
+          throw new Error('用户私密创建失败');
+        }
+
         await t.commit();
 
         const __user = await app.model.User.findByUsername(username);
@@ -135,6 +148,49 @@ class UserService extends Service {
             {
               model: app.model.UserInfo,
               as: 'user_info'
+            },
+            {
+              model: app.model.UserSecret,
+              as: 'user_secret'
+            }
+          ]
+        });
+
+        if (!_user) {
+          throw new Error('用户不存在');
+        }
+
+        resolve({
+          user: _user
+        });
+      } catch (err) {
+        reject({
+          message: err.message
+        });
+      }
+    });
+  }
+
+  async searchByIdWithType(id, type) {
+    const { app } = this;
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        let _user = null;
+
+        _user = await app.model.User.findOne({
+          where: {
+            id,
+            type
+          },
+          include: [
+            {
+              model: app.model.UserInfo,
+              as: 'user_info'
+            },
+            {
+              model: app.model.UserSecret,
+              as: 'user_secret'
             }
           ]
         });
@@ -183,84 +239,6 @@ class UserService extends Service {
         _user.password_salt = salt;
 
         await _user.save();
-
-        resolve({
-          user: _user
-        });
-      } catch (err) {
-        reject({
-          message: err.message
-        });
-      }
-    });
-  }
-
-  async modifyPhone(id, phone) {
-    const { app } = this;
-
-    return new Promise(async (resolve, reject) => {
-      try {
-        let _user = null;
-
-        _user = await app.model.User.findOne({
-          where: { id },
-          include: [
-            {
-              model: app.model.UserInfo,
-              as: 'user_info'
-            }
-          ]
-        });
-
-        if (!_user) {
-          throw new Error('用户不存在');
-        }
-
-        let __user = null;
-        __user = await app.model.User.findByPhone(phone);
-
-        if (__user) {
-          throw new Error('该手机号正在使用中');
-        }
-
-        _user.phone = phone;
-
-        await _user.save();
-
-        resolve({
-          user: _user
-        });
-      } catch (err) {
-        reject({
-          message: err.message
-        });
-      }
-    });
-  }
-
-  async searchBusiness(id) {
-    const { app } = this;
-
-    return new Promise(async (resolve, reject) => {
-      try {
-        let _user = null;
-
-        _user = await app.model.User.findOne({
-          where: {
-            id,
-            type: [2]
-          },
-          include: [
-            {
-              model: app.model.UserInfo,
-              as: 'user_info'
-            }
-          ]
-        });
-
-        if (!_user) {
-          throw new Error('店家不存在');
-        }
 
         resolve({
           user: _user

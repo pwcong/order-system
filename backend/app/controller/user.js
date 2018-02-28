@@ -58,7 +58,8 @@ class UserController extends Controller {
           id: res.user.id,
           type: res.user.type,
           timestamp,
-          userInfo: res.user.user_info
+          userInfo: res.user.user_info,
+          userSecret: res.user.user_secret
         }
       };
     } catch (err) {
@@ -115,7 +116,8 @@ class UserController extends Controller {
           id: res.user.id,
           type: res.user.type,
           timestamp,
-          userInfo: res.user.user_info
+          userInfo: res.user.user_info,
+          userSecret: res.user.user_secret
         }
       };
     } catch (err) {
@@ -171,7 +173,7 @@ class UserController extends Controller {
 
       await app.redis.set(token, encoded);
 
-      const res = await service.userInfo.queryById(id);
+      const res = await service.user.searchById(id);
 
       ctx.body = {
         success: true,
@@ -182,7 +184,8 @@ class UserController extends Controller {
           type,
           token,
           timestamp,
-          userInfo: res.userInfo
+          userInfo: res.user.user_info,
+          userSecret: res.user.user_secret
         }
       };
     } catch (err) {
@@ -321,7 +324,7 @@ class UserController extends Controller {
     try {
       const { id } = ctx.params;
 
-      const res = await service.user.searchBusiness(id);
+      const res = await service.user.searchByIdWithType(id, [2]);
 
       ctx.body = {
         success: true,

@@ -34,6 +34,14 @@ module.exports = {
         autoIncrement: true
       },
 
+      parent_id: {
+        type: INTEGER,
+        references: {
+          model: 'users',
+          key: 'id'
+        }
+      },
+
       /**
        * 用户类型 1.商家 2.客户 3.企业 999.管理员
        */
@@ -48,14 +56,6 @@ module.exports = {
       username: {
         type: STRING,
         allowNull: false,
-        unique: true
-      },
-      phone: {
-        type: STRING,
-        unique: true
-      },
-      email: {
-        type: STRING,
         unique: true
       },
       password: {
@@ -85,6 +85,37 @@ module.exports = {
         defaultValue: 0
       },
 
+      created_at: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: new Date()
+      },
+      updated_at: {
+        type: DATE,
+        allowNull: false,
+        defaultValue: new Date()
+      }
+    });
+
+    /********** 用户私密表 **********/
+    await queryInterface.createTable('user_secrets', {
+      id: {
+        type: INTEGER,
+        primaryKey: true,
+        references: {
+          model: 'users',
+          key: 'id'
+        },
+        allowNull: false
+      },
+      phone: {
+        type: STRING,
+        unique: true
+      },
+      email: {
+        type: STRING,
+        unique: true
+      },
       created_at: {
         type: DATE,
         allowNull: false,
@@ -687,6 +718,7 @@ module.exports = {
     await queryInterface.dropTable('recipe_categories');
     await queryInterface.dropTable('user_evaluations');
     await queryInterface.dropTable('user_infos');
+    await queryInterface.dropTable('user_secrets');
     await queryInterface.dropTable('users');
     await queryInterface.dropTable('user_types');
   }

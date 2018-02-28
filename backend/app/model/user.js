@@ -10,8 +10,16 @@ module.exports = app => {
       autoIncrement: true
     },
 
+    parent_id: {
+      type: INTEGER,
+      references: {
+        model: app.model.User,
+        key: 'id'
+      }
+    },
+
     /**
-     * 用户类型 0.企业 1.商家 2.客户 999.管理员
+     * 用户类型 3.企业 2.商家 1.客户 999.管理员
      */
     type: {
       type: INTEGER,
@@ -24,14 +32,6 @@ module.exports = app => {
     username: {
       type: STRING,
       allowNull: false,
-      unique: true
-    },
-    phone: {
-      type: STRING,
-      unique: true
-    },
-    email: {
-      type: STRING,
       unique: true
     },
     password: {
@@ -65,21 +65,22 @@ module.exports = app => {
   User.associate = function() {
     this.belongsTo(app.model.UserType, { as: 'user_type', foreignKey: 'type' });
     this.hasOne(app.model.UserInfo, { as: 'user_info', foreignKey: 'id' });
+    this.hasOne(app.model.UserSecret, { as: 'user_secret', foreignKey: 'id' });
   };
 
-  User.findByUPE = function(upe) {
-    return this.findOne({
-      where: {
-        [app.model.Op.or]: [{ username: upe }, { phone: upe }, { email: upe }]
-      },
-      include: [
-        {
-          model: app.model.UserInfo,
-          as: 'user_info'
-        }
-      ]
-    });
-  };
+  // User.findByUPE = function(upe) {
+  //   return this.findOne({
+  //     where: {
+  //       [app.model.Op.or]: [{ username: upe }, { phone: upe }, { email: upe }]
+  //     },
+  //     include: [
+  //       {
+  //         model: app.model.UserInfo,
+  //         as: 'user_info'
+  //       }
+  //     ]
+  //   });
+  // };
 
   User.findByUsername = function(username) {
     return this.findOne({
@@ -90,30 +91,10 @@ module.exports = app => {
         {
           model: app.model.UserInfo,
           as: 'user_info'
-        }
-      ]
-    });
-  };
-
-  User.findByPhone = function(phone) {
-    return this.findOne({
-      where: { phone },
-      include: [
+        },
         {
-          model: app.model.UserInfo,
-          as: 'user_info'
-        }
-      ]
-    });
-  };
-
-  User.findByEmail = function(email) {
-    return this.findOne({
-      where: { email },
-      include: [
-        {
-          model: app.model.UserInfo,
-          as: 'user_info'
+          model: app.model.UserSecret,
+          as: 'user_secret'
         }
       ]
     });
