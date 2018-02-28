@@ -32,7 +32,7 @@ module.exports = appInfo => {
   // 静态文件路由配置
   config.static = {
     prefix: '/',
-    dir: path.join(appInfo.baseDir || '', 'public')
+    dir: path.join(appInfo.baseDir || __dirname + '/..', 'public')
   };
 
   config.bodyParser = {
@@ -94,6 +94,21 @@ module.exports = appInfo => {
       port: 6379,
       password: '',
       db: 1
+    }
+  };
+
+  // 业务配置
+  config.service = {
+    // 自动完成订单（已支付状态）
+    auto_finish_order: {
+      enable: true,
+      deadline: 86400
+    },
+
+    // 自动评价订单（已完成状态）
+    auto_evaluate_order: {
+      enable: true,
+      deadline: 592200
     }
   };
 

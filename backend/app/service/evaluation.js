@@ -87,6 +87,88 @@ class EvaluationService extends Service {
     });
   }
 
+  async autoEvaluateOrder() {
+    const { app, config } = this;
+
+    let deadline = 592200;
+    if (config.service && config.service.auto_evaluate_order) {
+      deadline = config.service.auto_evaluate_order.deadline || 592200;
+    }
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        const _orders = await app.model.Order.findAll({
+          where: {
+            has_finished: true,
+            has_evaluated: false
+          }
+        });
+
+        let i = 0,
+          l = _orders.length || 0;
+
+        for (i; i < l; i++) {
+          /************ 开启事务 ************/
+          const _order = _orders[i];
+
+          if (Date.now() / 1000 - _order.updated_at / 1000 < deadline) {
+            continue;
+          }
+
+          const t = await app.model.transaction();
+
+          try {
+            /************ 更新订单状态 ************/
+            _order.has_evaluated = true;
+            await _order.save({ transaction: t });
+
+            /************ 新建商家评价 ************/
+            await app.model.UserEvaluation.create(
+              {
+                user_id: _order.sender_id,
+                user_info_id: _order.sender_id,
+                target_id: _order.receiver_id,
+                score: 5,
+                content: '暂无评价',
+                is_auto: true
+              },
+              { transaction: t }
+            );
+
+            /************ 新建菜单评价 ************/
+            const orderDetails = JSON.parse(_order.details);
+            let _i = 0,
+              _l = orderDetails.length || 0;
+            for (_i; _i < _l; _i++) {
+              const _recipeId = orderDetails[_i].id;
+
+              await app.model.RecipeEvaluation.create(
+                {
+                  user_id: _order.sender_id,
+                  user_info_id: _order.sender_id,
+                  target_id: _recipeId,
+                  score: 5,
+                  content: '暂无评价',
+                  is_auto: true
+                },
+                { transaction: t }
+              );
+            }
+
+            await t.commit();
+          } catch (err) {
+            await t.rollback();
+          }
+        }
+        resolve();
+      } catch (err) {
+        reject({
+          message: err.message
+        });
+      }
+    });
+  }
+
   async findUserEvaluations(id) {
     const { app } = this;
 

@@ -344,6 +344,47 @@ class OrderService extends Service {
     });
   }
 
+  async autoFinish() {
+    const { app, config } = this;
+
+    let deadline = 86400;
+    if (config.service && config.service.auto_finish_order) {
+      deadline = config.service.auto_finish_order.deadline || 86400;
+    }
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        const _orders = await app.model.Order.findAll({
+          where: {
+            status: [1],
+            has_finished: false
+          }
+        });
+
+        let i = 0,
+          l = _orders.length || 0;
+
+        for (i; i < l; i++) {
+          const _order = _orders[i];
+
+          if (Date.now() / 1000 - _order.updated_at / 1000 >= deadline) {
+            _order.status = 2;
+            _order.has_finished = true;
+            try {
+              await _order.save();
+            } catch (err) {}
+          }
+        }
+
+        resolve();
+      } catch (err) {
+        reject({
+          message: err.message
+        });
+      }
+    });
+  }
+
   async confirm(id, receiver_id) {
     const { app } = this;
 
