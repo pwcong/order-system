@@ -210,20 +210,20 @@ module.exports = app => {
     controller.order.getReceivedListStatistics
   );
   router.get(
-    '/statistics/orders/:filter',
+    '/statistics/order/:filter',
     authTokenMiddleware,
     authUserTypeMiddleware([2]),
     controller.order.getReceivedListStatistics
   );
 
   router.post(
-    '/statistics/orders',
+    '/statistics/order',
     authTokenMiddleware,
     authUserTypeMiddleware([3]),
     controller.order.getSpecialReceivedListStatistics
   );
   router.post(
-    '/statistics/orders/:filter',
+    '/statistics/order/:filter',
     authTokenMiddleware,
     authUserTypeMiddleware([3]),
     controller.order.getSpecialReceivedListStatistics

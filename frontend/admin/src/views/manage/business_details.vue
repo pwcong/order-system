@@ -47,20 +47,20 @@
           <el-form class="form" label-width="80px">
             <el-form-item label="头像：">
               <span class="avatar" :style="{
-                backgroundImage: `url(${userInfo.avatarUrl})`
+                backgroundImage: `url(${businessInfo.avatarUrl})`
               }"></span>
             </el-form-item>
             <el-form-item label="名称：">
-              <span>{{userInfo.nickname}}</span>
+              <span>{{businessInfo.nickname}}</span>
             </el-form-item>
             <el-form-item label="地址：">
-              <span>{{userInfo.address}}</span>
+              <span>{{businessInfo.address}}</span>
             </el-form-item>
             <el-form-item label="联系：">
-              <span>{{userInfo.contact}}</span>
+              <span>{{businessInfo.contact}}</span>
             </el-form-item>
             <el-form-item label="简介：">
-              <span>{{userInfo.intro}}</span>
+              <span>{{businessInfo.intro}}</span>
             </el-form-item>
           </el-form>
         </el-card>
@@ -72,6 +72,8 @@
 <script>
 import banner from '@/assets/images/banner.jpg';
 import defaultAvatar from '@/assets/images/avatar.png';
+
+import { queryBusinessBillStatistics, queryBusinessOrderStatistics } from '@/api/statistics';
 
 import config from '@/const/config';
 
@@ -106,47 +108,64 @@ export default {
         return [banner];
       }
     },
-    userInfo() {
+    businessInfo() {
       try {
-        const _userInfo = this.$store.getters.selectedBusiness.userInfo;
-        return Object.assign({}, _userInfo, {
-          avatarUrl: _userInfo.avatar ? config.BASE_API + _userInfo.avatar : defaultAvatar
+        const _businessInfo = this.$store.getters.selectedBusiness.userInfo;
+        return Object.assign({}, _businessInfo, {
+          avatarUrl: _businessInfo.avatar ? config.BASE_API + _businessInfo.avatar : defaultAvatar
         });
       } catch (err) {
         return {};
       }
+    },
+    businessId() {
+      try {
+        return this.$store.getters.selectedBusiness.id;
+      } catch (err) {
+        return 0;
+      }
     }
   },
   methods: {
-    async initCharts() {
+    initCharts() {
       const ctx = this;
 
       try {
-        ctx.todayOrderChart.data.rows = [
-          {
-            type: '进行中',
-            counts: 0
-          },
-          {
-            type: '已完成',
-            counts: 0
-          },
-          {
-            type: '已取消',
-            counts: 0
-          }
-        ];
+        queryBusinessBillStatistics([ctx.businessId], 'today')
+          .then(res => {
+            const billStatistics = res.payload;
 
-        ctx.todayBillChart.data.rows = [
-          {
-            type: '收款',
-            amount: 0
-          },
-          {
-            type: '退款',
-            amount: 0
-          }
-        ];
+            ctx.todayBillChart.data.rows = [
+              {
+                type: '收款',
+                amount: billStatistics.in
+              },
+              {
+                type: '退款',
+                amount: billStatistics.out
+              }
+            ];
+          })
+          .catch(err => {});
+        queryBusinessOrderStatistics([ctx.businessId], 'today')
+          .then(res => {
+            const orderStatistics = res.payload;
+            ctx.todayOrderChart.data.rows = [
+              {
+                type: '进行中',
+                counts: orderStatistics.ingCounts
+              },
+              {
+                type: '已完成',
+                counts: orderStatistics.finishedCounts
+              },
+              {
+                type: '已取消',
+                counts: orderStatistics.canceledCounts
+              }
+            ];
+          })
+          .catch(err => {});
       } catch (err) {}
     }
   },
