@@ -1,6 +1,9 @@
 const getters = {
   /****** app ******/
   sidebar: state => state.app.sidebar,
+  /****** 路由 ******/
+  addRoutes: state => state.permission.addRoutes,
+  routes: state => state.permission.routes,
 
   /****** 用户 ******/
   socket: state => state.user.socket,

@@ -22,7 +22,7 @@ Vue.use(VCharts);
 
 Vue.config.productionTip = false;
 
-new Vue({
+window.vm = new Vue({
   el: '#app',
   router,
   store,

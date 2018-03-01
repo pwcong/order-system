@@ -20,8 +20,6 @@ import Layout from '@/views/layout/Layout';
 **/
 export const constantRouterMap = [
   { path: '/login', component: _import('login/index'), hidden: true },
-  { path: '/404', component: _import('404'), hidden: true },
-
   {
     path: '/',
     component: Layout,
@@ -35,7 +33,10 @@ export const constantRouterMap = [
       }
     ]
   },
+  { path: '/404', component: _import('404'), hidden: true }
+];
 
+export const businessRouterMap = [
   {
     path: '/order',
     component: Layout,
@@ -98,7 +99,29 @@ export const constantRouterMap = [
       }
     ]
   },
+  { path: '*', redirect: '/404', hidden: true }
+];
 
+export const enterpriseRouterMap = [
+  {
+    path: '/setting',
+    component: Layout,
+    meta: { title: '设置', icon: 'setting' },
+    children: [
+      {
+        path: 'index',
+        name: 'Setting-Preview',
+        component: _import('setting/index'),
+        meta: { title: '预览', icon: 'eye' }
+      },
+      {
+        path: 'edit',
+        name: 'Setting-Edit',
+        component: _import('setting/edit'),
+        meta: { title: '编辑', icon: 'edit' }
+      }
+    ]
+  },
   { path: '*', redirect: '/404', hidden: true }
 ];
 

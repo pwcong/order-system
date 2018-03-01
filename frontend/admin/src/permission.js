@@ -20,12 +20,10 @@ router.beforeEach((to, from, next) => {
       store
         .dispatch('Check')
         .then(res => {
-          if (to.path === '/login') {
-            next({ path: '/' });
-            NProgress.done();
-          } else {
-            next();
-          }
+          store.dispatch('GenerateRoutes', res.payload.type).then(() => {
+            router.addRoutes(store.getters.addRoutes);
+            next({ ...to, replace: true });
+          });
         })
         .catch(err => {
           next('/login');
