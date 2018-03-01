@@ -13,7 +13,7 @@
         <a @click="showCustomerMessage" class="entry" style="background-color: #3EBCC8">
           <div>我是客户</div>
         </a>
-        <a @click="showEnterpriseMessage" class="entry" style="background-color: #744E37">
+        <a :href="adminIndexUrl" class="entry" style="background-color: #744E37">
           <div>我是企业</div>
         </a>
 
@@ -349,13 +349,6 @@ export default {
     Modal
   },
   methods: {
-    showEnterpriseMessage() {
-      MessageBox({
-        title: '/(ㄒoㄒ)/~~',
-        message: '企业入口还在努力建设中。',
-        showCancelButton: true
-      });
-    },
     showCustomerMessage() {
       MessageBox({
         title: '/(ㄒoㄒ)/~~',
