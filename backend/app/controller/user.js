@@ -81,7 +81,7 @@ class UserController extends Controller {
     try {
       const { username, password, userInfo } = ctx.request.body;
 
-      if (!username || !password || !userInfo) {
+      if (!username || !password) {
         throw new Error('参数不足');
       }
 

@@ -1,8 +1,9 @@
 <template>
   <div class="manage-container">
     <el-row class="row row-condition">
-      <el-col :span="4" :offset="20" style="text-align: right;">
-         <el-button type="primary" round @click="loadBusinesses()">刷新</el-button>
+      <el-col :span="24" style="text-align: right;">
+        <el-button type="success" round icon="el-icon-plus" @click="handleAddBusiness">新建</el-button>
+        <el-button type="primary" round @click="loadBusinesses()">刷新</el-button>
       </el-col>
     </el-row>
 
@@ -42,13 +43,13 @@
               <el-button
                 v-if="scope.row.status === 0"
                 @click="handleLockBusiness(scope.row)"
-                icon="el-icon-minus"
+                icon="el-icon-download"
                 type="warning"
                 size="mini">锁定</el-button>
               <el-button
                 v-if="scope.row.status === 1"
                 @click="handleUnLockBusiness(scope.row)"
-                icon="el-icon-plus"
+                icon="el-icon-upload2"
                 type="primary"
                 size="mini">解锁</el-button>
               <el-button
@@ -57,28 +58,6 @@
                 icon="el-icon-close"
                 type="danger"
                 size="mini">注销</el-button>
-              <!-- <el-button
-                @click="handleShowOrderContent(scope.row)"
-                icon="el-icon-view"
-                size="mini">详情</el-button>
-              <el-button
-                v-if="scope.row.statusValue === 0"
-                @click="handleConfirmOrder(scope.row)"
-                icon="el-icon-star-on"
-                type="primary"
-                size="mini">支付</el-button>
-              <el-button
-                v-if="[1].indexOf(scope.row.statusValue) >= 0"
-                @click="handleFinishOrder(scope.row)"
-                size="mini"
-                icon="el-icon-check"
-                type="success">完成</el-button>
-              <el-button
-                v-if="[0, 1, 3].indexOf(scope.row.statusValue) >= 0"
-                @click="handleCancelOrder(scope.row)"
-                size="mini"
-                icon="el-icon-close"
-                type="danger">取消</el-button> -->
             </template>
 
           </el-table-column>
@@ -105,6 +84,30 @@
       </el-col>
     </el-row>
 
+    <el-dialog
+      title="新增店家"
+      :visible.sync="newDialogVisible"
+      width="40%">
+
+      <el-form ref="newForm" label-width="80px" :rules="newRules" :model="newForm">
+        <el-form-item label="用户名：" prop="username">
+          <el-input v-model="newForm.username"></el-input>
+        </el-form-item>
+        <el-form-item label="密码：" prop="password1">
+          <el-input v-model="newForm.password1" type="password"></el-input>
+        </el-form-item>
+        <el-form-item label="" prop="password2">
+          <el-input v-model="newForm.password2" type="password">
+          </el-input>
+        </el-form-item>
+      </el-form>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="handleCancelAddBusiness">取 消</el-button>
+        <el-button type="primary" @click="handleSubmitAddBusiness">确 定</el-button>
+      </span>
+    </el-dialog>
+
     <el-dialog :visible.sync="dialogVisible">
       <img width="100%" :src="dialogImageUrl" alt="">
     </el-dialog>
@@ -113,8 +116,7 @@
 </template>
 
 <script>
-import { lockBusinesses, unlockBusinesses, removeBusinesses } from '@/api/manage';
-// import { getInfo } from '@/api/user';
+import { registerBusinesses, lockBusinesses, unlockBusinesses, removeBusinesses } from '@/api/manage';
 
 import config from '@/const/config';
 
@@ -126,6 +128,29 @@ const BUSINESS_STATUS = {
 export default {
   name: 'Manage-Businesses',
   data() {
+    const validatePass1 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'));
+      } else {
+        if (value.length < 5) {
+          callback(new Error('密码不能小于5位'));
+        } else if (this.newForm.password1 !== '') {
+          this.$refs.newForm.validateField('password2');
+        }
+        callback();
+      }
+    };
+
+    const validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'));
+      } else if (value !== this.newForm.password1) {
+        callback(new Error('两次输入密码不一致!'));
+      } else {
+        callback();
+      }
+    };
+
     return {
       pageNo: 1,
       pageSize: 15,
@@ -133,10 +158,52 @@ export default {
       loading: false,
 
       dialogVisible: false,
-      dialogImageUrl: ''
+      dialogImageUrl: '',
+
+      newForm: {},
+      newDialogVisible: false,
+      newRules: {
+        username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+        password1: [{ required: true, validator: validatePass1, trigger: 'blur' }],
+        password2: [{ required: true, validator: validatePass2, trigger: 'blur' }]
+      }
     };
   },
   methods: {
+    handleAddBusiness() {
+      const ctx = this;
+      ctx.newDialogVisible = true;
+      ctx.newForm = {
+        userId: {},
+        username: '',
+        password1: '',
+        password2: ''
+      };
+    },
+    handleSubmitAddBusiness() {
+      const ctx = this;
+      ctx.$refs.newForm.validate(valid => {
+        if (valid) {
+          registerBusinesses(ctx.newForm.username, ctx.newForm.password1, {})
+            .then(res => {
+              ctx.$message({
+                message: '新增成功!',
+                type: 'success'
+              });
+              ctx.newDialogVisible = false;
+              ctx.pageNo = 1;
+              ctx.loadBusinesses();
+            })
+            .catch(err => {});
+        } else {
+          return false;
+        }
+      });
+    },
+    handleCancelAddBusiness() {
+      this.$refs.newForm.resetFields();
+      this.newDialogVisible = false;
+    },
     handlePictureCardPreview(url) {
       this.dialogImageUrl = url;
       this.dialogVisible = true;

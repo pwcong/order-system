@@ -161,8 +161,8 @@ export default {
       modifyForm: {},
       modifyDialogVisible: false,
       modifyRules: {
-        pwd1: [{ validator: validatePass1, trigger: 'blur' }],
-        pwd2: [{ validator: validatePass2, trigger: 'blur' }]
+        pwd1: [{ required: true, validator: validatePass1, trigger: 'blur' }],
+        pwd2: [{ required: true, validator: validatePass2, trigger: 'blur' }]
       }
     };
   },
