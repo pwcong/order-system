@@ -216,6 +216,19 @@ module.exports = app => {
     controller.order.getReceivedListStatistics
   );
 
+  router.get(
+    '/orders/statistics/:id',
+    authTokenMiddleware,
+    authUserTypeMiddleware([3]),
+    controller.order.getSpecialReceivedListStatistics
+  );
+  router.get(
+    '/orders/statistics/:id/:filter',
+    authTokenMiddleware,
+    authUserTypeMiddleware([3]),
+    controller.order.getSpecialReceivedListStatistics
+  );
+
   router.post(
     '/order/confirm/:id',
     authTokenMiddleware,

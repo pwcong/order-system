@@ -120,11 +120,18 @@ class OrderService extends Service {
     });
   }
 
-  async findReceivedOrdersWithStatus(receiver_id, status) {
+  async findReceivedOrdersWithStatus(receiver_id, status, parent_id = null) {
     const { app } = this;
 
     return new Promise(async (resolve, reject) => {
       try {
+        if (parent_id) {
+          const _receiver = await app.model.User.findById(receiver_id);
+          if (!_receiver || _receiver.parent_id !== parent_id) {
+            throw new Error('没有权限');
+          }
+        }
+
         const condition = {
           receiver_id
         };

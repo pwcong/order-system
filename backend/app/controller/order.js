@@ -115,12 +115,65 @@ class OrderController extends Controller {
     const { ctx, service } = this;
 
     try {
-      const { status } = ctx.request.body;
       const { filter } = ctx.params;
 
       const receiver_id = ctx.user.id;
 
       const res = await service.order.findReceivedOrdersWithStatus(receiver_id, [0, 1, 2, 3, 4]);
+      const orders = ctx.filter(res.orders, filter);
+
+      let ingCounts = 0,
+        canceledCounts = 0,
+        finishedCounts = 0;
+      orders.forEach((order, idx) => {
+        switch (order.status) {
+          case 0:
+          case 1:
+          case 3:
+            ingCounts++;
+            break;
+          case 2:
+            finishedCounts++;
+            break;
+          case 4:
+            canceledCounts++;
+            break;
+          default:
+            break;
+        }
+      });
+
+      ctx.body = {
+        success: true,
+        message: '获取成功',
+        code: ctx.code.STATUS_OK,
+        payload: {
+          ingCounts,
+          canceledCounts,
+          finishedCounts
+        }
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
+
+  /**
+   * 获取指定店家接收的订单统计（需企业权限）
+   */
+  async getSpecialReceivedListStatistics() {
+    const { ctx, service } = this;
+
+    try {
+      const { filter, id } = ctx.params;
+
+      const parent_id = ctx.user.id;
+
+      const res = await service.order.findReceivedOrdersWithStatus(id, [0, 1, 2, 3, 4], parent_id);
       const orders = ctx.filter(res.orders, filter);
 
       let ingCounts = 0,

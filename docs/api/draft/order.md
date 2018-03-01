@@ -4,6 +4,7 @@
 * 获取订单列表（需客户权限）
 * 获取订单列表（需商户权限）
 * 获取订单统计信息（需商户权限）
+* 获取指定店家订单统计信息（需企业权限）
 * 支付订单（需客户权限）
 * 取消订单（需客户权限）
 * 完成订单（需客户权限）
@@ -220,8 +221,51 @@ curl -X POST \
 请求示例：
 
 ```shell
-curl -X POST \
+curl -X GET \
   $API_BASE/orders/received/statistics \
+  -H 'X-Token: 10002:57ee5272-f7e2-54ee-b103-d78ce5d65320'
+```
+
+返回值：
+
+```json
+{
+  "success": true,
+  "message": "获取成功",
+  "code": 20000,
+  "payload": {
+    "ingCounts": 0,
+    "canceledCounts": 0,
+    "finishedCounts": 0
+  }
+}
+```
+
+---
+
+## 获取指定店家订单统计信息（需企业权限）
+
+路径：`/orders/statistics/:id`
+
+路径参数：
+
+* id：用户 ID
+
+方法: `GET`
+
+请求头：
+
+* X-Token: 用户令牌
+
+其他：
+
+* [x] 筛选支持
+
+请求示例：
+
+```shell
+curl -X GET \
+  $API_BASE/orders/statistics/10003 \
   -H 'X-Token: 10002:57ee5272-f7e2-54ee-b103-d78ce5d65320'
 ```
 
