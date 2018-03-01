@@ -26,6 +26,7 @@
 * username: 用户名
 * password: 密码
 * type: 用户类型，1.客户 2.店家 3.企业
+* userInfo: 用户信息（可选）
 
 请求示例：
 
@@ -36,7 +37,10 @@ curl -X POST \
   -d '{
     "username": "xxx",
     "password": "yyy",
-    "type": "1"
+    "type": "1",
+    "userInfo": {
+      ...
+    }
   }'
 ```
 
@@ -376,6 +380,7 @@ curl -X GET \
   "payload": {
     "id": 10001,
     "type": 2,
+    "status": 0,
     "user_info": {
       ...
     }
@@ -432,6 +437,7 @@ curl -X POST \
 
 * username: 用户名
 * password: 密码
+* userInfo: 店家信息
 
 请求示例：
 
@@ -442,7 +448,10 @@ curl -X POST \
   -H 'Content-Type: application/json' \
   -d '{
     "username": "xxx",
-    "password": "yyy"
+    "password": "yyy",
+    "userInfo": {
+      "nickname": "测试小店"
+    }
   }'
 ```
 
@@ -618,6 +627,7 @@ curl -X GET \
       {
         "id": 10007,
         "type": 2,
+        "status": 0,
         "userInfo": {
           "id": 10007,
           "nickname": "business1",

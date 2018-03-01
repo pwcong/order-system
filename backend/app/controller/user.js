@@ -15,7 +15,7 @@ class UserController extends Controller {
     const { app, ctx, service, config } = this;
 
     try {
-      const { username, password, type } = ctx.request.body;
+      const { username, password, type, userInfo } = ctx.request.body;
 
       if (!username || !password || !type) {
         throw new Error('参数不足');
@@ -27,7 +27,7 @@ class UserController extends Controller {
 
       // Todo 校验参数
 
-      const res = await service.user.register(username, password, type);
+      const res = await service.user.register(username, password, type, userInfo);
 
       const { id } = res.user;
       const timestamp = new Date().getTime();
@@ -79,15 +79,15 @@ class UserController extends Controller {
     const { app, ctx, service, config } = this;
 
     try {
-      const { username, password } = ctx.request.body;
+      const { username, password, userInfo } = ctx.request.body;
 
-      if (!username || !password) {
+      if (!username || !password || !userInfo) {
         throw new Error('参数不足');
       }
 
-      const parent_id = ctx.user.id;
+      const parentId = ctx.user.id;
 
-      const res = await service.user.register(username, password, 2, parent_id);
+      const res = await service.user.register(username, password, 2, userInfo, parentId);
 
       ctx.body = {
         success: true,
@@ -460,6 +460,7 @@ class UserController extends Controller {
         payload: {
           id: res.user.id,
           type: res.user.type,
+          status: res.user.status,
           userInfo: res.user.user_info
         }
       };
@@ -493,6 +494,7 @@ class UserController extends Controller {
           res.users.map(user => ({
             id: user.id,
             type: user.type,
+            status: user.status,
             userInfo: user.user_info
           })),
           pageSize,

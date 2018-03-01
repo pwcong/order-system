@@ -104,6 +104,26 @@ export const businessRouterMap = [
 
 export const enterpriseRouterMap = [
   {
+    path: '/manage',
+    component: Layout,
+    meta: { title: '管理', icon: 'manager' },
+    children: [
+      {
+        path: 'business',
+        name: 'Manage-Businesses',
+        component: _import('manage/business'),
+        meta: { title: '店家', icon: 'shop' }
+      },
+      {
+        path: 'business_details',
+        name: 'Manage-Businesses-Details',
+        component: _import('manage/business_details'),
+        hidden: true,
+        meta: { title: '店家详情' }
+      }
+    ]
+  },
+  {
     path: '/setting',
     component: Layout,
     meta: { title: '设置', icon: 'setting' },

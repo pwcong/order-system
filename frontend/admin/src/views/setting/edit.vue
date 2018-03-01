@@ -33,7 +33,7 @@
       </el-col>
     </el-row>
 
-    <el-row style="margin-top: 20px;">
+    <el-row style="margin-top: 20px;" v-if="userType === 2">
 
       <el-col :span="18" :offset="3">
         <el-card>
@@ -286,7 +286,11 @@ export default {
       this.$router.push({ path: '/setting/index' });
     }
   },
-  computed: {},
+  computed: {
+    userType() {
+      return this.$store.getters.type;
+    }
+  },
   mounted() {
     const ctx = this;
 

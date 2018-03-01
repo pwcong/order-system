@@ -25,6 +25,10 @@ const getters = {
   recipeCategories: state => state.recipeCategory.recipeCategories,
 
   /****** 菜单 ******/
-  recipes: state => state.recipe.recipes
+  recipes: state => state.recipe.recipes,
+
+  /****** 用户管理 ******/
+  businesses: state => state.manage.businesses,
+  selectedBusiness: state => state.manage.selectedBusiness,
 };
 export default getters;

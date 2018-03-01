@@ -6,7 +6,7 @@ const uuidv1 = require('uuid/v1');
 const uuidv5 = require('uuid/v5');
 
 class UserService extends Service {
-  async register(username, password, type, parent_id = null) {
+  async register(username, password, type, userInfo = null, parentId = null, ) {
     const { app } = this;
 
     return new Promise(async (resolve, reject) => {
@@ -24,32 +24,52 @@ class UserService extends Service {
 
         const salt = uuidv1();
 
-        _user = await app.model.User.create(
-          {
-            username,
-            password: uuidv5(password, salt),
-            password_salt: salt,
-            type,
-            parent_id
-          },
-          {
-            transaction: t
-          }
-        );
+        const newUser = {
+          username,
+          password: uuidv5(password, salt),
+          password_salt: salt,
+          type
+        };
+
+        if (parentId) {
+          newUser.parent_id = parentId;
+        }
+
+        _user = await app.model.User.create(newUser, {
+          transaction: t
+        });
 
         if (!_user) {
           throw new Error('用户创建失败');
         }
 
-        const _userInfo = await app.model.UserInfo.create(
-          {
-            id: _user.id,
-            nickname: _user.username
-          },
-          {
-            transaction: t
-          }
-        );
+        const editable = {
+          nickname: true,
+          birthday: true,
+          sex: true,
+          address: true,
+          intro: true,
+          avatar: true,
+          contact: true,
+          banner: true
+        };
+
+        const newUserInfo = {
+          id: _user.id,
+          nickname: _user.username
+        };
+
+        if (userInfo) {
+          Object.keys(userInfo).forEach(key => {
+            if (editable[key]) {
+              newUserInfo[key] = userInfo[key];
+            }
+          });
+        }
+
+        const _userInfo = await app.model.UserInfo.create(newUserInfo, {
+          transaction: t
+        });
 
         if (!_userInfo) {
           throw new Error('用户信息创建失败');

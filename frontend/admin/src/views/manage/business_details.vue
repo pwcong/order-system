@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-container">
-    <el-row class="banner" v-if="userType === 2">
+    <el-row class="banner">
       <el-col :span="24">
         <el-carousel :interval="4000" type="card" height="256px">
           <el-carousel-item v-for="(banner, idx) in banners" :key="'banner-item-' + idx">
@@ -12,7 +12,8 @@
         </el-carousel>
       </el-col>
     </el-row>
-    <el-row class="main" :gutter="20" v-if="userType === 2">
+
+    <el-row class="main" style="margin-top: 20px;" :gutter="20">
       <el-col :sm="24" :md="12" :lg="12" class="main-card">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
@@ -34,19 +35,48 @@
         </el-card>
       </el-col>
     </el-row>
+
+    <el-row style="margin-top: 20px;">
+
+      <el-col :span="24">
+
+        <el-card class="box-card">
+          <div slot="header" class="clearfix">
+            <span>用户信息</span>
+          </div>
+          <el-form class="form" label-width="80px">
+            <el-form-item label="头像：">
+              <span class="avatar" :style="{
+                backgroundImage: `url(${userInfo.avatarUrl})`
+              }"></span>
+            </el-form-item>
+            <el-form-item label="名称：">
+              <span>{{userInfo.nickname}}</span>
+            </el-form-item>
+            <el-form-item label="地址：">
+              <span>{{userInfo.address}}</span>
+            </el-form-item>
+            <el-form-item label="联系：">
+              <span>{{userInfo.contact}}</span>
+            </el-form-item>
+            <el-form-item label="简介：">
+              <span>{{userInfo.intro}}</span>
+            </el-form-item>
+          </el-form>
+        </el-card>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
 import banner from '@/assets/images/banner.jpg';
+import defaultAvatar from '@/assets/images/avatar.png';
 
 import config from '@/const/config';
 
-import { getTodayOrders } from '@/api/order';
-import { getTodayBills } from '@/api/bill';
-
 export default {
-  name: 'Dashboard',
+  name: 'Manage-Businesses-Details',
   data() {
     return {
       todayOrderChart: {
@@ -65,15 +95,26 @@ export default {
   },
   computed: {
     banners() {
-      const t = (this.$store.getters.userInfo.banner || '')
-        .trim()
-        .split(',')
-        .filter(banner => !!banner)
-        .map(banner => config.BASE_API + banner);
-      return t.length > 0 ? t : [banner];
+      try {
+        const t = (this.$store.getters.selectedBusiness.userInfo.banner || '')
+          .trim()
+          .split(',')
+          .filter(banner => !!banner)
+          .map(banner => config.BASE_API + banner);
+        return t.length > 0 ? t : [banner];
+      } catch (err) {
+        return [banner];
+      }
     },
-    userType() {
-      return this.$store.getters.type;
+    userInfo() {
+      try {
+        const _userInfo = this.$store.getters.selectedBusiness.userInfo;
+        return Object.assign({}, _userInfo, {
+          avatarUrl: _userInfo.avatar ? config.BASE_API + _userInfo.avatar : defaultAvatar
+        });
+      } catch (err) {
+        return {};
+      }
     }
   },
   methods: {
@@ -81,45 +122,29 @@ export default {
       const ctx = this;
 
       try {
-        const todayOrders = (await getTodayOrders([0, 1, 2, 3, 4])).payload.data;
-        const todayBills = (await getTodayBills([0, 1])).payload.data;
-
         ctx.todayOrderChart.data.rows = [
           {
             type: '进行中',
-            counts: todayOrders.filter((order, idx) => [0, 1, 3].indexOf(order.status) >= 0).length
+            counts: 0
           },
           {
             type: '已完成',
-            counts: todayOrders.filter((order, idx) => order.status === 2).length
+            counts: 0
           },
           {
             type: '已取消',
-            counts: todayOrders.filter((order, idx) => order.status === 4).length
+            counts: 0
           }
         ];
-
-        const inBills = todayBills
-          .filter((bill, idx) => bill.type === 0)
-          .map((bill, idx) => parseFloat(bill.amount) || 0);
-
-        const outBills = todayBills
-          .filter((bill, idx) => bill.type === 1)
-          .map((bill, idx) => parseFloat(bill.amount) || 0);
 
         ctx.todayBillChart.data.rows = [
           {
             type: '收款',
-            amount: (inBills.length > 0 ? inBills.reduce((total, current) => total + current) : 0).toFixed(
-              2
-            )
+            amount: 0
           },
           {
             type: '退款',
-            amount: (outBills.length > 0
-              ? outBills.reduce((total, current) => total + current)
-              : 0
-            ).toFixed(2)
+            amount: 0
           }
         ];
       } catch (err) {}
@@ -127,9 +152,7 @@ export default {
   },
 
   async created() {
-    if (this.userType === 2) {
-      this.initCharts();
-    }
+    this.initCharts();
   }
 };
 </script>
@@ -140,8 +163,6 @@ export default {
     margin: 30px;
 
     .banner {
-      margin-bottom: 12px;
-
       .banner-item {
         width: 100%;
         height: 100%;
@@ -156,6 +177,15 @@ export default {
       .main-card {
         margin-bottom: 8px;
       }
+    }
+
+    .avatar {
+      display: inline-block;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background-size: 100%;
+      background-repeat: no-repeat;
     }
   }
   &-text {

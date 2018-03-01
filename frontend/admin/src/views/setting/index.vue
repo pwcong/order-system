@@ -2,8 +2,8 @@
   <div class="setting-container">
 
     <el-row class="banner" :gutter="20">
-      <el-col :sm="24" :md="16" :lg="16" style="margin-bottom: 20px;">
-        <el-row>
+      <el-col :sm="24" :md="userType === 2 ? 16 : 24" :lg="userType === 2 ? 16 : 24" style="margin-bottom: 20px;">
+        <el-row v-if="userType === 2">
           <el-col :span="24">
             <el-card>
               <div slot="header" class="clearfix">
@@ -27,7 +27,7 @@
 
             <el-card class="box-card">
               <div slot="header" class="clearfix">
-                <span>店铺信息</span>
+                <span>用户信息</span>
               </div>
               <el-form class="form" :model="form" label-width="80px">
                 <el-form-item label="头像：">
@@ -35,7 +35,7 @@
                     backgroundImage: `url(${form.avatar})`
                   }"></span>
                 </el-form-item>
-                <el-form-item label="店名：">
+                <el-form-item label="名称：">
                   <span>{{form.nickname}}</span>
                 </el-form-item>
                 <el-form-item label="地址：">
@@ -54,7 +54,7 @@
 
       </el-col>
 
-      <el-col :sm="24" :md="8" :lg="8">
+      <el-col :sm="24" :md="8" :lg="8" v-if="userType === 2">
         <el-card>
           <div slot="header" class="clearfix">
             <span>入口二维码</span>
@@ -105,6 +105,9 @@ export default {
       return Object.assign({}, userInfo, {
         avatar: userInfo.avatar ? config.BASE_API + userInfo.avatar : defaultAvatar
       });
+    },
+    userType() {
+      return this.$store.getters.type;
     }
   },
   mounted() {
