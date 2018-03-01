@@ -126,9 +126,13 @@ class OrderService extends Service {
     return new Promise(async (resolve, reject) => {
       try {
         if (parent_id) {
-          const _receiver = await app.model.User.findById(receiver_id);
-          if (!_receiver || _receiver.parent_id !== parent_id) {
-            throw new Error('没有权限');
+          let i = 0,
+            l = receiver_id.length;
+          for (i; i < l; i++) {
+            const _receiver = await app.model.User.findById(receiver_id[i]);
+            if (!_receiver || _receiver.parent_id !== parent_id) {
+              throw new Error('没有权限');
+            }
           }
         }
 

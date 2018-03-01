@@ -9,4 +9,5 @@
   * [支付接口](./draft/payment.md)
   * [系统接口](./draft/system.md)
   * [评价接口](./draft/evaluation.md)
+  * [统计接口](./draft/statistics.md)
   * [附件接口](./draft/attachment.md)

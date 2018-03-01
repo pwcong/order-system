@@ -169,7 +169,12 @@ class OrderController extends Controller {
     const { ctx, service } = this;
 
     try {
-      const { filter, id } = ctx.params;
+      const { id } = ctx.request.body;
+      if (!id || Object.prototype.toString.call(id) !== '[object Array]' || id.length <= 0) {
+        throw new Error('参数不足');
+      }
+
+      const { filter } = ctx.params;
 
       const parent_id = ctx.user.id;
 

@@ -204,26 +204,26 @@ module.exports = app => {
   );
 
   router.get(
-    '/orders/received/statistics',
+    '/statistics/order',
     authTokenMiddleware,
     authUserTypeMiddleware([2]),
     controller.order.getReceivedListStatistics
   );
   router.get(
-    '/orders/received/statistics/:filter',
+    '/statistics/orders/:filter',
     authTokenMiddleware,
     authUserTypeMiddleware([2]),
     controller.order.getReceivedListStatistics
   );
 
-  router.get(
-    '/orders/statistics/:id',
+  router.post(
+    '/statistics/orders',
     authTokenMiddleware,
     authUserTypeMiddleware([3]),
     controller.order.getSpecialReceivedListStatistics
   );
-  router.get(
-    '/orders/statistics/:id/:filter',
+  router.post(
+    '/statistics/orders/:filter',
     authTokenMiddleware,
     authUserTypeMiddleware([3]),
     controller.order.getSpecialReceivedListStatistics
@@ -252,16 +252,29 @@ module.exports = app => {
     controller.bill.search
   );
   router.get(
-    '/bills/statistics/:filter',
+    '/statistics/bill/:filter',
     authTokenMiddleware,
     authUserTypeMiddleware([1, 2]),
     controller.bill.statistics
   );
   router.get(
-    '/bills/statistics',
+    '/statistics/bill',
     authTokenMiddleware,
     authUserTypeMiddleware([1, 2]),
     controller.bill.statistics
+  );
+
+  router.post(
+    '/statistics/bill/:filter',
+    authTokenMiddleware,
+    authUserTypeMiddleware([3]),
+    controller.bill.specialStatistics
+  );
+  router.post(
+    '/statistics/bill',
+    authTokenMiddleware,
+    authUserTypeMiddleware([3]),
+    controller.bill.specialStatistics
   );
 
   router.post('/attachment/upload', authTokenMiddleware, controller.attachment.upload);
