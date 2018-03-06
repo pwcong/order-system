@@ -224,7 +224,7 @@
           <button wx:if="{{item.status === 0}}" type="primary" class="btn-pay" @tap="handlePayOrder({{item}})">支付</button>
           <button wx:if="{{item.status === 0 || item.status === 1}}" class="btn-cancel" @tap="handleCancelOrder({{item}})" type="warn">取消</button>
           <button wx:if="{{item.status === 1}}" type="primary" class="btn-finish" @tap="handleFinishOrder({{item}})">完成</button>
-          <button wx:if="{{item.status === 2}}" class="btn-evaluate" @tap="handleEvaluateOrder({{item}})">评价</button>
+          <button wx:if="{{item.status === 2 && !item.has_evaluated}}" class="btn-evaluate" @tap="handleEvaluateOrder({{item}})">评价</button>
         </view>
 
       </view>
@@ -580,6 +580,7 @@ export default class Order extends wepy.page {
     if (!this.userCheck) {
       return;
     }
+    this.pageNo = 1;
     this.loadOrders();
   }
 }

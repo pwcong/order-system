@@ -44,3 +44,14 @@ export function finishOrder(token, id) {
     'X-Token': token
   });
 }
+
+export function evaluateOrder(token, id, data) {
+  return request(
+    `${BASE_API}/order/evaluate/${id}`,
+    'POST',
+    {
+      'X-Token': token
+    },
+    data
+  );
+}

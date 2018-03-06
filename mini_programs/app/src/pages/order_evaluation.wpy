@@ -1,27 +1,179 @@
 <style lang="scss">
+.container {
+  background-color: #e5e5e5;
+}
 
+.toolbar {
+  display: flex;
+  padding: 0 32rpx;
+  height: 128rpx;
+  background-color: white;
+  align-items: center;
+  justify-content: space-between;
+
+  box-shadow: 0 1rpx 5rpx #ccc;
+
+  margin-bottom: 16rpx;
+
+  .toolbar-title {
+    max-width: 156rpx;
+    width: 156rpx;
+  }
+
+  .toolbar-content {
+    flex: 1;
+    text-align: right;
+  }
+}
+
+.form {
+  display: block;
+  margin-top: 16rpx;
+  height: calc(100% - 144rpx);
+  width: 100%;
+  position: relative;
+
+  box-shadow: 0 1rpx 5rpx #ccc;
+
+  .form-section {
+    align-items: center;
+    background-color: white;
+
+    padding: 16rpx 32rpx;
+  }
+
+  .form-action {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 96rpx;
+    color: white;
+    line-height: 96rpx;
+    border: none;
+    border-radius: 0;
+    background-color: #47b248;
+  }
+}
 </style>
 <template>
   <view class="container">
+
+    <view class="toolbar">
+      <view class="toolbar-title">
+        评价菜单
+      </view>
+      <view class="toolbar-content">
+        <switch @change="handleSwitchChange" />
+      </view>
+    </view>
+
+    <form class="form" bindsubmit="submitForm">
+
+      <view class="form-section">
+        <Header1 icon="/assets/icons/star.png" label="评分" style="border: none;"/>        
+        <slider name="score" show-value min="1" max="5" value="5"></slider>
+      </view>
+
+      <view class="form-section">
+        <Header2 icon="/assets/icons/msg.png" label="评论" style="border: none;"/>        
+        <textarea name="content" placeholder="请输入评论内容" />
+      </view>
+      <button class="form-action" formType="submit">提交</button>
+    </form>
+
   </view>
 </template>
 
 <script>
 import wepy from 'wepy';
 
+import { evaluateOrder } from '@/network/api/order';
+
+import Header from '@/components/header';
+
+import { connect } from 'wepy-redux';
+
+import { BASE_API } from '@/const/config';
+
+@connect(
+  {
+    selectedOrder(state) {
+      return state.order.selectedOrder;
+    }
+  },
+  {}
+)
 export default class Evaluate extends wepy.page {
   config = {
     navigationBarTitleText: '评价订单'
   };
-  components = {};
+  components = {
+    Header1: Header,
+    Header2: Header
+  };
 
   mixins = [];
 
-  data = {};
+  data = {
+    flag: false
+  };
 
   computed = {};
 
-  methods = {};
+  methods = {
+    handleSwitchChange(e) {
+      this.flag = e.detail.value;
+    },
+    submitForm(e) {
+      const ctx = this;
+
+      const { score, content } = e.detail.value;
+      const details = ctx.selectedOrder.details;
+
+      let form = {
+        userEvaluation: {
+          score,
+          content
+        },
+        recipeEvaluation: {}
+      };
+
+      if (ctx.flag) {
+        details.forEach(d => {
+          form.recipeEvaluation['' + d.id] = {
+            score,
+            content
+          };
+        });
+      }
+
+      wepy.showLoading({
+        title: '提交中'
+      });
+
+      evaluateOrder(wepy.getStorageSync('token'), ctx.selectedOrder.id, form)
+        .then(res => {
+          wepy.hideLoading();
+          wepy.showModal({
+            showCancel: false,
+            title: '评论成功',
+            content: '点击确定返回订单列表',
+            success() {
+              wepy.navigateBack();
+            }
+          });
+        })
+        .catch(err => {
+          wepy.hideLoading();
+          wepy.showModal({
+            showCancel: false,
+            content: err.message,
+            title: '评论失败'
+          });
+        });
+    }
+  };
 
   events = {};
 
