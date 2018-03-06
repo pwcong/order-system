@@ -170,7 +170,7 @@ curl -X POST $API_BASE/recipes/10000
 请求示例：
 
 ```shell
-curl -X POST $API_BASE/recipes/10000/1
+curl -X GET $API_BASE/recipes/10000/1
 ```
 
 返回值：

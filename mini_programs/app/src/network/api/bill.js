@@ -16,7 +16,7 @@ export function getBills(token, type, filter, pageSize = 15, pageNo = 1) {
 }
 
 export function billsStatistics(token, filter) {
-  return request(`${BASE_API}/bills/statistics/${filter}`, 'GET', {
+  return request(`${BASE_API}/statistics/bill/${filter}`, 'GET', {
     'X-Token': token
   });
 }

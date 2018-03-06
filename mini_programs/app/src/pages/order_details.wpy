@@ -1,8 +1,136 @@
 <style lang="scss">
+.main {
+  width: 100%;
+  height: calc(100%);
+  background-color: #e5e5e5;
+  overflow: auto;
 
+  .detail {
+    box-sizing: border-box;
+    padding: 32rpx;
+    background-color: white;
+    box-shadow: 0 0 5rpx #ccc;
+
+    .detail-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 32rpx 0;
+      &:not(:last-child) {
+        border-bottom: 1px solid #ccc;
+      }
+
+      .detail-item-title {
+        max-width: 150rpx;
+        width: 150rpx;
+        color: #999;
+      }
+
+      .detail-item-content {
+        flex: 1;
+        font-size: 34rpx;
+        text-align: right;
+      }
+    }
+  }
+
+  .recipes {
+    background-color: white;
+    padding: 0 32rpx;
+    .recipe-item {
+      padding: 16rpx 0;
+      display: flex;
+      align-items: center;
+
+      &:not(:last-child) {
+        border-bottom: 1px dashed #ccc;
+      }
+
+      position: relative;
+      .recipe-item-img {
+        width: 156rpx;
+        image {
+          width: 156rpx;
+          height: 128rpx;
+        }
+      }
+
+      .recipe-item-main {
+        margin-left: 16rpx;
+        position: relative;
+        flex: 1;
+
+        .recipe-item-name {
+          max-width: 400rpx;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .recipe-item-price {
+          position: absolute;
+          right: 0;
+          top: 0;
+          color: #47b248;
+        }
+      }
+    }
+  }
+}
 </style>
 <template>
   <view class="container">
+
+    <scroll-view scroll-y class="main">
+      <DetailHeader icon="/assets/icons/detail.png" label="订单信息"/>
+      <view class="detail">
+
+        <view class="detail-item">
+          <view class="detail-item-title">订单号</view>
+          <view class="detail-item-content">{{selectedOrder.id}}</view>
+        </view>
+        <view class="detail-item">
+          <view class="detail-item-title">下单时间</view>
+          <view class="detail-item-content">{{selectedOrder.created_at}}</view>
+        </view>
+        <view class="detail-item">
+          <view class="detail-item-title">订单金额</view>
+          <view class="detail-item-content">￥{{selectedOrder.amount}}</view>
+        </view>
+        <view class="detail-item">
+          <view class="detail-item-title">配送地址</view>
+          <view class="detail-item-content">{{selectedOrder.address}}</view>
+        </view>
+
+      </view>
+
+      <view class="recipes" style="margin-top: 36rpx">
+        <ListHeader icon="/assets/icons/list.png" label="菜单列表" />
+        <view 
+          class="recipe-item" 
+          @tap="handleViewRecipe({{item}})"
+          wx:for="{{recipes}}" 
+          wx:key="recipe-item-{{idx}}">
+
+          <view class="recipe-item-img">
+            <image src="{{item.avatarUrl}}"/>
+          </view>
+
+          <view class="recipe-item-main">
+
+            <view class="recipe-item-name">{{item.name}}</view>
+            <view style="margin-top: 8rpx; color: #333; font-size: 32rpx;">
+              <label>×{{item.counts}}</label>
+            </view>
+            <label class="recipe-item-price">￥{{item.price}}</label>
+
+          </view>
+
+        </view>
+
+      </view>
+    </scroll-view>
+
   </view>
 </template>
 
@@ -11,32 +139,81 @@ import wepy from 'wepy';
 
 import { connect } from 'wepy-redux';
 
+import { queryRecipeInfo } from '@/network/api/recipe';
+
+import Header from '@/components/header';
+
+import { getStore } from 'wepy-redux';
+import { formatDateTime } from '@/utils/time';
+
+import { asyncViewRecipe } from '@/store/actions';
 import { BASE_API } from '@/const/config';
 
 @connect(
   {
     selectedOrder(state) {
-      return state.order.selectedOrder;
+      const t = state.order.selectedOrder;
+      return {
+        ...t,
+        created_at: formatDateTime(t.created_at)
+      };
     }
   },
   {}
 )
 export default class OrderDetails extends wepy.page {
   config = {
-    navigationBarTitleText: '菜单详情'
+    navigationBarTitleText: '订单详情'
   };
-  components = {};
+  components = {
+    ListHeader: Header,
+    DetailHeader: Header
+  };
 
   mixins = [];
 
-  data = {};
+  data = {
+    recipes: []
+  };
 
   computed = {};
 
-  methods = {};
+  methods = {
+    handleViewRecipe(recipe) {
+      getStore().dispatch(asyncViewRecipe(recipe));
+      wepy.navigateTo({
+        url: '/pages/recipe'
+      });
+    }
+  };
 
   events = {};
 
-  onLoad() {}
+  async loadRecipes() {
+    const ctx = this;
+    const details = ctx.selectedOrder.details;
+
+    let res = [],
+      i = 0,
+      l = details.length || 0;
+    for (i; i < l; i++) {
+      const t = details[i];
+      try {
+        const _res = await queryRecipeInfo(t.id);
+        res.push({
+          ..._res.payload,
+          avatarUrl: BASE_API + _res.payload.avatar,
+          counts: t.counts
+        });
+      } catch (err) {}
+    }
+
+    ctx.recipes = res;
+    ctx.$apply();
+  }
+
+  onLoad() {
+    this.loadRecipes();
+  }
 }
 </script>

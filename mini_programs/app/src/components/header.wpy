@@ -1,0 +1,49 @@
+<style lang="scss">
+.header {
+  width: 100%;
+  position: relative;
+  padding: 32rpx 32rpx 32rpx 96rpx;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  box-sizing: border-box;
+  font-size: 42rpx;
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-bottom: 1px solid #ccc;
+  image {
+    position: absolute;
+    left: 32rpx;
+    height: 48rpx;
+    width: 48rpx;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+}
+</style>
+
+<template>
+  <view class="header" style="{{style}}"><image src="{{icon}}"/><text>{{label}}</text></view>
+</template>
+<script>
+import wepy from 'wepy';
+
+export default class Header extends wepy.component {
+  props = {
+    style: {
+      type: [String],
+      default: ''
+    },
+    label: {
+      type: [String],
+      default: ''
+    },
+    icon: {
+      type: [String],
+      default: ''
+    }
+  };
+}
+</script>

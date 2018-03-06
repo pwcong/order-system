@@ -62,9 +62,6 @@
     overflow-x: hidden;
     overflow-y: auto;
 
-    box-sizing: border-box;
-    padding-bottom: 224rpx;
-
     .recipes-item {
       padding: 16rpx;
 
@@ -224,6 +221,8 @@
 
 
         </view>
+
+        <view style="height: 224rpx;"></view>
 
       </scroll-view>
 

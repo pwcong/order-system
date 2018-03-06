@@ -70,7 +70,7 @@
     padding: 32rpx;
     background-color: white;
     border-radius: 16rpx;
-    margin: 16rpx 0;
+    margin-bottom: 16rpx;
 
     .orders-item-top {
       display: flex;
@@ -189,6 +189,7 @@
     </view>
 
     <scroll-view class="orders" scroll-y wx:if="{{userCheck}}" bindscrolltolower="handleLoadMore">
+      <view style="height: 16rpx;"></view>
       <view 
         wx:for="{{orders}}" 
         wx:key="orders-item-{{idx}}"
@@ -216,10 +217,6 @@
             <text>{{sitem.name}}</text>
             <text>x{{sitem.counts}}</text>
 
-          </view>
-
-          <view class="orders-item-details-row" style="font-size: 28rpx;">
-            订单号<text style="margin-left: 36rpx;">{{item.id}}</text>
           </view>
         </view>
         <view class="orders-item-action">

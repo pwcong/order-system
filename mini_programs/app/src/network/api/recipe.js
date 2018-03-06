@@ -9,3 +9,8 @@ export function getAllRecipes(userId) {
 export function getRecipesWithCategoryId(userId, categoryId) {
   return request(`${BASE_API}/recipes/${userId}/${categoryId}`, 'GET');
 }
+
+export function queryRecipeInfo(id) {
+  return request(`${BASE_API}/recipe/${id}`, 'GET');
+}
+
