@@ -6,8 +6,7 @@
   overflow: auto;
 
   .detail {
-    box-sizing: border-box;
-    padding: 32rpx;
+    padding: 0 32rpx 32rpx 32rpx;
     background-color: white;
     box-shadow: 0 0 5rpx #ccc;
 
@@ -36,7 +35,7 @@
 
   .recipes {
     background-color: white;
-    padding: 0 32rpx;
+    padding: 0 32rpx 32rpx 32rpx;
     .recipe-item {
       padding: 16rpx 0;
       display: flex;
@@ -82,9 +81,9 @@
   <view class="container">
 
     <scroll-view scroll-y class="main">
-      <DetailHeader icon="/assets/icons/detail.png" label="订单信息"/>
+      
       <view class="detail">
-
+        <DetailHeader icon="/assets/icons/detail.png" label="订单信息"/>
         <view class="detail-item">
           <view class="detail-item-title">订单号</view>
           <view class="detail-item-content">{{selectedOrder.id}}</view>
@@ -110,7 +109,7 @@
           class="recipe-item" 
           @tap="handleViewRecipe({{item}})"
           wx:for="{{recipes}}" 
-          wx:key="recipe-item-{{idx}}">
+          wx:key="recipe-item-{{index}}">
 
           <view class="recipe-item-img">
             <image src="{{item.avatarUrl}}"/>

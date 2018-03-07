@@ -246,7 +246,7 @@
 
         <view 
           wx:for="{{bills}}"
-          wx:key="bills-item-{{idx}}"
+          wx:key="bills-item-{{index}}"
           class="bills-item">
 
           <view class="bills-item-time">

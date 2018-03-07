@@ -133,7 +133,7 @@
       
       <view class="main-item"
         wx:for="{{recipesInCart}}"
-        wx:key="main-item-{{idx}}">
+        wx:key="main-item-{{index}}">
         <view class="main-item-img">
             <image src="{{item.avatarUrl}}" @tap="handleViewRecipe({{item.info}})"></image>
         </view>

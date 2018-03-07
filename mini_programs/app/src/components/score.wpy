@@ -1,0 +1,32 @@
+<style lang="scss">
+.score {
+  .score-item {
+    color: #47b248;
+  }
+}
+</style>
+
+<template>
+  <view class="score" style="{{style}}" data-value="{{score}}">
+    <text class="score-item" wx:key="score-item-{{index}}" wx:for="{{score}}">{{item}}</text>
+  </view>
+</template>
+<script>
+import wepy from 'wepy';
+
+export default class Score extends wepy.component {
+  props = {
+    score: {
+      type: [String, Number],
+      default: 5,
+      // coerce(v) {
+      //   return ['★', '★', '★', '★', '★', '☆', '☆', '☆', '☆', '☆'].splice(5 - v, 5);
+      // }
+    },
+    style: {
+      type: [String],
+      default: ''
+    }
+  };
+}
+</script>

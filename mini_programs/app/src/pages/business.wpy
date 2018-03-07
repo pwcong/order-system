@@ -168,7 +168,7 @@
 
       <swiper indicator-dots="{{bannerSetting.indicatorDots}}"
         autoplay="{{bannerSetting.autoplay}}" interval="{{bannerSetting.interval}}" duration="{{bannerSetting.duration}}">
-        <block wx:for="{{businessBanners}}" wx:key="banner-item-{{idx}}">
+        <block wx:for="{{businessBanners}}" wx:key="banner-item-{{index}}">
           <swiper-item>
             <image src="{{item}}" class="banner-item" mode="aspectFill"/>
           </swiper-item>
@@ -186,7 +186,7 @@
           class="recipe-categories-item {{item.checked ? 'active': ''}}"
           @tap="handleRCClick({{item}})"
           wx:for="{{recipeCategories}}"
-          wx:key="recipe-categories-item-{{idx}}">
+          wx:key="recipe-categories-item-{{index}}">
 
           <text>{{item.name}}</text>
 
@@ -197,7 +197,7 @@
 
         <view class="recipes-item"
           wx:for="{{recipes}}"
-          wx:key="recipes-item-{{idx}}">
+          wx:key="recipes-item-{{index}}">
 
           <view class="recipes-item-img">
             <image src="{{item.info.avatarUrl}}" @tap="handleViewRecipe({{item.info}})"/>

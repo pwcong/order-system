@@ -32,7 +32,7 @@
 
   box-shadow: 0 0 16rpx #ccc;
   border-bottom: 1px solid #ccc;
-
+  box-sizing: border-box;
   display: flex;
   flex-flow: row nowrap;
 
@@ -182,7 +182,7 @@
       <view 
         wx:for="{{toolbars}}" 
         class="toolbar-item {{item.checked ? 'active' : ''}}" 
-        wx:key="toolbar-item-{{idx}}"
+        wx:key="toolbar-item-{{index}}"
         @tap="handleToolbarChange({{item}})">
         <text>{{item.label}}</text>
       </view>
@@ -192,7 +192,7 @@
       <view style="height: 16rpx;"></view>
       <view 
         wx:for="{{orders}}" 
-        wx:key="orders-item-{{idx}}"
+        wx:key="orders-item-{{index}}"
         class="orders-item">
 
         <view class="orders-item-top">

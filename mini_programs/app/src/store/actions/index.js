@@ -3,3 +3,4 @@ export * from './recipe';
 export * from './recipe_category';
 export * from './order';
 export * from './bill';
+export * from './evaluation';
