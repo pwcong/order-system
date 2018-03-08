@@ -115,7 +115,7 @@ export const enterpriseRouterMap = [
         meta: { title: '店家', icon: 'shop' }
       },
       {
-        path: 'business_details',
+        path: 'business/:id',
         name: 'Manage-Businesses-Details',
         component: _import('manage/business_details'),
         hidden: true,

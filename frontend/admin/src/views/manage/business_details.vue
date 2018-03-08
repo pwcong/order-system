@@ -70,10 +70,11 @@
 </template>
 
 <script>
-import banner from '@/assets/images/banner.jpg';
+import bannerImg from '@/assets/images/banner.jpg';
 import defaultAvatar from '@/assets/images/avatar.png';
 
 import { queryBusinessBillStatistics, queryBusinessOrderStatistics } from '@/api/statistics';
+import { getInfo } from '@/api/user';
 
 import config from '@/const/config';
 
@@ -92,46 +93,18 @@ export default {
           columns: ['type', 'amount'],
           rows: []
         }
-      }
+      },
+      businessInfo: {},
+      banners: []
     };
   },
-  computed: {
-    banners() {
-      try {
-        const t = (this.$store.getters.selectedBusiness.userInfo.banner || '')
-          .trim()
-          .split(',')
-          .filter(banner => !!banner)
-          .map(banner => config.BASE_API + banner);
-        return t.length > 0 ? t : [banner];
-      } catch (err) {
-        return [banner];
-      }
-    },
-    businessInfo() {
-      try {
-        const _businessInfo = this.$store.getters.selectedBusiness.userInfo;
-        return Object.assign({}, _businessInfo, {
-          avatarUrl: _businessInfo.avatar ? config.BASE_API + _businessInfo.avatar : defaultAvatar
-        });
-      } catch (err) {
-        return {};
-      }
-    },
-    businessId() {
-      try {
-        return this.$store.getters.selectedBusiness.id;
-      } catch (err) {
-        return 0;
-      }
-    }
-  },
+  computed: {},
   methods: {
-    initCharts() {
+    initCharts(id) {
       const ctx = this;
 
       try {
-        queryBusinessBillStatistics([ctx.businessId], 'today')
+        queryBusinessBillStatistics([id], 'today')
           .then(res => {
             const billStatistics = res.payload;
 
@@ -147,7 +120,7 @@ export default {
             ];
           })
           .catch(err => {});
-        queryBusinessOrderStatistics([ctx.businessId], 'today')
+        queryBusinessOrderStatistics([id], 'today')
           .then(res => {
             const orderStatistics = res.payload;
             ctx.todayOrderChart.data.rows = [
@@ -167,11 +140,31 @@ export default {
           })
           .catch(err => {});
       } catch (err) {}
+    },
+    loadBusinessInfo(id) {
+      const ctx = this;
+      getInfo(id)
+        .then(res => {
+          const info = res.payload;
+          ctx.businessInfo = Object.assign({}, info, {
+            avatarUrl: info.avatar ? config.BASE_API + info.avatar : defaultAvatar
+          });
+
+          const banners = (info.banner || '')
+            .trim()
+            .split(',')
+            .filter(banner => !!banner)
+            .map(banner => config.BASE_API + banner);
+          ctx.banners = banners.length > 0 ? banners : [bannerImg];
+        })
+        .catch(err => {});
     }
   },
 
   async created() {
-    this.initCharts();
+    const params = this.$route.params;
+    this.initCharts(params.id);
+    this.loadBusinessInfo(params.id);
   }
 };
 </script>

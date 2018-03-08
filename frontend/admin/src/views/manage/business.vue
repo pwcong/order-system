@@ -36,7 +36,6 @@
             <template slot-scope="scope">
 
               <el-button
-                v-if="scope.row.status === 0"
                 @click="handleSelectBusiness(scope.row)"
                 icon="el-icon-view"
                 size="mini">详情</el-button>
@@ -219,7 +218,7 @@ export default {
     handleSelectBusiness(row) {
       const ctx = this;
       ctx.$store.dispatch('SelectBusiness', row).then(() => {
-        ctx.$router.push({ path: '/manage/business_details' });
+        ctx.$router.push({ path: `/manage/business/${row.id}` });
       });
     },
     handleLockBusiness(row) {
