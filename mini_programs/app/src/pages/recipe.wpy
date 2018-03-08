@@ -1,120 +1,386 @@
 <style lang="scss">
-.main {
-  height: calc(100%);
-  overflow-y: auto;
-  overflow-x: hidden;
-  position: relative;
-  box-sizing: border-box;
-  padding: 32rpx;
+.nav {
+  height: 96rpx;
+  display: flex;
+  flex-flow: row nowrap;
 
-  background-color: #e5e5e5;
-
-  .banner {
-    position: relative;
-    height: 320rpx;
-
-    .banner-item {
-      height: 320rpx;
-      width: 100%;
-    }
-  }
-
-  .main-item {
-    background-color: white;
+  .nav-item {
+    height: 100%;
+    flex: 1;
+    box-sizing: border-box;
+    border-bottom: 1px solid transparent;
+    transition: border 0.3s, color 0.3s;
     display: flex;
-    flex-flow: row nowrap;
     align-items: center;
-    justify-content: space-between;
-    padding: 32rpx 64rpx;
+    justify-content: center;
+    flex-flow: row nowrap;
+    color: #666;
+    &.active {
+      color: #47b248;
+      border-color: #47b248;
+    }
+  }
+}
 
-    border-bottom: 1px solid #ccc;
+.main-wrap {
+  height: calc(100% - 96rpx);
 
-    &:first-child {
-      border-top-left-radius: 16rpx;
-      border-top-right-radius: 16rpx;
+  .main-container {
+    height: calc(100%);
+  }
+
+  .main {
+    height: calc(100%);
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    box-sizing: border-box;
+
+    background-color: #e5e5e5;
+
+    .banner {
+      position: relative;
+      height: 320rpx;
+
+      .banner-item {
+        height: 320rpx;
+        width: 100%;
+      }
     }
 
-    &:last-child {
-      border-bottom-left-radius: 16rpx;
-      border-bottom-right-radius: 16rpx;
+    .main-item {
+      background-color: white;
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      justify-content: space-between;
+      padding: 32rpx 64rpx;
+
+      border-bottom: 1px solid #ccc;
+
+      &:first-child {
+        border-top-left-radius: 16rpx;
+        border-top-right-radius: 16rpx;
+      }
+
+      &:last-child {
+        border-bottom-left-radius: 16rpx;
+        border-bottom-right-radius: 16rpx;
+      }
+
+      .main-item-title {
+        color: #888;
+        min-width: 128rpx;
+      }
     }
 
-    .main-item-title {
-      color: #888;
-      min-width: 128rpx;
+    #avatar {
+      width: 156rpx;
+      height: 156rpx;
+      border-radius: 24rpx;
+      background-color: white;
+      box-shadow: 0 0 16rpx #ccc;
     }
   }
 
-  #avatar {
-    width: 156rpx;
-    height: 156rpx;
-    border-radius: 24rpx;
-    background-color: white;
-    box-shadow: 0 0 16rpx #ccc;
+  .evaluations {
+    .evaluation-item {
+      display: flex;
+      background-color: white;
+      flex-flow: row nowrap;
+
+      padding: 16rpx;
+      border-bottom: 1px solid #ccc;
+
+      .evaluation-item-avatar {
+        text-align: center;
+        max-width: 156rpx;
+        width: 156rpx;
+
+        image {
+          border-radius: 64rpx;
+          width: 128rpx;
+          height: 128rpx;
+        }
+      }
+
+      .evaluation-item-content {
+        padding-top: 16rpx;
+        flex: 1;
+      }
+
+      .evaluation-item-bottom {
+        margin-top: 16rpx;
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: space-between;
+        color: #999;
+      }
+
+      .scores {
+        .score-item {
+          color: #47b248;
+        }
+      }
+    }
   }
 }
 </style>
 <template>
   <view class="container">
 
-    <scroll-view scroll-y class="main">
+    <view class="nav">
+      <view 
+        class="nav-item {{index === navIndex ? 'active' : ''}}" 
+        wx:for="{{nav}}"
+        @tap="handleNavItemClick({{index}})"
+        wx:key="nav-item-{{index}}">
+        {{item}}
+      </view>
+    </view>
 
-      <view class="banner">
-        <image src="{{viewRecipe.avatarUrl}}" class="banner-item" mode="aspectFill"/>
-      </view>
+    <swiper class="main-wrap" current="{{navIndex}}" @change="handleSwiperChange" duration="200">
+      <swiper-item class="main-container">
+        <scroll-view scroll-y class="main" style="padding: 32rpx;">
+          <view class="banner">
+            <swiper indicator-dots="{{bannerSetting.indicatorDots}}"
+              autoplay="{{bannerSetting.autoplay}}" interval="{{bannerSetting.interval}}" duration="{{bannerSetting.duration}}">
+              <block wx:for="{{recipeBanners}}" wx:key="banner-item-{{index}}">
+                <swiper-item>
+                  <image src="{{item}}" class="banner-item" mode="aspectFill"/>
+                </swiper-item>
+              </block>
+            </swiper>
+          </view>
 
-      <view class="main-item">
-        <text class="main-item-title">名称</text>
-        <text>{{viewRecipe.name}}</text>
-      </view>
-      <view class="main-item">
-        <text class="main-item-title">单价</text>
-        <text>￥{{viewRecipe.price}}</text>
-      </view>
-      <view class="main-item">
-        <text class="main-item-title">分类</text>
-        <text>{{viewRecipe.recipe_category.name}}</text>
-      </view>
-      <view class="main-item">
-        <text class="main-item-title">简介</text>
-        <text>{{viewRecipe.content}}</text>
-      </view>
+          <view class="main-item">
+            <text class="main-item-title">菜名</text>
+            <text>{{viewRecipe.name}}</text>
+          </view>
+          <view class="main-item">
+            <text class="main-item-title">单价</text>
+            <text>￥{{viewRecipe.price}}</text>
+          </view>
+          <view class="main-item">
+            <text class="main-item-title">简介</text>
+            <text>{{viewRecipe.content}}</text>
+          </view>
 
-    </scroll-view>
+        </scroll-view>
+      </swiper-item>
+
+      <swiper-item class="main-container">
+        <scroll-view scroll-y class="main evaluations" bindscrolltolower="handleLoadMore">
+
+          <view class="evaluation-item" wx:for="{{evaluations}}" wx:key="evaluation-item-{{index}}">
+            <view class="evaluation-item-avatar">
+              <image src="{{item.avatarUrl}}" />
+      
+            </view>
+            <view class="evaluation-item-content">
+              <view>{{item.content}}</view>
+              <view class="evaluation-item-bottom">
+                <view style="font-size: 28rpx;">{{item.nickname}} - {{item.created_at}}</view>
+                <view class="scores">
+                  <text 
+                    class="score-item"
+                    wx:for="{{item.score}}" 
+                    wx:for-item="sitem" 
+                    wx:for-index="sindex"
+                    wx:key="score-item-{{sindex}}">{{sitem}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+          
+          <view wx:if="{{evaluationsLength <= 0}}" style="text-align: center; font-size: 28rpx; color: #888; padding: 32rpx;">
+            空空如也(*/ω＼*)
+          </view>
+
+          <LoadMore wx:if="{{evaluationsLength > 0}}" :loadingMore.sync="loadingMore" :hasMore.sync="hasMore"/>
+
+        </scroll-view>
+      </swiper-item>
+
+    </swiper>
+
+
   </view>
 </template>
 
 <script>
 import wepy from 'wepy';
-
 import { connect } from 'wepy-redux';
+
+import { getStore } from 'wepy-redux';
+
+import { asyncQueryRecipeEvaluations, asyncQueryMoreRecipeEvaluations } from '@/store/actions';
+
+import LoadMore from '@/components/loadmore';
+import Score from '@/components/score';
+
+import { formatDateTime } from '@/utils/time';
 
 import { BASE_API } from '@/const/config';
 
 @connect(
   {
+    recipeId(state) {
+      return state.recipe.viewRecipe.id;
+    },
     viewRecipe(state) {
       return state.recipe.viewRecipe;
+    },
+    recipeBanners(state) {
+      const t = state.recipe.viewRecipe.avatar;
+      const res = t ? [BASE_API + t] : ['../assets/imgs/banner.png'];
+
+      return res;
+    },
+    evaluations(state) {
+      return state.evaluation.evaluations.map(e => ({
+        ...e,
+        created_at: formatDateTime(e.created_at),
+        score: ['★', '★', '★', '★', '★', '☆', '☆', '☆', '☆', '☆'].splice(5 - e.score, 5),
+        nickname: e.user_info.nickname,
+        avatarUrl: e.user_info.avatar ? BASE_API + e.user_info.avatar : '/assets/imgs/avatar.png'
+      }));
+    },
+    evaluationsLength(state) {
+      return (state.evaluation.evaluations || []).length;
     }
   },
   {}
 )
-export default class Recipe extends wepy.page {
+export default class Business extends wepy.page {
   config = {
-    navigationBarTitleText: '菜单详情'
+    navigationBarTitleText: '菜单详情',
+    enablePullDownRefresh: true,
+    backgroundTextStyle: 'dark'
   };
-  components = {};
+  data = {
+    nav: ['介绍', '评论'],
+    navIndex: 0,
+    bannerSetting: {
+      indicatorDots: false,
+      autoplay: true,
+      interval: 5000,
+      duration: 500
+    },
+    pageSize: 15,
+    pageNo: 1,
+    loadingMore: false,
+    hasMore: true
+  };
+
+  components = {
+    LoadMore,
+    Score
+  };
 
   mixins = [];
 
-  data = {};
-
   computed = {};
 
-  methods = {};
+  methods = {
+    handleNavItemClick(index) {
+      this.navIndex = index;
+    },
+    handleSwiperChange(e) {
+      this.navIndex = e.detail.current;
+    },
+    handleLoadMore() {
+      const ctx = this;
+
+      if (!ctx.hasMore || ctx.loadingMore) {
+        return;
+      }
+
+      ctx.pageNo++;
+
+      ctx.loadingMore = true;
+      getStore()
+        .dispatch(
+          asyncQueryMoreRecipeEvaluations({
+            id: ctx.recipeId,
+            pageSize: ctx.pageSize,
+            pageNo: ctx.pageNo
+          })
+        )
+        .then(res => {
+          wepy.stopPullDownRefresh();
+          ctx.loadingMore = false;
+          ctx.$apply();
+
+          if (res.error) {
+            wepy.showToast({
+              title: res.payload.message,
+              icon: 'none'
+            });
+            return;
+          }
+
+          if ((res.payload.data || []).length < ctx.pageSize) {
+            ctx.hasMore = false;
+          } else {
+            ctx.hasMore = true;
+          }
+          ctx.$apply();
+        });
+    }
+  };
+
+  onPullDownRefresh() {
+    const ctx = this;
+
+    ctx.pageNo = 1;
+    ctx.$apply();
+
+    ctx.loadEvaluations();
+  }
+
+  loadEvaluations() {
+    const ctx = this;
+
+    wepy.showLoading({
+      title: '加载中'
+    });
+    getStore()
+      .dispatch(
+        asyncQueryRecipeEvaluations({
+          id: ctx.recipeId,
+          pageSize: ctx.pageSize,
+          pageNo: ctx.pageNo
+        })
+      )
+      .then(res => {
+        wepy.hideLoading();
+        wepy.stopPullDownRefresh();
+        if (res.error) {
+          wepy.showToast({
+            title: res.payload.message,
+            icon: 'none'
+          });
+          return;
+        }
+
+        if ((res.payload.data || []).length < ctx.pageSize) {
+          ctx.hasMore = false;
+        } else {
+          ctx.hasMore = true;
+        }
+
+        ctx.loadingMore = false;
+        ctx.$apply();
+      });
+  }
 
   events = {};
 
-  onLoad() {}
+  onLoad() {
+    this.pageNo = 1;
+    this.loadEvaluations();
+  }
 }
 </script>
