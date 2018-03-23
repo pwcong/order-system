@@ -25,7 +25,13 @@ class UserController extends Controller {
         throw new Error('参数有误');
       }
 
-      // Todo 校验参数
+      if (!/^[a-zA-Z0-9_-]{6,32}$/.test(username)) {
+        throw new Error('用户名有误(长度不小于6位)');
+      }
+
+      if (!/^[a-zA-Z0-9_-]{6,32}$/.test(password)) {
+        throw new Error('密码有误(长度不小于6位)');
+      }
 
       const res = await service.user.register(username, password, type, userInfo);
 
@@ -83,6 +89,14 @@ class UserController extends Controller {
 
       if (!username || !password) {
         throw new Error('参数不足');
+      }
+
+      if (!/^[a-zA-Z0-9_-]{6,32}$/.test(username)) {
+        throw new Error('用户名有误(长度不小于6位)');
+      }
+
+      if (!/^[a-zA-Z0-9_-]{6,32}$/.test(password)) {
+        throw new Error('密码有误(长度不小于6位)');
       }
 
       const parentId = ctx.user.id;
@@ -463,6 +477,51 @@ class UserController extends Controller {
           status: res.user.status,
           userInfo: res.user.user_info
         }
+      };
+    } catch (err) {
+      ctx.body = {
+        success: false,
+        message: err.message,
+        code: ctx.code.STATUS_ERROR
+      };
+    }
+  }
+
+  /**
+   * 修改店家密码
+   */
+  async modifyBusinessPWD() {
+    const { ctx, service, app } = this;
+
+    try {
+      const { id } = ctx.params;
+      const { password } = ctx.request.body;
+
+      if (!password) {
+        throw new Error('参数不足');
+      }
+
+      if (!/^[a-zA-Z0-9_-]{6,32}$/.test(password)) {
+        throw new Error('密码有误(长度不小于6位)');
+      }
+
+      const _id = ctx.user.id;
+
+      await service.user.modifyChildPWD(_id, id, password);
+
+      /** 删除Token缓存 **/
+      const keys = await app.redis.keys(`${id}:*`);
+      keys.forEach(async key => {
+        try {
+          await app.redis.del(key);
+        } catch (err) {}
+      });
+
+      ctx.body = {
+        success: true,
+        code: ctx.code.STATUS_OK,
+        message: '修改成功',
+        payload: {}
       };
     } catch (err) {
       ctx.body = {

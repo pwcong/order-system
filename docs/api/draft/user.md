@@ -7,12 +7,14 @@
 * 锁定用户（需管理员权限）
 * 解锁用户（需管理员权限）
 * 注销用户（需管理员权限）
+* 修改密码
 * 查询店家
 * 查询余额
 * 注册店家（需企业权限）
 * 锁定店家（需企业权限）
 * 解锁店家（需企业权限）
 * 注销店家（需企业权限）
+* 修改店家密码（需企业权限）
 * 查询企业旗下店家
 
 ## 用户注册
@@ -307,10 +309,6 @@ curl -X POST \
 
 路径：`/user/modify/password`
 
-路径参数：
-
-* id：用户 ID
-
 方法：`POST`
 
 请求头：
@@ -325,7 +323,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  $API_BASE/user/remove/10001 \
+  $API_BASE/user/modify/password \
   -H 'X-Token: 10000:xxxxxxxxxxxxx' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -589,6 +587,49 @@ curl -X POST \
   "payload": {
     "id": 10001
   }
+}
+```
+
+---
+
+## 修改店家密码（需企业权限）
+
+路径：`/user/business/modify/password/:id`
+
+路径参数：
+
+* id：用户 ID
+
+方法：`POST`
+
+请求头：
+
+* X-Token: 用户令牌
+
+请求参数：
+
+* password: 新密码
+
+请求示例：
+
+```shell
+curl -X POST \
+  $API_BASE/user/business/modify/password/10001 \
+  -H 'X-Token: 10000:xxxxxxxxxxxxx' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "password": "aaa"
+  }'
+```
+
+返回值：
+
+```json
+{
+  "success": true,
+  "code": 20000,
+  "message": "修改成功",
+  "payload": {}
 }
 ```
 

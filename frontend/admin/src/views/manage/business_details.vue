@@ -66,12 +66,52 @@
         </el-card>
       </el-col>
     </el-row>
+
+    <el-row style="margin-top: 20px;">
+
+      <el-col :span="24">
+        <el-card>
+          <div slot="header" class="clearfix" style="text-align: center;">
+            <span>安全</span>
+          </div>
+          
+          <el-button type="success" icon="el-icon-menu" @click="handleModifyPWD">修改密码</el-button>
+
+        </el-card>
+
+      </el-col>
+
+    </el-row>
+
+      <el-dialog
+        title="修改密码"
+        :visible.sync="modifyDialogVisible"
+        width="40%">
+
+      <el-form ref="modifyForm" label-width="80px" :rules="modifyRules" :model="modifyForm">
+        <el-form-item label="新密码：" prop="pwd1">
+          <el-input v-model="modifyForm.pwd1" type="password"></el-input>
+        </el-form-item>
+        <el-form-item label="" prop="pwd2">
+          <el-input v-model="modifyForm.pwd2" type="password">
+          </el-input>
+        </el-form-item>
+      </el-form>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="handleCancelModifyPWD">取 消</el-button>
+        <el-button type="primary" @click="handleSubmitModifyPWD">确 定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
 import bannerImg from '@/assets/images/banner.jpg';
 import defaultAvatar from '@/assets/images/avatar.png';
+
+import { modifyBusinessPWD } from '@/api/user';
 
 import { queryBusinessBillStatistics, queryBusinessOrderStatistics } from '@/api/statistics';
 import { getInfo } from '@/api/user';
@@ -81,6 +121,29 @@ import config from '@/const/config';
 export default {
   name: 'Manage-Businesses-Details',
   data() {
+    const validatePass1 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'));
+      } else {
+        if (value.length < 5) {
+          callback(new Error('密码不能小于5位'));
+        } else if (this.modifyForm.pwd1 !== '') {
+          this.$refs.modifyForm.validateField('pwd2');
+        }
+        callback();
+      }
+    };
+
+    const validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'));
+      } else if (value !== this.modifyForm.pwd1) {
+        callback(new Error('两次输入密码不一致!'));
+      } else {
+        callback();
+      }
+    };
+
     return {
       todayOrderChart: {
         data: {
@@ -95,11 +158,49 @@ export default {
         }
       },
       businessInfo: {},
-      banners: []
+      banners: [],
+
+      modifyForm: {},
+      modifyDialogVisible: false,
+      modifyRules: {
+        pwd1: [{ required: true, validator: validatePass1, trigger: 'blur' }],
+        pwd2: [{ required: true, validator: validatePass2, trigger: 'blur' }]
+      }
     };
   },
   computed: {},
   methods: {
+    handleCancelModifyPWD() {
+      this.$refs.modifyForm.resetFields();
+      this.modifyDialogVisible = false;
+    },
+    handleModifyPWD() {
+      this.modifyDialogVisible = true;
+      this.modifyForm = {
+        pwd1: '',
+        pwd2: ''
+      };
+    },
+    handleSubmitModifyPWD() {
+      const params = this.$route.params;
+
+      const ctx = this;
+      ctx.$refs.modifyForm.validate(valid => {
+        if (valid) {
+          modifyBusinessPWD(params.id, ctx.modifyForm.pwd1)
+            .then(res => {
+              ctx.$message({
+                message: '修改成功!',
+                type: 'success'
+              });
+              ctx.modifyDialogVisible = false;
+            })
+            .catch(err => {});
+        } else {
+          return false;
+        }
+      });
+    },
     initCharts(id) {
       const ctx = this;
 

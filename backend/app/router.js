@@ -43,6 +43,13 @@ module.exports = app => {
   );
 
   router.post(
+    '/user/business/modify/password/:id',
+    authTokenMiddleware,
+    authUserTypeMiddleware([3]),
+    controller.user.modifyBusinessPWD
+  );
+
+  router.post(
     '/user/business/lock/:id',
     authTokenMiddleware,
     authUserTypeMiddleware([3]),

@@ -6,7 +6,7 @@ const uuidv1 = require('uuid/v1');
 const uuidv5 = require('uuid/v5');
 
 class UserService extends Service {
-  async register(username, password, type, userInfo = null, parentId = null, ) {
+  async register(username, password, type, userInfo = null, parentId = null) {
     const { app } = this;
 
     return new Promise(async (resolve, reject) => {
@@ -286,6 +286,51 @@ class UserService extends Service {
 
         if (!_user) {
           throw new Error('用户不存在');
+        }
+
+        const salt = uuidv1();
+
+        _user.password = uuidv5(password, salt);
+        _user.password_salt = salt;
+
+        await _user.save();
+
+        resolve({
+          user: _user
+        });
+      } catch (err) {
+        reject({
+          message: err.message
+        });
+      }
+    });
+  }
+
+  async modifyChildPWD(parent_id, id, password) {
+    const { app } = this;
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        let _user = null;
+
+        _user = await app.model.User.findOne({
+          where: {
+            id
+          },
+          include: [
+            {
+              model: app.model.UserInfo,
+              as: 'user_info'
+            }
+          ]
+        });
+
+        if (!_user) {
+          throw new Error('用户不存在');
+        }
+
+        if (_user.parent_id !== parent_id) {
+          throw new Error('没有权限');
         }
 
         const salt = uuidv1();

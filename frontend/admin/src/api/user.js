@@ -49,3 +49,13 @@ export function modifyPWD(password) {
     }
   });
 }
+
+export function modifyBusinessPWD(id, password) {
+  return request({
+    url: `/user/business/modify/password/${id}`,
+    method: 'post',
+    data: {
+      password
+    }
+  });
+}
