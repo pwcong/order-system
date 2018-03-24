@@ -1,200 +1,266 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : MySQL
-Source Server Version : 50720
-Source Host           : localhost:3306
+Source Server         : Aliyun
+Source Server Version : 50718
+Source Host           : 119.23.232.219:3306
 Source Database       : order_system
 
 Target Server Type    : MYSQL
-Target Server Version : 50720
+Target Server Version : 50718
 File Encoding         : 65001
 
-Date: 2017-12-19 22:27:47
+Date: 2018-03-24 16:47:50
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for bill
+-- Table structure for attachments
 -- ----------------------------
-DROP TABLE IF EXISTS `bill`;
-CREATE TABLE `bill` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `pid` bigint(20) NOT NULL COMMENT '商家/客户ID',
-  `name` varchar(255) NOT NULL COMMENT '标题',
-  `amount` bigint(20) NOT NULL COMMENT '金额（保留两位*100）',
-  `balance_before` bigint(20) NOT NULL COMMENT '之前余额（保留两位*100）',
-  `balance_after` bigint(20) NOT NULL COMMENT '之后余额（保留两位*100）',
-  `type` tinyint(4) NOT NULL COMMENT '收支类型 0.收入 1.支出',
-  `createdAt` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建日期',
+DROP TABLE IF EXISTS `attachments`;
+CREATE TABLE `attachments` (
+  `id` varchar(255) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `year` varchar(255) NOT NULL,
+  `month` varchar(255) NOT NULL,
+  `date` varchar(255) NOT NULL,
+  `extname` varchar(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT '2018-03-08 02:33:56',
+  `updated_at` datetime NOT NULL DEFAULT '2018-03-08 02:33:56',
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `attachments_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for bills
+-- ----------------------------
+DROP TABLE IF EXISTS `bills`;
+CREATE TABLE `bills` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `amount` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `payment_type` int(11) DEFAULT NULL,
+  `type` int(11) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT '2018-03-08 02:33:56',
+  `updated_at` datetime NOT NULL DEFAULT '2018-03-08 02:33:56',
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `payment_type` (`payment_type`),
+  CONSTRAINT `bills_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `bills_ibfk_2` FOREIGN KEY (`payment_type`) REFERENCES `payment_types` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for orders
+-- ----------------------------
+DROP TABLE IF EXISTS `orders`;
+CREATE TABLE `orders` (
+  `id` varchar(255) NOT NULL,
+  `sender_id` int(11) NOT NULL,
+  `sender_info_id` int(11) NOT NULL,
+  `receiver_id` int(11) NOT NULL,
+  `receiver_info_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `details` text NOT NULL,
+  `address` text NOT NULL,
+  `status` int(11) NOT NULL DEFAULT '0',
+  `has_paid` tinyint(1) NOT NULL DEFAULT '0',
+  `has_refunded` tinyint(1) NOT NULL DEFAULT '0',
+  `has_finished` tinyint(1) NOT NULL DEFAULT '0',
+  `has_evaluated` tinyint(1) NOT NULL DEFAULT '0',
+  `amount` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `created_at` datetime NOT NULL DEFAULT '2018-03-08 02:33:56',
+  `updated_at` datetime NOT NULL DEFAULT '2018-03-08 02:33:56',
+  PRIMARY KEY (`id`),
+  KEY `sender_id` (`sender_id`),
+  KEY `sender_info_id` (`sender_info_id`),
+  KEY `receiver_id` (`receiver_id`),
+  KEY `receiver_info_id` (`receiver_info_id`),
+  CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`sender_info_id`) REFERENCES `user_infos` (`id`),
+  CONSTRAINT `orders_ibfk_3` FOREIGN KEY (`receiver_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `orders_ibfk_4` FOREIGN KEY (`receiver_info_id`) REFERENCES `user_infos` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for payment_types
+-- ----------------------------
+DROP TABLE IF EXISTS `payment_types`;
+CREATE TABLE `payment_types` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `status` int(11) NOT NULL DEFAULT '0',
+  `created_at` datetime NOT NULL DEFAULT '2018-03-08 02:33:56',
+  `updated_at` datetime NOT NULL DEFAULT '2018-03-08 02:33:56',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of bill
+-- Table structure for recipe_categories
 -- ----------------------------
-
--- ----------------------------
--- Table structure for order
--- ----------------------------
-DROP TABLE IF EXISTS `order`;
-CREATE TABLE `order` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `sid` bigint(20) NOT NULL COMMENT '商家ID',
-  `cid` bigint(20) NOT NULL COMMENT '客户ID',
-  `detail` longtext NOT NULL COMMENT '订单内容（菜单ID与个数）',
-  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '用户订单状态 0.发起 1.已支付 2.已完成 3.取消 4.已取消 5.已评价',
-  `paid_type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '支付类型 0.未支付 1.微信支付 2.支付宝支付',
-  `bid` bigint(20) DEFAULT NULL COMMENT '账单ID',
-  `has_refunded` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否取消 0.未取消 1.已取消',
-  `has_finished` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否完成 0.未完成 1.完成',
-  `has_evaluated` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否评价 0.未评价 1.已评价',
-  `amount` bigint(20) NOT NULL DEFAULT '0' COMMENT '金额（保留两位小数*100）',
-  `createdAt` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updatedAt` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+DROP TABLE IF EXISTS `recipe_categories`;
+CREATE TABLE `recipe_categories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `status` int(11) NOT NULL DEFAULT '0',
+  `created_at` datetime NOT NULL DEFAULT '2018-03-08 02:33:56',
+  `updated_at` datetime NOT NULL DEFAULT '2018-03-08 02:33:56',
   PRIMARY KEY (`id`),
-  KEY `fk_order_cid` (`cid`),
-  KEY `fk_order_sid` (`sid`),
-  KEY `fk_order_bid` (`bid`),
-  CONSTRAINT `fk_order_bid` FOREIGN KEY (`bid`) REFERENCES `bill` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_order_cid` FOREIGN KEY (`cid`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_order_sid` FOREIGN KEY (`sid`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `recipe_categories_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of order
+-- Table structure for recipe_evaluations
 -- ----------------------------
-
--- ----------------------------
--- Table structure for recipe
--- ----------------------------
-DROP TABLE IF EXISTS `recipe`;
-CREATE TABLE `recipe` (
-  `id` bigint(20) NOT NULL,
-  `pid` bigint(20) NOT NULL COMMENT '商家ID',
-  `cid` bigint(20) NOT NULL COMMENT '类别ID',
-  `name` varchar(255) NOT NULL COMMENT '标题',
-  `price` bigint(20) NOT NULL DEFAULT '0' COMMENT '价格（保留两位*100）',
-  `avatar` varchar(255) DEFAULT NULL COMMENT '菜单图标',
-  `content` longtext COMMENT '介绍',
-  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态 0.正常 1.下架',
-  PRIMARY KEY (`id`),
-  KEY `fk_recipe_pid` (`pid`),
-  KEY `fk_recipe_cid` (`cid`),
-  CONSTRAINT `fk_recipe_cid` FOREIGN KEY (`cid`) REFERENCES `recipe_category` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_recipe_pid` FOREIGN KEY (`pid`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=880000000001 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of recipe
--- ----------------------------
-
--- ----------------------------
--- Table structure for recipe_category
--- ----------------------------
-DROP TABLE IF EXISTS `recipe_category`;
-CREATE TABLE `recipe_category` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `pid` bigint(20) NOT NULL,
-  `name` varchar(255) NOT NULL COMMENT '分类名',
-  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态 0.正常 1.删除',
-  PRIMARY KEY (`id`),
-  KEY `fk_recipe_category_pid` (`pid`),
-  CONSTRAINT `fk_recipe_category_pid` FOREIGN KEY (`pid`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of recipe_category
--- ----------------------------
-
--- ----------------------------
--- Table structure for recipe_evaluate
--- ----------------------------
-DROP TABLE IF EXISTS `recipe_evaluate`;
-CREATE TABLE `recipe_evaluate` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `pid` bigint(20) NOT NULL,
-  `rid` bigint(20) NOT NULL,
-  `score` tinyint(4) NOT NULL DEFAULT '0' COMMENT '评分 0-5',
+DROP TABLE IF EXISTS `recipe_evaluations`;
+CREATE TABLE `recipe_evaluations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `user_info_id` int(11) NOT NULL,
+  `target_id` int(11) NOT NULL,
+  `score` int(11) NOT NULL DEFAULT '5',
   `content` varchar(255) NOT NULL,
-  `createdAt` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态 0.正常 1.删除',
+  `is_auto` tinyint(1) NOT NULL DEFAULT '0',
+  `status` int(11) NOT NULL DEFAULT '0',
+  `created_at` datetime NOT NULL DEFAULT '2018-03-08 02:33:56',
+  `updated_at` datetime NOT NULL DEFAULT '2018-03-08 02:33:56',
   PRIMARY KEY (`id`),
-  KEY `fk_recipe_evaluate_pid` (`pid`),
-  KEY `fk_recipe_evaluate` (`rid`),
-  CONSTRAINT `fk_recipe_evaluate` FOREIGN KEY (`rid`) REFERENCES `recipe` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_recipe_evaluate_pid` FOREIGN KEY (`pid`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `user_id` (`user_id`),
+  KEY `user_info_id` (`user_info_id`),
+  KEY `target_id` (`target_id`),
+  CONSTRAINT `recipe_evaluations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `recipe_evaluations_ibfk_2` FOREIGN KEY (`user_info_id`) REFERENCES `user_infos` (`id`),
+  CONSTRAINT `recipe_evaluations_ibfk_3` FOREIGN KEY (`target_id`) REFERENCES `recipes` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of recipe_evaluate
+-- Table structure for recipes
 -- ----------------------------
-
--- ----------------------------
--- Table structure for user
--- ----------------------------
-DROP TABLE IF EXISTS `user`;
-CREATE TABLE `user` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `type` int(11) NOT NULL COMMENT '用户类型',
-  `pid` bigint(20) NOT NULL DEFAULT '0' COMMENT '用户父级，默认0为无',
-  `uid` varchar(255) NOT NULL COMMENT '用户名',
-  `pwd` varchar(255) NOT NULL COMMENT '密码',
-  `pwd_salt` varchar(255) NOT NULL COMMENT '密码盐',
-  `createdAt` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updatedAt` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `phone` varchar(255) DEFAULT NULL COMMENT '手机',
-  `email` varchar(255) DEFAULT NULL COMMENT '邮箱',
-  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '账号状态 0.正常 1.锁定 2.注销',
-  `balance` bigint(20) NOT NULL DEFAULT '0' COMMENT '账户余额（保留两位*100）',
+DROP TABLE IF EXISTS `recipes`;
+CREATE TABLE `recipes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `category_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `price` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `avatar` varchar(255) DEFAULT NULL,
+  `content` text,
+  `status` int(11) NOT NULL DEFAULT '0',
+  `created_at` datetime NOT NULL DEFAULT '2018-03-08 02:33:56',
+  `updated_at` datetime NOT NULL DEFAULT '2018-03-08 02:33:56',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_user_email` (`email`),
-  UNIQUE KEY `uq_user_phone` (`phone`),
-  KEY `fk_user_type` (`type`),
-  KEY `fk_user_pid` (`pid`),
-  CONSTRAINT `fk_user_pid` FOREIGN KEY (`pid`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_user_type` FOREIGN KEY (`type`) REFERENCES `user_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
+  KEY `user_id` (`user_id`),
+  KEY `category_id` (`category_id`),
+  CONSTRAINT `recipes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `recipes_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `recipe_categories` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of user
+-- Table structure for SequelizeMeta
 -- ----------------------------
+DROP TABLE IF EXISTS `SequelizeMeta`;
+CREATE TABLE `SequelizeMeta` (
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`name`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for user_info
+-- Table structure for user_evaluations
 -- ----------------------------
-DROP TABLE IF EXISTS `user_info`;
-CREATE TABLE `user_info` (
-  `id` bigint(20) NOT NULL,
-  `nickname` varchar(255) DEFAULT NULL COMMENT '昵称',
-  `birthday` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '生日',
-  `sex` tinyint(4) DEFAULT '0' COMMENT '性别：0.未知 1.男 2.女',
-  `address` varchar(255) DEFAULT NULL COMMENT '地址',
-  `intro` varchar(255) DEFAULT '' COMMENT '介绍',
-  `avatar` varchar(255) DEFAULT NULL COMMENT '头像',
+DROP TABLE IF EXISTS `user_evaluations`;
+CREATE TABLE `user_evaluations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `user_info_id` int(11) NOT NULL,
+  `target_id` int(11) NOT NULL,
+  `score` int(11) NOT NULL DEFAULT '5',
+  `content` varchar(255) NOT NULL,
+  `status` int(11) NOT NULL DEFAULT '0',
+  `is_auto` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` datetime NOT NULL DEFAULT '2018-03-08 02:33:56',
+  `updated_at` datetime NOT NULL DEFAULT '2018-03-08 02:33:56',
   PRIMARY KEY (`id`),
-  CONSTRAINT `fk_user_info_id` FOREIGN KEY (`id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `user_id` (`user_id`),
+  KEY `user_info_id` (`user_info_id`),
+  KEY `target_id` (`target_id`),
+  CONSTRAINT `user_evaluations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `user_evaluations_ibfk_2` FOREIGN KEY (`user_info_id`) REFERENCES `user_infos` (`id`),
+  CONSTRAINT `user_evaluations_ibfk_3` FOREIGN KEY (`target_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of user_info
+-- Table structure for user_infos
 -- ----------------------------
+DROP TABLE IF EXISTS `user_infos`;
+CREATE TABLE `user_infos` (
+  `id` int(11) NOT NULL,
+  `nickname` varchar(255) DEFAULT NULL,
+  `birthday` datetime DEFAULT NULL,
+  `sex` int(11) NOT NULL DEFAULT '0',
+  `address` varchar(255) DEFAULT '',
+  `contact` varchar(255) DEFAULT '',
+  `intro` varchar(255) DEFAULT '',
+  `avatar` varchar(255) DEFAULT '',
+  `banner` text,
+  `created_at` datetime NOT NULL DEFAULT '2018-03-08 02:33:56',
+  `updated_at` datetime NOT NULL DEFAULT '2018-03-08 02:33:56',
+  PRIMARY KEY (`id`),
+  CONSTRAINT `user_infos_ibfk_1` FOREIGN KEY (`id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for user_type
+-- Table structure for user_secrets
 -- ----------------------------
-DROP TABLE IF EXISTS `user_type`;
-CREATE TABLE `user_type` (
+DROP TABLE IF EXISTS `user_secrets`;
+CREATE TABLE `user_secrets` (
+  `id` int(11) NOT NULL,
+  `phone` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT '2018-03-08 02:33:56',
+  `updated_at` datetime NOT NULL DEFAULT '2018-03-08 02:33:56',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `phone` (`phone`),
+  UNIQUE KEY `email` (`email`),
+  CONSTRAINT `user_secrets_ibfk_1` FOREIGN KEY (`id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for user_types
+-- ----------------------------
+DROP TABLE IF EXISTS `user_types`;
+CREATE TABLE `user_types` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT '2018-03-08 02:33:56',
+  `updated_at` datetime NOT NULL DEFAULT '2018-03-08 02:33:56',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of user_type
+-- Table structure for users
 -- ----------------------------
-INSERT INTO `user_type` VALUES ('0', '企业');
-INSERT INTO `user_type` VALUES ('1', '商户');
-INSERT INTO `user_type` VALUES ('2', '客户');
-INSERT INTO `user_type` VALUES ('9', '管理员');
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `parent_id` int(11) DEFAULT NULL,
+  `type` int(11) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `password_salt` varchar(255) NOT NULL,
+  `status` int(11) NOT NULL DEFAULT '0',
+  `balance` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `created_at` datetime NOT NULL DEFAULT '2018-03-08 02:33:56',
+  `updated_at` datetime NOT NULL DEFAULT '2018-03-08 02:33:56',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`),
+  KEY `parent_id` (`parent_id`),
+  KEY `type` (`type`),
+  CONSTRAINT `users_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `users_ibfk_2` FOREIGN KEY (`type`) REFERENCES `user_types` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10005 DEFAULT CHARSET=utf8;
