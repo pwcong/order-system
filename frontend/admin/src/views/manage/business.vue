@@ -7,7 +7,7 @@
       </el-col>
     </el-row>
 
-    <el-row class="row row-main" :style="{marginTop: '20px'}">
+    <el-row class="row row-main" :style="{marginTop: '20px', minHeight: '400px'}">
       <el-col :span="24">
         <el-table
           :data="businessesTableData"
@@ -217,33 +217,40 @@ export default {
     },
     handleSelectBusiness(row) {
       const ctx = this;
-      ctx.$store.dispatch('SelectBusiness', row).then(() => {
-        ctx.$router.push({ path: `/manage/business/${row.id}` });
-      });
+      ctx.$store
+        .dispatch('SelectBusiness', row)
+        .then(() => {
+          ctx.$router.push({ path: `/manage/business/${row.id}` });
+        })
+        .catch(err => {});
     },
     handleLockBusiness(row) {
       const ctx = this;
 
-      lockBusinesses(row.id).then(res => {
-        ctx.$message({
-          type: 'success',
-          message: '店家锁定成功!'
-        });
+      lockBusinesses(row.id)
+        .then(res => {
+          ctx.$message({
+            type: 'success',
+            message: '店家锁定成功!'
+          });
 
-        ctx.loadBusinesses();
-      });
+          ctx.loadBusinesses();
+        })
+        .catch(err => {});
     },
     handleUnLockBusiness(row) {
       const ctx = this;
 
-      unlockBusinesses(row.id).then(res => {
-        ctx.$message({
-          type: 'success',
-          message: '店家解锁成功!'
-        });
+      unlockBusinesses(row.id)
+        .then(res => {
+          ctx.$message({
+            type: 'success',
+            message: '店家解锁成功!'
+          });
 
-        ctx.loadBusinesses();
-      });
+          ctx.loadBusinesses();
+        })
+        .catch(err => {});
     },
     handleRemoveBusiness(row) {
       const ctx = this;
@@ -255,14 +262,16 @@ export default {
           type: 'warning'
         })
         .then(() => {
-          removeBusinesses(row.id).then(res => {
-            ctx.$message({
-              type: 'success',
-              message: '店家注销成功!'
-            });
+          removeBusinesses(row.id)
+            .then(res => {
+              ctx.$message({
+                type: 'success',
+                message: '店家注销成功!'
+              });
 
-            ctx.loadBusinesses();
-          });
+              ctx.loadBusinesses();
+            })
+            .catch(err => {});
         })
         .catch(() => {});
     },

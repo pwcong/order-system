@@ -12,6 +12,8 @@ import App from './App';
 import router from './router';
 import store from './store';
 
+import '../theme/index.css';
+
 import '@/icons'; // icon
 import '@/permission'; // permission control
 

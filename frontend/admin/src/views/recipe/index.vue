@@ -39,7 +39,7 @@
             <el-button type="primary" icon="el-icon-refresh" @click="reloadRecipes()">刷新</el-button>
           </el-col>
         </el-row>
-        <el-row style="margin-top: 20px;">
+        <el-row style="margin-top: 20px; min-height: 400px;">
           <el-col :span="24">       
             <el-table
               v-loading="loading"

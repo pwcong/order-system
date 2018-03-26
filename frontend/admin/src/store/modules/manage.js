@@ -1,4 +1,4 @@
-import { queryBusinesses } from '@/api/manage';
+import { queryBusinesses, queryAllBusiness } from '@/api/manage';
 
 export default {
   state: {
@@ -37,6 +37,22 @@ export default {
         pageNo && commit('MANAGE_SET_PAGENO', pageNo);
 
         queryBusinesses(state.id, state.pageSize, state.pageNo)
+          .then(response => {
+            commit('MANAGE_SET_BUSINESSES', response.payload.data);
+            resolve(response);
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+    LoadAllBusinesses({ commit, state }, payload) {
+      return new Promise((resolve, reject) => {
+        const { id } = payload;
+
+        id && commit('MANAGE_SET_ID', id);
+
+        queryAllBusiness(state.id)
           .then(response => {
             commit('MANAGE_SET_BUSINESSES', response.payload.data);
             resolve(response);

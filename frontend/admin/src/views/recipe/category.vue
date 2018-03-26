@@ -8,7 +8,7 @@
       </el-col>
     </el-row>
 
-    <el-row class="row row-main" :style="{marginTop: '16px'}">
+    <el-row class="row row-main" :style="{marginTop: '16px', minHeight: '400px'}">
       <el-col :span="24">
         <el-table
           :data="recipeCategoriesTableData"

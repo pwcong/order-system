@@ -85,8 +85,14 @@ export default {
         .map(banner => config.BASE_API + banner);
       return t.length > 0 ? t : [banner];
     },
+    userId() {
+      return this.$store.getters.id;
+    },
     userType() {
       return this.$store.getters.type;
+    },
+    businesses() {
+      return this.$store.getters.businesses;
     }
   },
   methods: {
@@ -137,6 +143,13 @@ export default {
         ];
       } catch (err) {}
     },
+    queryAllBusinesses(id) {
+      const ctx = this;
+      ctx.$store
+        .dispatch('LoadAllBusinesses', { id })
+        .then(res => {})
+        .catch(err => {});
+    },
     handleToManage() {
       this.$router.push({ path: '/manage/business' });
     }
@@ -145,6 +158,8 @@ export default {
   async created() {
     if (this.userType === 2) {
       this.initCharts();
+    } else if (this.userType === 3) {
+      this.queryAllBusinesses(this.userId);
     }
   }
 };

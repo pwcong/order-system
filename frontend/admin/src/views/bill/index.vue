@@ -17,7 +17,7 @@
       </el-col>
     </el-row>
 
-    <el-row class="row row-main" :style="{marginTop: '20px'}">
+    <el-row class="row row-main" :style="{marginTop: '20px', minHeight: '400px'}">
       <el-col :span="24">
         <el-table
           :data="billsTableData"

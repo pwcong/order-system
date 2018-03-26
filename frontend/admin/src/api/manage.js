@@ -19,6 +19,13 @@ export function queryBusinesses(id, pageSize = '', pageNo = '') {
   });
 }
 
+export function queryAllBusiness(id) {
+  return request({
+    url: `/user/businesses/${id}`,
+    method: 'get'
+  });
+}
+
 export function lockBusinesses(id) {
   return request({
     url: `/user/business/lock/${id}`,

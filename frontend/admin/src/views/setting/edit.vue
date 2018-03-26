@@ -190,9 +190,12 @@ export default {
               });
               ctx.modifyDialogVisible = false;
 
-              ctx.$store.dispatch('LogOut').then(res => {
-                ctx.$router.push({ path: '/login' });
-              });
+              ctx.$store
+                .dispatch('LogOut')
+                .then(res => {
+                  ctx.$router.push({ path: '/login' });
+                })
+                .catch(err => {});
             })
             .catch(err => {});
         } else {

@@ -16,7 +16,7 @@
       </el-col>
     </el-row>
 
-    <el-row class="row row-main" :style="{marginTop: '20px'}">
+    <el-row class="row row-main" :style="{marginTop: '20px', minHeight: '400px'}">
       <el-col :span="24">
         <el-table
           :data="ordersTableData"
@@ -226,14 +226,16 @@ export default {
           type: 'warning'
         })
         .then(() => {
-          confirmOrder(row.id).then(res => {
-            ctx.$message({
-              type: 'success',
-              message: '订单已确认!'
-            });
+          confirmOrder(row.id)
+            .then(res => {
+              ctx.$message({
+                type: 'success',
+                message: '订单已确认!'
+              });
 
-            ctx.loadOrders();
-          });
+              ctx.loadOrders();
+            })
+            .catch(err => {});
         })
         .catch(() => {});
     },
@@ -247,14 +249,16 @@ export default {
           type: 'warning'
         })
         .then(() => {
-          closeOrder(row.id).then(res => {
-            ctx.$message({
-              type: 'success',
-              message: '订单已取消!'
-            });
+          closeOrder(row.id)
+            .then(res => {
+              ctx.$message({
+                type: 'success',
+                message: '订单已取消!'
+              });
 
-            ctx.loadOrders();
-          });
+              ctx.loadOrders();
+            })
+            .catch(err => {});
         })
         .catch(() => {});
     },
