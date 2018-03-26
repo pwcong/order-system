@@ -11,5 +11,21 @@ export function getBills(type = [], filter = '', pageSize = '', pageNo = '') {
 }
 
 export function getTodayBills(type, pageSize, pageNo) {
-  return getBills(type, 'today', pageSize, pageNo);
+  return request({
+    url: `/bills/today`,
+    method: 'post',
+    data: {
+      type
+    }
+  });
+}
+
+export function getYearBills(type, year) {
+  return request({
+    url: `/bills/${year}`,
+    method: 'post',
+    data: {
+      type
+    }
+  });
 }

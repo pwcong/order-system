@@ -17,20 +17,20 @@
       <el-col :sm="24" :md="12" :lg="12" class="main-card">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
-            <span>今日订单</span>
+            <span>今日订单(个)</span>
           </div>
           <div>
-            <ve-pie :data="todayOrderChart.data" :settings="todayOrderChart.setting"></ve-pie>
+            <ve-histogram :extend="todayOrderChart.extend" :data="todayOrderChart.data" :settings="todayOrderChart.setting"></ve-histogram>
           </div>
         </el-card>
       </el-col>
       <el-col :sm="24" :md="12" :lg="12" class="main-card">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
-            <span>今日收支</span>
+            <span>今日收支(元)</span>
           </div>
           <div>
-            <ve-pie :data="todayBillChart.data" :settings="todayBillChart.setting"></ve-pie>
+            <ve-histogram :extend="todayBillChart.extend" :data="todayBillChart.data" :settings="todayBillChart.setting"></ve-histogram>
           </div>
         </el-card>
       </el-col>
@@ -115,7 +115,7 @@ import { modifyBusinessPWD } from '@/api/user';
 
 import { queryBusinessBillStatistics, queryBusinessOrderStatistics } from '@/api/statistics';
 import { getInfo } from '@/api/user';
-
+import moment from 'moment';
 import config from '@/const/config';
 
 export default {
@@ -147,15 +147,29 @@ export default {
     return {
       todayOrderChart: {
         data: {
-          columns: ['type', 'counts'],
+          columns: ['日期', '进行中', '已完成', '已取消'],
           rows: []
+        },
+        setting: {
+          metrics: ['进行中', '已完成', '已取消'],
+          dimension: ['日期']
+        },
+        extend: {
+          yAxis: {
+            minInterval: 1
+          }
         }
       },
       todayBillChart: {
         data: {
-          columns: ['type', 'amount'],
+          columns: ['日期', '收款', '退款'],
           rows: []
-        }
+        },
+        setting: {
+          metrics: ['收款', '退款'],
+          dimension: ['日期']
+        },
+        extend: {}
       },
       businessInfo: {},
       banners: [],
@@ -211,12 +225,9 @@ export default {
 
             ctx.todayBillChart.data.rows = [
               {
-                type: '收款',
-                amount: billStatistics.in
-              },
-              {
-                type: '退款',
-                amount: billStatistics.out
+                日期: moment().format('YYYY-MM-DD'),
+                收款: billStatistics.in,
+                退款: billStatistics.out
               }
             ];
           })
@@ -226,16 +237,10 @@ export default {
             const orderStatistics = res.payload;
             ctx.todayOrderChart.data.rows = [
               {
-                type: '进行中',
-                counts: orderStatistics.ingCounts
-              },
-              {
-                type: '已完成',
-                counts: orderStatistics.finishedCounts
-              },
-              {
-                type: '已取消',
-                counts: orderStatistics.canceledCounts
+                日期: moment().format('YYYY-MM-DD'),
+                进行中: orderStatistics.ingCounts,
+                已完成: orderStatistics.finishedCounts,
+                已取消: orderStatistics.canceledCounts
               }
             ];
           })

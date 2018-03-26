@@ -10,6 +10,16 @@ export function getOrders(status = [], pageSize = '', pageNo = '', filter = '') 
   });
 }
 
+export function getYearOrders(status = [], year) {
+  return request({
+    url: `/orders/received/${year}`,
+    method: 'post',
+    data: {
+      status
+    }
+  });
+}
+
 export function getTodayOrders(status = []) {
   return request({
     url: `/orders/received/today`,
