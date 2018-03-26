@@ -35,16 +35,21 @@
       </el-col>
     </el-row>
 
-    <el-row class="warn" v-if="userType === 3">
-      <el-col :span="24" style="text-align: center; margin-top: 128px; font-size: 32px; color: #888;">
-        企业展示页正在建设中<span>.</span><span>.</span><span>.</span>
+    <el-row class="main" v-if="userType === 3">
+
+      <el-col :span="24" class="main-card">
+        <el-card class="card-item">
+
+          <div slot="header" class="card-item-head">
+            <span>店家个数</span>
+            <el-button style="padding: 6px 4px" @click="handleToManage" icon="el-icon-menu" type="primary">管理店家</el-button>
+          </div>
+          <div class="card-item-info">
+            {{businesses.length || 0}}
+          </div>
+        </el-card>
       </el-col>
 
-    </el-row>
-    <el-row v-if="userType === 3" style="margin-top: 32px;">
-      <el-col :span="24" style="text-align: center;">
-        <el-button @click="handleToManage" icon="el-icon-menu" type="primary">管理店家</el-button>
-      </el-col>
     </el-row>
 
   </div>
@@ -187,20 +192,21 @@ export default {
       .main-card {
         margin-bottom: 8px;
       }
-    }
 
-    .warn {
-      span {
-        position: relative;
-        animation: anim 1.2s infinite;
+      .card-item {
+        width: 220px;
+        .card-item-info {
+          height: 128px;
+          font-size: 76px;
+          text-align: center;
+          line-height: 128px;
+        }
 
-        &:nth-child(1) {
-        }
-        &:nth-child(2) {
-          animation-delay: 0.3s;
-        }
-        &:nth-child(3) {
-          animation-delay: 0.6s;
+        .card-item-head {
+          display: flex;
+          flex-flow: row nowrap;
+          justify-content: space-between;
+          align-items: center;
         }
       }
     }
@@ -208,18 +214,6 @@ export default {
   &-text {
     font-size: 30px;
     line-height: 46px;
-  }
-}
-
-@keyframes anim {
-  0% {
-    top: 0;
-  }
-  50% {
-    top: -16px;
-  }
-  99% {
-    top: 0;
   }
 }
 </style>
