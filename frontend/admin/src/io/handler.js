@@ -14,6 +14,9 @@ export default function(socket) {
           title: '提醒',
           message: payload.message
         });
+        try {
+          document.getElementById('newOrderVoice').play();
+        } catch (err) {}
         store.dispatch('LoadOrders', { pageNo: 1 });
         break;
       case 'BUSINESS_CANCEL_ORDER':
@@ -21,6 +24,9 @@ export default function(socket) {
           title: '提醒',
           message: payload.message
         });
+        try {
+          document.getElementById('cancelOrderVoice').play();
+        } catch (err) {}
         store.dispatch('LoadOrders', { pageNo: 1 });
         break;
       case 'BUSINESS_PAY_ORDER':
@@ -28,6 +34,9 @@ export default function(socket) {
           title: '提醒',
           message: payload.message
         });
+        try {
+          document.getElementById('payOrderVoice').play();
+        } catch (err) {}
         store.dispatch('LoadOrders', { pageNo: 1 });
         break;
       default:
