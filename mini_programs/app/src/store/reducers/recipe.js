@@ -4,7 +4,8 @@ import {
   ACTION_PLUS_RECIPE,
   ACTION_MINUS_RECIPE,
   ACTION_CLEAR_RECIPESINCART,
-  ACTION_VIEW_RECIPE
+  ACTION_VIEW_RECIPE,
+  ACTION_SET_ADDRESS
 } from '../types/recipe';
 
 export default handleActions(
@@ -71,6 +72,12 @@ export default handleActions(
         recipesInCart: {}
       };
     },
+    [ACTION_SET_ADDRESS](state, action) {
+      return {
+        ...state,
+        address: action.payload
+      };
+    },
     [ACTION_VIEW_RECIPE](state, action) {
       return {
         ...state,
@@ -81,6 +88,7 @@ export default handleActions(
   {
     recipes: [],
     recipesInCart: {},
-    viewRecipe: {}
+    viewRecipe: {},
+    address: ''
   }
 );

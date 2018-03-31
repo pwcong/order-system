@@ -49,7 +49,7 @@ import wepy from 'wepy';
 
 import { getStore } from 'wepy-redux';
 
-import { asyncSearchBusiness, asyncClearRecipeInCart } from '@/store/actions';
+import { asyncSearchBusiness, asyncClearRecipeInCart, asyncSetAddress } from '@/store/actions';
 
 export default class Index extends wepy.page {
   config = {
@@ -69,8 +69,14 @@ export default class Index extends wepy.page {
     handleScanBusinessCode() {
       wepy.scanCode({
         success(res) {
+          const t = res.result.split(':');
+
+          if (t.length > 1) {
+            getStore().dispatch(asyncSetAddress(t[1]));
+          }
+
           getStore()
-            .dispatch(asyncSearchBusiness(res.result))
+            .dispatch(asyncSearchBusiness(t[0]))
             .then(res => {
               if (res.error) {
                 wepy.showModal({

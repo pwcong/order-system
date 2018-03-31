@@ -170,7 +170,7 @@
 
       <form class="main-form" @submit="submitOrder" style="border-radius: 16rpx; overflow: hidden; display: block;">
         <view class="main-form-item">
-          <textarea class="main-form-item-field" style="text-align: left;" name="address" placeholder="请输入送餐地址" />
+          <textarea class="main-form-item-field" style="text-align: left;" value="{{address}}" name="address" placeholder="请输入送餐地址" />
         </view>
 
         <view class="main-form-item" style="border-bottom: none;">
@@ -233,6 +233,9 @@ import { BASE_API } from '@/const/config';
         price += (parseFloat(t.info.price) || 0) * t.counts;
       }
       return price.toFixed(2);
+    },
+    initAddress(state) {
+      return state.recipe.address;
     }
   },
   {
@@ -332,6 +335,8 @@ export default class Cart extends wepy.page {
 
   events = {};
 
-  onLoad() {}
+  onLoad() {
+    this.address = this.initAddress;
+  }
 }
 </script>

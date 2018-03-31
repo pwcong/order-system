@@ -55,31 +55,68 @@
       </el-col>
 
       <el-col :sm="24" :md="8" :lg="8" v-if="userType === 2">
-        <el-card>
-          <div slot="header" class="clearfix">
-            <span>入口二维码</span>
-            <a :href="qrcode_" target="_blank" download="qrcode.png">
-              <el-button type="text" style="float: right; padding: 3px 0">下载</el-button>
-            </a>
-          </div>
-          <div class="qrcode" :style="{
-            backgroundImage: `url(${qrcode})`
-          }"></div>
-        </el-card>
+
+        <el-row>
+          <el-col :span="24">
+            <el-card>
+              <div slot="header" class="clearfix">
+                <span>自定义二维码</span>
+              </div>
+              <div>
+                <el-input v-model="customLabel" placeholder="请输入内容">
+                  <el-button slot="append" type="success" @click="handleGenerateQRCode">生成</el-button>
+                </el-input>
+              </div>
+            </el-card>            
+
+          </el-col>
+        </el-row>
+
+        <el-row style="margin-top: 20px;">
+          <el-col :span="24">
+            <el-card>
+              <div slot="header" class="clearfix">
+                <span>入口二维码</span>
+                <a :href="qrcode_" target="_blank" download="qrcode.png">
+                  <el-button type="text" style="float: right; padding: 3px 0">下载</el-button>
+                </a>
+              </div>
+              <div class="qrcode" :style="{
+                backgroundImage: `url(${qrcode})`
+              }"></div>
+            </el-card>
+
+          </el-col>
+
+        </el-row>
+
       </el-col>
 
     </el-row>
+
+    <el-dialog :visible.sync="dialogVisible">
+      <div id="customQRCode">
+        <img :src="customQRCode" alt="">
+        <div>{{customLabel}}</div>
+      </div>
+      <div id="customQRCodeTool">
+        <el-button type="success" @click="handleDownloadCustomQRCode">下载</el-button>
+      </div>
+    </el-dialog>
 
   </div>
 </template>
 
 <script>
 import QRCode from 'qrcode';
+import domtoimage from 'dom-to-image';
 
 import config from '@/const/config.js';
 
 import banner from '@/assets/images/banner.jpg';
 import defaultAvatar from '@/assets/images/avatar.png';
+
+import { base64Img2Blob } from '@/utils';
 
 export default {
   name: 'Setting-Preview',
@@ -87,7 +124,11 @@ export default {
   data() {
     return {
       qrcode: '',
-      qrcode_: ''
+      qrcode_: '',
+      dialogVisible: false,
+      customQRCode: '',
+      customQRCode_: '',
+      customLabel: ''
     };
   },
 
@@ -110,6 +151,36 @@ export default {
       return this.$store.getters.type;
     }
   },
+  methods: {
+    handleDownloadCustomQRCode() {
+      const ctx = this;
+      domtoimage.toJpeg(document.getElementById('customQRCode')).then(function(dataUrl) {
+        const link = document.createElement('a');
+        link.download = ctx.customLabel + '.jpeg';
+        link.href = dataUrl;
+        link.click();
+      });
+    },
+    handleGenerateQRCode() {
+      const ctx = this;
+
+      if (!ctx.customLabel) {
+        ctx.$message({
+          type: 'error',
+          message: '请输入自定义内容'
+        });
+        return;
+      }
+
+      QRCode.toDataURL(ctx.$store.getters.id + ':' + ctx.customLabel, { scale: 16 })
+        .then(url => {
+          ctx.customQRCode = url;
+          ctx.customQRCode_ = url.replace('image/png', 'image/octet-stream');
+          ctx.dialogVisible = true;
+        })
+        .catch(err => {});
+    }
+  },
   mounted() {
     const ctx = this;
 
@@ -126,6 +197,27 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
 .setting-container {
   margin: 24px;
+
+  #customQRCode {
+    text-align: center;
+    img {
+      width: 256px;
+      max-width: 100%;
+    }
+    div {
+      position: relative;
+      top: -32px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #47b248;
+    }
+  }
+
+  #customQRCodeTool {
+    border-top: 1px solid #e5e5e5;
+    padding-top: 16px;
+    text-align: center;
+  }
 
   .banner {
     margin-bottom: 12px;
